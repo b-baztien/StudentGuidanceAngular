@@ -15,6 +15,7 @@ import { MatProgressButtonsModule } from 'mat-progress-buttons';
 import { AppRoutingModule } from './app-routing.module';
 import { UserLayoutComponent } from './layouts/user-layout/user-layout.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
+import { ComponentsModule } from './components/navigation/components.module';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.compon
     FlexLayoutModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
+    ComponentsModule
   ],
   providers: [LoginService],
   bootstrap: [AppComponent],

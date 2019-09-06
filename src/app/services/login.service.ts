@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Login } from '../model/Login';
-import { FirebaseError } from 'firebase';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
-  userLogin: Login;
-  constructor(private firestore: AngularFirestore) { }
+  private userLogin: Login;
+
+  constructor(private firestore: AngularFirestore) {
+  }
 
   ngOnInit() {
     this.userLogin = new Login();
@@ -27,11 +28,14 @@ export class LoginService {
       if (error === ReferenceError) {
         throw error
       } else {
-        if(error.code === 'unavailable') {
+        if (error.code.toLocaleLowerCase() === 'unavailable') {
           throw new Error(`เกิดข้อผิดพลาดของระบบ กรุณาลองใหม่อีกครั้งภายหลัง`);
         }
         throw new Error(`เกิดข้อผิดพลาดของระบบ กรุณาลองใหม่อีกครั้งภายหลัง`);
       }
     });
+  }
+
+  logout() {
   }
 }

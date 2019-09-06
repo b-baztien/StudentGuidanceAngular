@@ -13,7 +13,11 @@ import {
   MatSelectModule
 } from '@angular/material';
 import { DashboardComponent } from 'src/app/components/dashboard/dashboard.component';
+import { ComponentsModule } from 'src/app/components/navigation/components.module';
 @NgModule({
+  declarations: [
+    DashboardComponent,
+  ],
   imports: [
     CommonModule,
     RouterModule.forChild(AdminLayoutRoutes),
@@ -25,10 +29,7 @@ import { DashboardComponent } from 'src/app/components/dashboard/dashboard.compo
     MatInputModule,
     MatSelectModule,
     MatTooltipModule,
-  ],
-  declarations: [
-    DashboardComponent,
-  ]
+  ], exports: [ComponentsModule]
 })
 
 export class AdminLayoutModule { }
