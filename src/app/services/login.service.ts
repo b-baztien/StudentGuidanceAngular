@@ -24,15 +24,10 @@ export class LoginService {
         return this.userLogin.type;
       }
     }).catch((error) => {
-      console.log(error.code);
-      if (error === ReferenceError) {
-        throw error
-      } else {
-        if (error.code.toLocaleLowerCase() === 'unavailable') {
-          throw new Error(`เกิดข้อผิดพลาดของระบบ กรุณาลองใหม่อีกครั้งภายหลัง`);
-        }
-        throw new Error(`เกิดข้อผิดพลาดของระบบ กรุณาลองใหม่อีกครั้งภายหลัง`);
+      if (error.code === 'unavailable') {
+        throw new Error('ไม่พบสัญญาณอินเทอร์เน็ต กรุณาลองใหม่อีกครั้งภายหลัง');
       }
+      throw error
     });
   }
 

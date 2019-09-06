@@ -10,13 +10,17 @@ import {
   MatRippleModule,
   MatFormFieldModule,
   MatTooltipModule,
-  MatSelectModule
+  MatSelectModule,
+  MatTableModule,
+  MatPaginatorModule
 } from '@angular/material';
-import { DashboardComponent } from 'src/app/components/dashboard/dashboard.component';
+import { ListUniversityComponent } from 'src/app/components/list-university/list-university.component';
 import { ComponentsModule } from 'src/app/components/navigation/components.module';
+import { PhonePipe } from 'src/app/pipe/phone.pipe';
 @NgModule({
   declarations: [
-    DashboardComponent,
+    ListUniversityComponent,
+    PhonePipe,
   ],
   imports: [
     CommonModule,
@@ -29,6 +33,8 @@ import { ComponentsModule } from 'src/app/components/navigation/components.modul
     MatInputModule,
     MatSelectModule,
     MatTooltipModule,
+    MatTableModule,
+    MatPaginatorModule,
   ], exports: [ComponentsModule]
 })
 

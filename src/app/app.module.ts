@@ -16,6 +16,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { UserLayoutComponent } from './layouts/user-layout/user-layout.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { ComponentsModule } from './components/navigation/components.module';
+import { PhonePipe } from './pipe/phone.pipe';
 
 @NgModule({
   declarations: [
