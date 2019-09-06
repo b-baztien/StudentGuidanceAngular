@@ -1,23 +1,26 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialModule } from './angular-material.module';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from "@angular/flex-layout";
-import { LogInComponent } from './components/login/login.component';
 import { LoginService } from './services/login.service';
 import { AngularFireModule } from "@angular/fire";
 import { AngularFirestoreModule } from "@angular/fire/firestore";
 import { environment } from 'src/environments/environment';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressButtonsModule } from 'mat-progress-buttons';
+import { AppRoutingModule } from './app-routing.module';
+import { UserLayoutComponent } from './layouts/user-layout/user-layout.component';
+import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LogInComponent,
+    UserLayoutComponent,
+    AdminLayoutComponent,
   ],
   imports: [
     BrowserModule,
@@ -25,6 +28,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     BrowserAnimationsModule,
     AngularMaterialModule,
     MatProgressSpinnerModule,
+    MatProgressButtonsModule,
     ReactiveFormsModule,
     MatDialogModule,
     FormsModule,

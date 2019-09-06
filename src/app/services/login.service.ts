@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Login } from '../model/Login';
+import { FirebaseError } from 'firebase';
 
 @Injectable({
   providedIn: 'root'
@@ -9,10 +10,28 @@ export class LoginService {
   userLogin: Login;
   constructor(private firestore: AngularFirestore) { }
 
-  Login(login: Login) {
-    this.firestore.collection('Login').doc(login.username).ref.get().then(response => {
-    this.userLogin = response[0];
-      console.log(this.userLogin);
+  ngOnInit() {
+    this.userLogin = new Login();
+  }
+
+  async Login(login: Login) {
+    return await this.firestore.collection('Login').doc(login.username).ref.get().then(response => {
+      this.userLogin = response.data() as Login;
+      if (!response.exists || this.userLogin.password !== login.password) {
+        throw new ReferenceError('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้งภายหลัง');
+      } else {
+        return this.userLogin.type;
+      }
+    }).catch((error) => {
+      console.log(error.code);
+      if (error === ReferenceError) {
+        throw error
+      } else {
+        if(error.code === 'unavailable') {
+          throw new Error(`เกิดข้อผิดพลาดของระบบ กรุณาลองใหม่อีกครั้งภายหลัง`);
+        }
+        throw new Error(`เกิดข้อผิดพลาดของระบบ กรุณาลองใหม่อีกครั้งภายหลัง`);
+      }
     });
   }
 }

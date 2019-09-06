@@ -29,7 +29,7 @@
           </mat-error>
         </mat-form-field>
       </mat-card-content>
-      <button mat-stroked-button color="accent" class="btn-block" (click) = "onLogin()">เข้าสู่ระบบ</button>
+      <mat-spinner-button [options]="spinnerButtonOptions" (click)="onLogin()"></mat-spinner-button>
     </form>
   </mat-card>
 </div>
