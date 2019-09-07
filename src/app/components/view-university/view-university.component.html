@@ -24,7 +24,7 @@
                         <p class="card-category">คณะ ต่างๆ ที่สังกัดอยู่ภายใน {{university.university_name}}</p>
                     </div>
                     <div class="card-body">
-                        <div class="card-body table-responsive">
+                        <div class="card-body table-responsive" *ngIf="facultyLtb !== undefined">
                             <table mat-table [dataSource]="facultyLtb" class="table table-hover">
                                 <ng-container matColumnDef="faculty_name">
                                     <th mat-header-cell *matHeaderCellDef>ชื่อ</th>

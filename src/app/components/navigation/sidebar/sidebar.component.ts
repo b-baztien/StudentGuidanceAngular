@@ -2,15 +2,15 @@ import { Component, OnInit } from '@angular/core';
 
 declare const $: any;
 declare interface RouteInfo {
-    path: string;
-    title: string;
-    icon: string;
-    class: string;
+  path: string;
+  title: string;
+  icon: string;
+  class: string;
 }
 export const ROUTES: RouteInfo[] = [
-    { path: '/admin/list-university', title: 'มหาวิทยาลัย',  icon: 'school', class: '' },
-    { path: '/admin/user', title: 'รายการผู้ใช้',  icon:'person', class: '' },
-    { path: '/admin/logout', title: 'ออกจากระบบ',  icon:'exit_to_app', class: 'active-pro' },
+  { path: '/admin/list-university', title: 'มหาวิทยาลัย', icon: 'school', class: '' },
+  { path: '/admin/user', title: 'รายการผู้ใช้', icon: 'person', class: '' },
+  { path: '/login', title: 'ออกจากระบบ', icon: 'exit_to_app', class: 'active-pro' },
 ];
 
 @Component({
@@ -27,9 +27,9 @@ export class SidebarComponent implements OnInit {
     this.menuItems = ROUTES.filter(menuItem => menuItem);
   }
   isMobileMenu() {
-      if ($(window).width() > 991) {
-          return false;
-      }
-      return true;
+    if ($(window).width() > 991) {
+      return false;
+    }
+    return true;
   };
 }

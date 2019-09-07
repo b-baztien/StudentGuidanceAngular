@@ -8,7 +8,7 @@
                         <p class="card-category">นี่คือรายชื่อมหาวิทยาลัยทั้งหมดที่พบในระบบ คุณสามารถตรวจสอบ หรือจัดการ
                             รานละเอียดต่างๆ ของมหาวิทยาลัยนั้นๆ ได้</p>
                     </div>
-                    <div class="card-body table-responsive">
+                    <div class="card-body table-responsive" *ngIf="universityList !== undefined">
                         <table mat-table [dataSource]="universityList" class="table table-hover">
                             <ng-container matColumnDef="university_name">
                                 <th mat-header-cell *matHeaderCellDef>ชื่อ</th>
@@ -36,6 +36,14 @@
                                 (click)="onUniversityClick(row)"></tr>
                         </table>
                         <mat-paginator [length]="resultsLength" [pageSize]="8" showFirstLastButtons></mat-paginator>
+                    </div>
+                    <div class="card-profile" *ngIf="universityList === undefined">
+                        <div class="card-body">
+                            <h4 class="card-title">ไม่พบข้อมูลมหาวิทยาลัย</h4>
+                            <p class="card-description">
+                                ไม่พบข้อมูลมหาวิทยาลัยในระบบ
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
