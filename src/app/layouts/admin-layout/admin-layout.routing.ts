@@ -3,7 +3,7 @@ import { ListUniversityComponent } from 'src/app/components/list-university/list
 import { ViewUniversityComponent } from 'src/app/components/view-university/view-university.component';
 
 export const AdminLayoutRoutes: Routes = [
-    { path: '', redirectTo: 'list-university', },
+    { path: '', redirectTo: 'list-university', pathMatch: 'full' },
     { path: 'list-university', component: ListUniversityComponent },
     { path: 'view-university', component: ViewUniversityComponent },
 ];

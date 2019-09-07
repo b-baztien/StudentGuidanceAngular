@@ -1,5 +1,9 @@
+import { DocumentReference } from '@angular/fire/firestore';
+import { Faculty } from './Faculty';
+import { element } from 'protractor';
 
 export class University {
+    university_id: string;
     university_name: string;
     address: string;
     url: string;
@@ -7,5 +11,6 @@ export class University {
     university_detail: string;
     zone: string;
     view: number;
-    // geopoint: { latitude: number, longitude: number };
+    location: firebase.firestore.GeoPoint;
+    faculty: DocumentReference[];
 }

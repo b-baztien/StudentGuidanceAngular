@@ -12,7 +12,9 @@ import {
   MatTooltipModule,
   MatSelectModule,
   MatTableModule,
-  MatPaginatorModule
+  MatPaginatorModule,
+  MatCardModule,
+  MatIconModule
 } from '@angular/material';
 import { ListUniversityComponent } from 'src/app/components/list-university/list-university.component';
 import { ComponentsModule } from 'src/app/components/navigation/components.module';
@@ -36,6 +38,8 @@ import { ViewUniversityComponent } from 'src/app/components/view-university/view
     MatSelectModule,
     MatTooltipModule,
     MatTableModule,
+    MatCardModule,
+    MatIconModule,
     MatPaginatorModule,
   ], exports: [ComponentsModule]
 })

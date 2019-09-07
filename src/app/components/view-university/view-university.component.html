@@ -1,16 +1,58 @@
 <div class="main-content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12 col-md-12">
-                    <div class="card">
-                        <div class="card-header card-header-info">
-                            <h4 class="card-title">มหาวิทยาลัยแม่โจ้</h4>
-                            <p class="card-category"></p>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-profile">
+                    <div class="card-avatar">
+                        <a href="javascript:void(0)">
+                            <img class="img"
+                                src="https://firebasestorage.googleapis.com/v0/b/studentguidance-1565684067738.appspot.com/o/university%2F%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%A7%E0%B8%B4%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%A5%E0%B8%B1%E0%B8%A2%E0%B9%81%E0%B8%A1%E0%B9%88%E0%B9%82%E0%B8%88%E0%B9%89_edit.png?alt=media&token=07d6d8e1-6210-486f-add0-909763e710b6" />
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">{{university.university_name}}</h4>
+                        <p class="card-description">
+                            {{university.university_detail}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-info">
+                        <h4 class="card-title">คณะ</h4>
+                        <p class="card-category">คณะ ต่างๆ ที่สังกัดอยู่ภายใน {{university.university_name}}</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-body table-responsive">
+                            <table mat-table [dataSource]="facultyLtb" class="table table-hover">
+                                <ng-container matColumnDef="faculty_name">
+                                    <th mat-header-cell *matHeaderCellDef>ชื่อ</th>
+                                    <td mat-cell *matCellDef="let faculty"> {{faculty.faculty_name}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="url">
+                                    <th mat-header-cell *matHeaderCellDef>เว็บไซต์</th>
+                                    <td mat-cell *matCellDef="let faculty"> <a href="{{faculty.url}}"
+                                            target="_blank">{{faculty.url}}</a> </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
+                            <mat-paginator [length]="resultsLength" [pageSize]="5" showFirstLastButtons>
+                            </mat-paginator>
                         </div>
-                        <div class="card-body">
+                        <div class="card-profile" *ngIf="facultyLtb === undefined">
+                            <div class="card-body">
+                                <h4 class="card-title">ไม่พบข้อมูลคณะ</h4>
+                                <p class="card-description">
+                                    ไม่พบข้อมูลคณะในสังกัดของ{{university.university_name}}
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
+</div>
