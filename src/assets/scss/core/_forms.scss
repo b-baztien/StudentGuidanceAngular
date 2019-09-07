@@ -34,7 +34,6 @@ form {
   padding-left: 0;
   padding-right: 0;
   border-radius: 0;
-  font-size: $mdb-input-font-size-base;
 
   // The border bottom should be static in all states, the decorator will be animated over this.
   &:focus,
