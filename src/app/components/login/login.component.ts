@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material';
 import { MatProgressButtonOptions } from 'mat-progress-buttons'
-import { LoginService } from 'src/app/services/login.service';
+import { LoginService } from 'src/app/services/login-service/login.service';
 import { Login } from 'src/app/model/Login';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { University } from 'src/app/model/University';
 
 @Component({
   selector: 'app-login',
@@ -56,7 +57,6 @@ export class LogInComponent implements OnInit, ErrorStateMatcher {
         this.spinnerButtonOptions.active = true;
         const typeUser = await this.loginService.Login(this.login);
 
-        console.log(typeUser);
         if (typeUser === 'admin') {
           this.router.navigate(['./admin']);
         } else if (typeUser === 'teacher') {

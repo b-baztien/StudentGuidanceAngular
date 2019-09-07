@@ -5,7 +5,7 @@ import { AngularMaterialModule } from './angular-material.module';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from "@angular/flex-layout";
-import { LoginService } from './services/login.service';
+import { LoginService } from './services/login-service/login.service';
 import { AngularFireModule } from "@angular/fire";
 import { AngularFirestoreModule } from "@angular/fire/firestore";
 import { environment } from 'src/environments/environment';
@@ -16,7 +16,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { UserLayoutComponent } from './layouts/user-layout/user-layout.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { ComponentsModule } from './components/navigation/components.module';
-import { PhonePipe } from './pipe/phone.pipe';
 
 @NgModule({
   declarations: [

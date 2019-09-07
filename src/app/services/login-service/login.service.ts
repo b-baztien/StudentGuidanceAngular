@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { Login } from '../model/Login';
+import { AngularFirestore, DocumentChangeAction } from '@angular/fire/firestore';
+import { Login } from '../../model/Login';
+import { Observable } from 'rxjs';
+import { University } from 'src/app/model/University';
+import { element } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +19,8 @@ export class LoginService {
   }
 
   async Login(login: Login) {
+
+
     return await this.firestore.collection('Login').doc(login.username).ref.get().then(response => {
       this.userLogin = response.data() as Login;
       if (!response.exists || this.userLogin.password !== login.password) {
@@ -30,6 +35,9 @@ export class LoginService {
       throw error
     });
   }
+
+  
+  
 
   logout() {
   }
