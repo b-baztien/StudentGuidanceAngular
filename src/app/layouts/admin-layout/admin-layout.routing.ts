@@ -5,5 +5,5 @@ import { ViewUniversityComponent } from 'src/app/components/view-university/view
 export const AdminLayoutRoutes: Routes = [
     { path: '', redirectTo: 'list-university', pathMatch: 'full' },
     { path: 'list-university', component: ListUniversityComponent },
-    { path: 'view-university', component: ViewUniversityComponent },
+    { path: 'list-university/view-university', component: ViewUniversityComponent },
 ];

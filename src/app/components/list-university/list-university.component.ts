@@ -21,7 +21,12 @@ export class ListUniversityComponent implements OnInit {
 
   constructor(private router: Router, private universityService: UniversityService) { }
 
-  async ngOnInit() {
+  ngOnInit() {
+
+  }
+
+  async ngAfterViewInit() {
+    console.log(this.paginator);
     this.listUniObs = await this.universityService.getAllUniversity().subscribe(result => {
       let resultListUniversity: Array<University> = new Array<University>();
       result.forEach(element => {
@@ -37,6 +42,6 @@ export class ListUniversityComponent implements OnInit {
   }
 
   onUniversityClick(university: University) {
-    this.router.navigate(['/admin/view-university', { university_id: university.university_id }]);
+    this.router.navigate(['/admin/list-university/view-university', { university_id: university.university_id }]);
   }
 }

@@ -35,7 +35,8 @@
                             <tr mat-row *matRowDef="let row; columns: displayedColumns;"
                                 (click)="onUniversityClick(row)"></tr>
                         </table>
-                        <mat-paginator [length]="resultsLength" [pageSize]="8" showFirstLastButtons></mat-paginator>
+                        <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"
+                            showFirstLastButtons></mat-paginator>
                     </div>
                     <div class="card-profile" *ngIf="universityList === undefined">
                         <div class="card-body">
