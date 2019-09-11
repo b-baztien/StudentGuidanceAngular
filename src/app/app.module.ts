@@ -16,8 +16,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { UserLayoutComponent } from './layouts/user-layout/user-layout.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { ComponentsModule } from './components/navigation/components.module';
-import { ListMajorDialog } from './components/view-university/view-university.component';
 import { AgmCoreModule } from '@agm/core';
+import { ListMajorDialog } from './components/view-university/dialog/list-major-dialog';
+import { AddMajorDialog } from './components/view-university/dialog/add-major-dialog';
+import { AddEditFacultyDialog } from './components/view-university/dialog/add-edit-faculty-dialog';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { AgmCoreModule } from '@agm/core';
     UserLayoutComponent,
     AdminLayoutComponent,
     ListMajorDialog,
+    AddMajorDialog,
+    AddEditFacultyDialog,
   ],
   entryComponents: [ListMajorDialog],
   imports: [
