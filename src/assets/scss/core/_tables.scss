@@ -5,7 +5,7 @@
     font-weight: $font-weight-light;
   }
 
-  tbody > tr:hover {
+  tbody > tr.row-hover:hover {
     cursor: pointer;
   }
 

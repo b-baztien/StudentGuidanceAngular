@@ -8,9 +8,9 @@ describe('ViewUniversityComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ViewUniversityComponent ]
+      declarations: [ViewUniversityComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

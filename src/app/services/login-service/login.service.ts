@@ -19,8 +19,6 @@ export class LoginService {
   }
 
   async Login(login: Login) {
-
-
     return await this.firestore.collection('Login').doc(login.username).ref.get().then(response => {
       this.userLogin = response.data() as Login;
       if (!response.exists || this.userLogin.password !== login.password) {
@@ -36,8 +34,8 @@ export class LoginService {
     });
   }
 
-  
-  
+
+
 
   logout() {
   }

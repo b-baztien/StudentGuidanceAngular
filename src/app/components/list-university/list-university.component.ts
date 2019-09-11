@@ -21,11 +21,7 @@ export class ListUniversityComponent implements OnInit {
 
   constructor(private router: Router, private universityService: UniversityService) { }
 
-  ngOnInit() {
-
-  }
-
-  async ngAfterViewInit() {
+  async ngOnInit() {
     console.log(this.paginator);
     this.listUniObs = await this.universityService.getAllUniversity().subscribe(result => {
       let resultListUniversity: Array<University> = new Array<University>();

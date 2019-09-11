@@ -54,7 +54,6 @@ export class AdminLayoutComponent implements OnInit {
             if ($('.fixed-plugin .dropdown').hasClass('show-dropdown')) {
                 $('.fixed-plugin .dropdown').addClass('open');
             }
-
         }
 
         $('.fixed-plugin a').click(function (event) {
@@ -70,8 +69,6 @@ export class AdminLayoutComponent implements OnInit {
         });
 
         $('.fixed-plugin .badge').click(function () {
-
-
             $(this).siblings().removeClass('active');
             $(this).addClass('active');
 
@@ -130,6 +127,7 @@ export class AdminLayoutComponent implements OnInit {
             return true;
         }
     }
+
     runOnRouteChange(): void {
         if (window.matchMedia(`(min-width: 960px)`).matches) {
             const elemMainPanel = <HTMLElement>document.querySelector('.main-panel');
@@ -137,6 +135,6 @@ export class AdminLayoutComponent implements OnInit {
             ps.update();
         }
     }
-   
+
 
 }

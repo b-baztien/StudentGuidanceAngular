@@ -16,13 +16,17 @@ import { AppRoutingModule } from './app-routing.module';
 import { UserLayoutComponent } from './layouts/user-layout/user-layout.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { ComponentsModule } from './components/navigation/components.module';
+import { ListMajorDialog } from './components/view-university/view-university.component';
+import { AgmCoreModule } from '@agm/core';
 
 @NgModule({
   declarations: [
     AppComponent,
     UserLayoutComponent,
     AdminLayoutComponent,
+    ListMajorDialog,
   ],
+  entryComponents: [ListMajorDialog],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -35,8 +39,11 @@ import { ComponentsModule } from './components/navigation/components.module';
     FormsModule,
     FlexLayoutModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyB7QdE_1fl9WHwXo5srPbRbEvZqBrj8NVE'
+    }),
     AngularFirestoreModule,
-    ComponentsModule
+    ComponentsModule,
   ],
   providers: [LoginService],
   bootstrap: [AppComponent],
