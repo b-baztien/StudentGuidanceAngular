@@ -10,6 +10,6 @@ export class MajorService {
   }
 
   getMajor(path: string) {
-    return this.firestore.collection('University').snapshotChanges();
+    return this.firestore.collection('Major').snapshotChanges();
   }
 }

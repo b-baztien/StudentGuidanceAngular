@@ -14,7 +14,7 @@ import { ListMajorDialog } from './list-major-dialog';
     listMajor: Major[] = new Array<Major>();
   
     constructor(
-      public dialogRef: MatDialogRef<ListMajorDialog>,
+      public dialogRef: MatDialogRef<AddEditFacultyDialog>,
       @Inject(MAT_DIALOG_DATA) public data: Faculty) {
     }
   

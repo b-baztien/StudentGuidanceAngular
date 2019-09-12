@@ -30,7 +30,11 @@ import { AddEditFacultyDialog } from './components/view-university/dialog/add-ed
     AddMajorDialog,
     AddEditFacultyDialog,
   ],
-  entryComponents: [ListMajorDialog],
+  entryComponents: [
+    ListMajorDialog,
+    AddMajorDialog,
+    AddEditFacultyDialog,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,

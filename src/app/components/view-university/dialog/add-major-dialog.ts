@@ -2,7 +2,6 @@ import { MatTableDataSource, MAT_DIALOG_DATA, MatDialogRef } from '@angular/mate
 import { Major } from 'src/app/model/Major';
 import { Faculty } from 'src/app/model/Faculty';
 import { Component, OnInit, Inject } from '@angular/core';
-import { ListMajorDialog } from './list-major-dialog';
 
 @Component({
     selector: 'add-major-dialog',
@@ -14,12 +13,11 @@ import { ListMajorDialog } from './list-major-dialog';
     listMajor: Major[] = new Array<Major>();
   
     constructor(
-      public dialogRef: MatDialogRef<ListMajorDialog>,
+      public dialogRef: MatDialogRef<AddMajorDialog>,
       @Inject(MAT_DIALOG_DATA) public data: Faculty) {
     }
   
     async ngOnInit() {
-      let listMajorData = new Array<Major>();
       this.data.major.forEach(async listMajorRef => {
         let observer = listMajorRef.onSnapshot(async result => {
           console.log(result.data());
