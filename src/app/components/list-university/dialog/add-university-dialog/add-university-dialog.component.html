@@ -1,0 +1,51 @@
+<form [formGroup]="universityForm">
+  <h1 mat-dialog-title>เพิ่มข้อมูลมหาวิทยาลัย</h1>
+  <div mat-dialog-content>
+    <mat-form-field>
+      <input matInput placeholder="ชื่อมหาวิทยาลัย" required formControlName="university_name">
+      <mat-error *ngIf="universityForm.controls.university_name.hasError('required')">
+        กรุณากรอกชื่อมหาวิทยาลัย
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <textarea matInput placeholder="รายละเอียดมหาวิทยาลัย" formControlName="university_detail"></textarea>
+    </mat-form-field>
+    <mat-form-field>
+      <textarea matInput placeholder="ที่อยู่มหาวิทยาลัย" required formControlName="address"></textarea>
+      <mat-error *ngIf="universityForm.controls.address.hasError('required')">
+        กรุณากรอกที่อยู่มหาวิทยาลัย
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput type="tel" placeholder="เบอร์โทรศัพท์" required formControlName="phone_no">
+      <mat-error *ngIf="universityForm.controls.phone_no.hasError('required')">
+        กรุณากรอกเบอร์โทรศัพท์
+      </mat-error>
+      <mat-error *ngIf="universityForm.controls.phone_no.hasError('pattern')">
+        เบอร์โทรศัพท์ต้องเป็นตัวเลขเท่านั้น
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="ที่อยู่เว็บไซต์" required formControlName="url">
+      <mat-error *ngIf="universityForm.controls.url.hasError('required')">
+        กรุณากรอกที่อยู่เว็บไซต์
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>ภาค</mat-label>
+      <mat-select matNativeControl required formControlName="zone">
+        <mat-option value="เหนือ">เหนือ</mat-option>
+        <mat-option value="ตะวันออกเฉียงเหนือ">ตะวันออกเฉียงเหนือ</mat-option>
+        <mat-option value="กลาง">กลาง</mat-option>
+        <mat-option value="ใต้">ใต้</mat-option>
+      </mat-select>
+      <mat-error *ngIf="universityForm.controls.zone.hasError('required')">
+        กรุณาเลือกภาค
+      </mat-error>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">ปิด</button>
+    <button mat-button (click)="onSubmit()">เพิ่มข้อมูล</button>
+  </div>
+</form>

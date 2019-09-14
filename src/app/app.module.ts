@@ -20,6 +20,7 @@ import { AgmCoreModule } from '@agm/core';
 import { ListMajorDialog } from './components/view-university/dialog/list-major-dialog';
 import { AddMajorDialog } from './components/view-university/dialog/add-major-dialog';
 import { AddEditFacultyDialog } from './components/view-university/dialog/add-edit-faculty-dialog';
+import { AddUniversityDialogComponent } from './components/list-university/dialog/add-university-dialog/add-university-dialog.component';
 
 @NgModule({
   declarations: [
@@ -29,11 +30,13 @@ import { AddEditFacultyDialog } from './components/view-university/dialog/add-ed
     ListMajorDialog,
     AddMajorDialog,
     AddEditFacultyDialog,
+    AddUniversityDialogComponent,
   ],
   entryComponents: [
     ListMajorDialog,
     AddMajorDialog,
     AddEditFacultyDialog,
+    AddUniversityDialogComponent,
   ],
   imports: [
     BrowserModule,

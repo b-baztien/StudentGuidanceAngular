@@ -13,6 +13,13 @@ export class UniversityService {
   ngOnInit() {
   }
 
+  addUniversity(university: University) {
+    let addResult: Boolean = false;
+    const universityJSON = JSON.stringify(university);
+    this.firestore.collection('University').doc(university.university_name).set(JSON.parse(universityJSON)).then(() => { addResult = true }).catch(e => e);
+    return addResult;
+  }
+
   getAllUniversity() {
     return this.firestore.collection('University').snapshotChanges();
   }

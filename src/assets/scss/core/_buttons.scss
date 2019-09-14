@@ -3,6 +3,14 @@ div.button-row a {
   margin-right: 8px;
 }
 
+.card-button-right {
+  text-align: right;
+}
+
+.card-button-right > button {
+  white-space: normal;
+}
+
 .mat-button.btn,.mat-raised-button.btn,.mat-raised-button.btn:not([class*=mat-elevation-z]),
 .btn{
   position: relative;
