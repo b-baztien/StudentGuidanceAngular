@@ -21,7 +21,6 @@ import { ListMajorDialog } from './components/admin/view-university/dialog/list-
 import { AddUniversityDialogComponent } from './components/admin/list-university/dialog/add-university-dialog/add-university-dialog.component';
 import { AddEditFacultyDialogComponent } from './components/admin/view-university/dialog/add-edit-faculty-dialog/add-edit-faculty-dialog.component';
 import { AddMajorDialogComponent } from './components/admin/view-university/dialog/add-major-dialog/add-major-dialog.component';
-import { PhonePipe } from './pipe/phone.pipe';
 
 @NgModule({
   declarations: [
@@ -32,7 +31,6 @@ import { PhonePipe } from './pipe/phone.pipe';
     AddEditFacultyDialogComponent,
     AddUniversityDialogComponent,
     AddMajorDialogComponent,
-    PhonePipe,
   ],
   entryComponents: [
     ListMajorDialog,
@@ -59,7 +57,6 @@ import { PhonePipe } from './pipe/phone.pipe';
     AngularFirestoreModule,
     ComponentsModule,
   ],
-  exports: [PhonePipe],
   providers: [LoginService],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ADMINROUTES } from '../../util/routeinfo';
+import { Location } from '@angular/common';
+import { ADMINROUTES, TEACHERROUTES } from '../../util/routeinfo';
 
 declare const $: any;
 
@@ -10,11 +11,16 @@ declare const $: any;
 })
 export class SidebarComponent implements OnInit {
   menuItems: any[];
+  location: Location;
+  ROUTES;
 
-  constructor() { }
+  constructor(location: Location) {
+    this.location = location;
+  }
 
   ngOnInit() {
-    this.menuItems = ADMINROUTES.filter(menuItem => menuItem);
+    this.ROUTES = this.location.path().includes('admin') ? ADMINROUTES : TEACHERROUTES;
+    this.menuItems = this.ROUTES.filter(menuItem => menuItem);
   }
   isMobileMenu() {
     if ($(window).width() > 991) {

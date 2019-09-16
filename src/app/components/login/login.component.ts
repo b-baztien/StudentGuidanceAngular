@@ -6,7 +6,6 @@ import { LoginService } from 'src/app/services/login-service/login.service';
 import { Login } from 'src/app/model/Login';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { University } from 'src/app/model/University';
 
 @Component({
   selector: 'app-login',

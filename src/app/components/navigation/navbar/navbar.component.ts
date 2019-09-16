@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { Router } from '@angular/router';
-import { ADMINROUTES } from '../../util/routeinfo';
+import { ADMINROUTES, TEACHERROUTES } from '../../util/routeinfo';
 
 @Component({
     selector: 'app-navbar',
@@ -14,6 +14,8 @@ export class NavbarComponent implements OnInit {
     mobile_menu_visible: any = 0;
     private toggleButton: any;
     private sidebarVisible: boolean;
+    
+    ROUTES: any;
 
     constructor(location: Location, private element: ElementRef, private router: Router) {
         this.location = location;
@@ -21,7 +23,8 @@ export class NavbarComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.listTitles = ADMINROUTES.filter(listTitle => listTitle);
+        this.ROUTES = this.location.path().includes('admin') ? ADMINROUTES : TEACHERROUTES;
+        this.listTitles = this.ROUTES.filter(listTitle => listTitle);
         const navbar: HTMLElement = this.element.nativeElement;
         this.toggleButton = navbar.getElementsByClassName('navbar-toggler')[0];
         this.router.events.subscribe((event) => {
@@ -111,7 +114,6 @@ export class NavbarComponent implements OnInit {
 
     getTitle() {
         var titlee = this.location.prepareExternalUrl(this.location.path());
-
         for (var item = 0; item < this.listTitles.length; item++) {
             if (this.listTitles[item].path === titlee) {
                 return this.listTitles[item].title;

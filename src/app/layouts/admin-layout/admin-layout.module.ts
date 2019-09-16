@@ -21,12 +21,12 @@ import { ComponentsModule } from 'src/app/components/navigation/components.modul
 import { PhonePipe } from 'src/app/pipe/phone.pipe';
 import { ViewUniversityComponent } from 'src/app/components/admin/view-university/view-university.component';
 import { ListUserComponent } from 'src/app/components/admin/list-user/list-user.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 @NgModule({
   declarations: [
     ListUniversityComponent,
     ViewUniversityComponent,
     ListUserComponent,
-    PhonePipe,
   ],
   imports: [
     CommonModule,
@@ -43,6 +43,7 @@ import { ListUserComponent } from 'src/app/components/admin/list-user/list-user.
     MatCardModule,
     MatIconModule,
     MatPaginatorModule,
+    SharedModule,
   ], exports: [ComponentsModule]
 })
 

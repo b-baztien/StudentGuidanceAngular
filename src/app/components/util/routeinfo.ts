@@ -1,3 +1,5 @@
+import { Location } from '@angular/common';
+
 declare interface RouteInfo {
   path: string;
   title: string;
@@ -13,5 +15,7 @@ export const ADMINROUTES: RouteInfo[] = [
 
 export const TEACHERROUTES: RouteInfo[] = [
   { path: '/teacher/list-news', title: 'ข่าวสาร', icon: 'library_books', class: '' },
+  { path: '/teacher/dashboard', title: 'สถิตินักเรียน', icon: 'dashboard', class: '' },
+  { path: '/teacher/list-student', title: 'รายชื่อนักเรียนในโรงเรียน', icon: 'person', class: '' },
   { path: '/login', title: 'ออกจากระบบ', icon: 'exit_to_app', class: 'active-pro' },
 ];
