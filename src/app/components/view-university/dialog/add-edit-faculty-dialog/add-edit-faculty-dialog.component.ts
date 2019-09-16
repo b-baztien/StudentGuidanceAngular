@@ -1,10 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatTableDataSource, MatDialogRef, MAT_DIALOG_DATA, ErrorStateMatcher } from '@angular/material';
-import { Major } from 'src/app/model/Major';
 import { FacultyService } from 'src/app/services/faculty-service/faculty.service';
 import { Faculty } from 'src/app/model/Faculty';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
-import { MatProgressButtonOptions } from 'mat-progress-buttons';
 
 @Component({
   selector: 'app-add-edit-faculty-dialog',
@@ -13,19 +11,22 @@ import { MatProgressButtonOptions } from 'mat-progress-buttons';
 })
 export class AddEditFacultyDialogComponent implements OnInit, ErrorStateMatcher {
   facultyForm = new FormGroup({
-    faculty_name: new FormControl(this.data.faculty_name, [
+    faculty_name: new FormControl(this.data === null ? null : this.data.faculty_name, [
       Validators.required]),
-    url: new FormControl(this.data.url, [
+    url: new FormControl(this.data === null ? null : this.data.url, [
       Validators.required]),
   });
 
   faculty: Faculty;
+  mode: string;
 
   constructor(
     private facultyService: FacultyService,
     public dialogRef: MatDialogRef<AddEditFacultyDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Faculty,
-  ) { }
+    @Inject(MAT_DIALOG_DATA) public data: Faculty | null,
+  ) {
+    this.mode = this.data === null ? 'เพิ่ม' : 'แก้ไข';
+  }
 
   ngOnInit() {
     this.dialogRef.disableClose = true;
@@ -37,16 +38,15 @@ export class AddEditFacultyDialogComponent implements OnInit, ErrorStateMatcher 
   }
 
   onNoClick(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(null);
   }
 
   async onSubmit() {
-    this.faculty = new Faculty();
+    this.faculty = new Faculty;
     if (this.facultyForm.valid) {
       this.faculty.faculty_name = this.facultyForm.get('faculty_name').value;
       this.faculty.url = this.facultyForm.get('url').value;
-
-      this.dialogRef.close(this.faculty);
+      this.dialogRef.close({faculty: this.faculty, mode: this.mode});
     }
   }
 }

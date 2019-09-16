@@ -6,10 +6,10 @@ import { Faculty } from 'src/app/model/Faculty';
 import { MatTableDataSource, MatPaginator, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Major } from 'src/app/model/Major';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { AddMajorDialog } from './dialog/add-major-dialog';
 import { ListMajorDialog } from './dialog/list-major-dialog';
 import { AddEditFacultyDialogComponent } from './dialog/add-edit-faculty-dialog/add-edit-faculty-dialog.component';
 import { FacultyService } from 'src/app/services/faculty-service/faculty.service';
+import { AddMajorDialogComponent } from './dialog/add-major-dialog/add-major-dialog.component';
 
 declare const google: any;
 
@@ -84,7 +84,7 @@ export class ViewUniversityComponent implements OnInit {
   }
 
   openAddMajorDialog(faculty: Faculty): void {
-    const dialogRef = this.dialog.open(AddMajorDialog, {
+    const dialogRef = this.dialog.open(AddMajorDialogComponent, {
       width: '50%',
       data: faculty,
     });
@@ -98,14 +98,16 @@ export class ViewUniversityComponent implements OnInit {
   openAddEditFacultyDialog(faculty?: Faculty): void {
     const dialogRef = this.dialog.open(AddEditFacultyDialogComponent, {
       width: '50%',
-      data: faculty ? faculty : new Faculty,
+      data: faculty ? faculty : null,
     });
 
     dialogRef.afterClosed().subscribe(facultyRs => {
-      if (faculty) {
-
-      } else {
-        this.universityService.updateUniversity(this.university, facultyRs);
+      if (facultyRs.faculty !== null) {
+        if(facultyRs.mode === 'เพิ่ม') {
+        this.facultyService.addFaculty(this.university, facultyRs.faculty);
+        } else if(facultyRs.mode === 'แก้ไข') {
+          this.facultyService.updateFaculty(this.university, facultyRs.faculty);
+        }
       }
     });
   }
