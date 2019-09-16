@@ -16,17 +16,11 @@ import {
   MatCardModule,
   MatIconModule
 } from '@angular/material';
-import { ListUniversityComponent } from 'src/app/components/admin/list-university/list-university.component';
 import { ComponentsModule } from 'src/app/components/navigation/components.module';
-import { PhonePipe } from 'src/app/pipe/phone.pipe';
-import { ViewUniversityComponent } from 'src/app/components/admin/view-university/view-university.component';
-import { ListUserComponent } from 'src/app/components/admin/list-user/list-user.component';
+import { ListNewsComponent } from 'src/app/components/teacher/list-news/list-news.component';
 @NgModule({
   declarations: [
-    // ListUniversityComponent,
-    // ViewUniversityComponent,
-    // ListUserComponent,
-    // PhonePipe,
+    ListNewsComponent,
   ],
   imports: [
     CommonModule,

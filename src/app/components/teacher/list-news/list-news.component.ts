@@ -1,16 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
+import { QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { UniversityService } from 'src/app/services/university-service/university.service';
-import { QueryDocumentSnapshot } from '@angular/fire/firestore';
-import { AddUniversityDialogComponent } from './dialog/add-university-dialog/add-university-dialog.component';
+import { AddUniversityDialogComponent } from '../../admin/list-university/dialog/add-university-dialog/add-university-dialog.component';
 
 @Component({
-  selector: 'app-list-university',
-  templateUrl: './list-university.component.html',
-  styleUrls: ['./list-university.component.css']
+  selector: 'app-list-news',
+  templateUrl: './list-news.component.html',
+  styleUrls: ['./list-news.component.css']
 })
-export class ListUniversityComponent implements OnInit {
+export class ListNewsComponent implements OnInit {
   universityList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
   displayedColumns: string[] = ['university_name', 'phone_no', 'url', 'view', 'zone'];
 

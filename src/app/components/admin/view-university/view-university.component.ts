@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { University } from 'src/app/model/University';
 import { UniversityService } from 'src/app/services/university-service/university.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Faculty } from 'src/app/model/Faculty';
-import { MatTableDataSource, MatPaginator, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ListMajorDialog } from './dialog/list-major-dialog';
 import { AddEditFacultyDialogComponent } from './dialog/add-edit-faculty-dialog/add-edit-faculty-dialog.component';
@@ -11,15 +11,7 @@ import { FacultyService } from 'src/app/services/faculty-service/faculty.service
 import { AddMajorDialogComponent } from './dialog/add-major-dialog/add-major-dialog.component';
 import { MajorService } from 'src/app/services/major-service/major.service';
 import { MapsAPILoader } from '@agm/core';
-import PlaceResult = google.maps.places.PlaceResult;
-import GeocoderRequest = google.maps.GeocoderRequest;
 
-interface Marker {
-  lat: number;
-  lng: number;
-  label?: string;
-  draggable?: boolean;
-}
 
 declare const google: any;
 
@@ -50,7 +42,6 @@ export class ViewUniversityComponent implements OnInit {
     private facultyService: FacultyService,
     private majorService: MajorService,
     public dialog: MatDialog,
-    private router: Router,
     private route: ActivatedRoute,
     private mapsAPILoader: MapsAPILoader,
   ) { }
@@ -139,7 +130,7 @@ export class ViewUniversityComponent implements OnInit {
       data: faculty,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(() => {
     });
   }
 
