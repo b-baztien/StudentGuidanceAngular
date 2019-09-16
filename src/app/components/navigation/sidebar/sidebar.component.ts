@@ -22,6 +22,7 @@ export class SidebarComponent implements OnInit {
     this.ROUTES = this.location.path().includes('admin') ? ADMINROUTES : TEACHERROUTES;
     this.menuItems = this.ROUTES.filter(menuItem => menuItem);
   }
+
   isMobileMenu() {
     if ($(window).width() > 991) {
       return false;
