@@ -39,7 +39,6 @@ export class ViewUniversityComponent implements OnInit {
   university: University;
   uniOsb;
 
-  showContent: boolean = false;
   showTable: boolean = false;
 
   facultyLtb: MatTableDataSource<Faculty>;
@@ -61,8 +60,7 @@ export class ViewUniversityComponent implements OnInit {
     if (university_id === null) {
       window.location.replace('/admin');
     }
-    await this.getUniversity(university_id).then(() => {
-    });
+    await this.getUniversity(university_id)
   }
 
   getMap() {
@@ -99,10 +97,7 @@ export class ViewUniversityComponent implements OnInit {
         this.facultyLtb.paginator = this.paginator;
         this.showTable = this.facultyLtb.data.length === 0 ? false : true;
       })
-      this.showContent = undefined === this.university ? false : true;
-      if(this.showContent) {
         this.getMap();
-      }
     });
   }
 
