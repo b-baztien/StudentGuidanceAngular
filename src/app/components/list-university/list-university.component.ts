@@ -19,10 +19,12 @@ export class ListUniversityComponent implements OnInit {
 
   resultsLength = 0;
   isLoadingResults = true;
-  
+
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
   listUniObs;
+
+  showTable: boolean = false;
 
   constructor(public dialog: MatDialog, private router: Router, private universityService: UniversityService) { }
 
@@ -34,6 +36,7 @@ export class ListUniversityComponent implements OnInit {
       });
       this.universityList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListUniversity);
       this.universityList.paginator = this.paginator;
+      this.showTable = this.universityList.data.length === 0 ? false : true;
     });
   }
 

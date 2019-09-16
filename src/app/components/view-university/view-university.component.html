@@ -1,12 +1,11 @@
 <div class="main-content">
     <div class="container-fluid">
-        <div class="row">
+        <div class="row" *ngIf="showContent">
             <div class="col-md-12">
                 <div class="card card-profile">
                     <div class="card-avatar">
                         <a href="{{university.url}}" target="_blank">
-                            <img class="img"
-                                src="{{university.image}}" />
+                            <img class="img" src="{{university.image}}" />
                         </a>
                     </div>
                     <div class="card-body">
@@ -33,7 +32,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="card-body table-responsive" *ngIf="facultyLtb !== undefined">
+                        <div class="card-body table-responsive" *ngIf="showTable">
                             <mat-form-field>
                                 <input matInput placeholder="ค้นหาคณะใน {{university.university_name}}...">
                             </mat-form-field>
@@ -85,11 +84,11 @@
                             <mat-paginator [length]="resultsLength" [pageSize]="5" showFirstLastButtons>
                             </mat-paginator>
                         </div>
-                        <div class="card-profile" *ngIf="facultyLtb === undefined">
+                        <div class="card-profile" *ngIf="!showTable">
                             <div class="card-body">
                                 <h4 class="card-title">ไม่พบข้อมูลคณะ</h4>
                                 <p class="card-description">
-                                    ไม่พบข้อมูลคณะในสังกัดของ{{university.university_name}}
+                                    ไม่พบข้อมูลคณะภายในมหาวิทยาลัย
                                 </p>
                             </div>
                         </div>

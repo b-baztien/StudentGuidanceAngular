@@ -29,6 +29,9 @@ export class ViewUniversityComponent implements OnInit {
   university: University;
   uniOsb;
 
+  showContent: boolean = false;
+  showTable: boolean = false;
+
   facultyLtb: MatTableDataSource<Faculty>;
   displayedColumns: string[] = ['faculty_name', 'url', 'major', 'manage'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -41,7 +44,7 @@ export class ViewUniversityComponent implements OnInit {
       window.location.replace('/admin');
     }
     await this.getUniversity(university_id).then(() => {
-      this.getMap();
+      // this.getMap();
     });
   }
 
@@ -72,10 +75,11 @@ export class ViewUniversityComponent implements OnInit {
           listFaculty.push(fctRes.payload.doc.data() as Faculty);
         });
         this.university.faculty = listFaculty;
-        console.log(this.university.faculty.length);
         this.facultyLtb = new MatTableDataSource<Faculty>(this.university.faculty);
         this.facultyLtb.paginator = this.paginator;
+        this.showTable = this.facultyLtb.data.length === 0 ? false : true;
       })
+      this.showContent = undefined === this.university ? false : true;
     });
   }
 

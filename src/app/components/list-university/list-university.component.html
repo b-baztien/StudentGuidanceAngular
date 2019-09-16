@@ -20,7 +20,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body table-responsive" *ngIf="universityList.data.length != 0">
+                    <div class="card-body table-responsive" *ngIf="showTable">
                         <table mat-table [dataSource]="universityList" class="table table-hover">
                             <ng-container matColumnDef="university_name">
                                 <th mat-header-cell *matHeaderCellDef>ชื่อ</th>
@@ -51,7 +51,7 @@
                         <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons>
                         </mat-paginator>
                     </div>
-                    <div class="card-profile" *ngIf="universityList === undefined || universityList.data.length == 0">
+                    <div class="card-profile" *ngIf="!showTable">
                         <div class="card-body">
                             <h4 class="card-title">ไม่พบข้อมูลมหาวิทยาลัย</h4>
                             <p class="card-description">

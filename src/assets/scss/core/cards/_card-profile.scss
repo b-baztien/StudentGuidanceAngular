@@ -5,11 +5,8 @@
 
   .card-avatar {
       margin: -50px auto 0;
-      border-radius: 50%;
       overflow: hidden;
       padding: 0;
-
-      @include shadow-big();
 
       & + .card-body {
           margin-top: 15px;
@@ -43,6 +40,5 @@
   }
   .card-avatar {
     max-width: 130px;
-    max-height: 130px;
   }
 }
