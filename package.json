@@ -24,6 +24,7 @@
     "@angular/platform-browser": "~8.2.4",
     "@angular/platform-browser-dynamic": "~8.2.4",
     "@angular/router": "~8.2.4",
+    "@types/googlemaps": "^3.37.6",
     "arrive": "^2.4.1",
     "bootstrap": "^4.3.1",
     "bootstrap-material-design": "^4.1.2",

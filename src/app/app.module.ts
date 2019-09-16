@@ -17,10 +17,10 @@ import { UserLayoutComponent } from './layouts/user-layout/user-layout.component
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { ComponentsModule } from './components/navigation/components.module';
 import { AgmCoreModule } from '@agm/core';
-import { ListMajorDialog } from './components/view-university/dialog/list-major-dialog';
-import { AddUniversityDialogComponent } from './components/list-university/dialog/add-university-dialog/add-university-dialog.component';
-import { AddEditFacultyDialogComponent } from './components/view-university/dialog/add-edit-faculty-dialog/add-edit-faculty-dialog.component';
-import { AddMajorDialogComponent } from './components/view-university/dialog/add-major-dialog/add-major-dialog.component';
+import { ListMajorDialog } from './components/admin/view-university/dialog/list-major-dialog';
+import { AddUniversityDialogComponent } from './components/admin/list-university/dialog/add-university-dialog/add-university-dialog.component';
+import { AddEditFacultyDialogComponent } from './components/admin/view-university/dialog/add-edit-faculty-dialog/add-edit-faculty-dialog.component';
+import { AddMajorDialogComponent } from './components/admin/view-university/dialog/add-major-dialog/add-major-dialog.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +51,8 @@ import { AddMajorDialogComponent } from './components/view-university/dialog/add
     FlexLayoutModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyB7QdE_1fl9WHwXo5srPbRbEvZqBrj8NVE'
+      apiKey: 'AIzaSyB7QdE_1fl9WHwXo5srPbRbEvZqBrj8NVE',
+      language: localStorage && localStorage.gml || 'th'
     }),
     AngularFirestoreModule,
     ComponentsModule,

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AdminLayoutRoutes } from './admin-layout.routing';
+import { TeacherLayoutRoutes } from './teacher-layout.routing';
 
 import {
   MatButtonModule,
@@ -23,14 +23,14 @@ import { ViewUniversityComponent } from 'src/app/components/admin/view-universit
 import { ListUserComponent } from 'src/app/components/admin/list-user/list-user.component';
 @NgModule({
   declarations: [
-    ListUniversityComponent,
-    ViewUniversityComponent,
-    ListUserComponent,
-    PhonePipe,
+    // ListUniversityComponent,
+    // ViewUniversityComponent,
+    // ListUserComponent,
+    // PhonePipe,
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild(AdminLayoutRoutes),
+    RouterModule.forChild(TeacherLayoutRoutes),
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,
@@ -46,4 +46,4 @@ import { ListUserComponent } from 'src/app/components/admin/list-user/list-user.
   ], exports: [ComponentsModule]
 })
 
-export class AdminLayoutModule { }
+export class TeacherLayoutModule { }

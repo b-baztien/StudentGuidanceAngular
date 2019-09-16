@@ -33,4 +33,9 @@ export class FacultyService {
     return this.firestore.collection('University').doc(university_name)
       .collection('Faculty').snapshotChanges();
   }
+
+  deleteFaculty(university: University, faculty: Faculty) {
+    return this.firestore.collection('University').doc(university.university_name)
+      .collection('Faculty').doc(faculty.faculty_name).delete();
+  }
 }

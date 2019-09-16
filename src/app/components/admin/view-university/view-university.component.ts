@@ -4,13 +4,22 @@ import { UniversityService } from 'src/app/services/university-service/universit
 import { ActivatedRoute, Router } from '@angular/router';
 import { Faculty } from 'src/app/model/Faculty';
 import { MatTableDataSource, MatPaginator, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { Major } from 'src/app/model/Major';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ListMajorDialog } from './dialog/list-major-dialog';
 import { AddEditFacultyDialogComponent } from './dialog/add-edit-faculty-dialog/add-edit-faculty-dialog.component';
 import { FacultyService } from 'src/app/services/faculty-service/faculty.service';
 import { AddMajorDialogComponent } from './dialog/add-major-dialog/add-major-dialog.component';
 import { MajorService } from 'src/app/services/major-service/major.service';
+import { MapsAPILoader } from '@agm/core';
+import PlaceResult = google.maps.places.PlaceResult;
+import GeocoderRequest = google.maps.GeocoderRequest;
+
+interface Marker {
+  lat: number;
+  lng: number;
+  label?: string;
+  draggable?: boolean;
+}
 
 declare const google: any;
 
@@ -37,7 +46,15 @@ export class ViewUniversityComponent implements OnInit {
   displayedColumns: string[] = ['faculty_name', 'url', 'major', 'manage'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private universityService: UniversityService, private facultyService: FacultyService, private majorService: MajorService, public dialog: MatDialog, private router: Router, private route: ActivatedRoute) { }
+  constructor(
+    private universityService: UniversityService,
+    private facultyService: FacultyService,
+    private majorService: MajorService,
+    public dialog: MatDialog,
+    private router: Router,
+    private route: ActivatedRoute,
+    private mapsAPILoader: MapsAPILoader,
+  ) { }
 
   async ngOnInit() {
     const university_id = this.route.snapshot.paramMap.get('university');
@@ -45,27 +62,29 @@ export class ViewUniversityComponent implements OnInit {
       window.location.replace('/admin');
     }
     await this.getUniversity(university_id).then(() => {
-      // this.getMap();
     });
   }
 
   getMap() {
-    var myLatlng = new google.maps.LatLng(40.748817, -73.985428);
-    var mapOptions = {
-      zoom: 16,
-      center: myLatlng,
-      scrollwheel: false,
-    };
-    var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    this.mapsAPILoader.load().then(() => {
+      var myLatlng = new google.maps.LatLng(this.university.location.latitude, this.university.location.longitude);
+      var mapOptions = {
+        zoom: 16,
+        center: myLatlng,
+        scrollwheel: false,
+      };
+      console.log(document.getElementById("map"));
+      var map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
-    var marker = new google.maps.Marker({
-      position: myLatlng,
-      title: this.university.university_name,
+      var marker = new google.maps.Marker({
+        position: myLatlng,
+        title: this.university.university_name
+      });
+
+      marker.setMap(map);
     });
-
-    // To add the marker to the map, call setMap();
-    marker.setMap(map);
   }
+
 
   async getUniversity(university_id: string) {
     this.uniOsb = await this.universityService.getUniversity(university_id).subscribe(universityRes => {
@@ -81,6 +100,9 @@ export class ViewUniversityComponent implements OnInit {
         this.showTable = this.facultyLtb.data.length === 0 ? false : true;
       })
       this.showContent = undefined === this.university ? false : true;
+      if(this.showContent) {
+        this.getMap();
+      }
     });
   }
 
@@ -112,6 +134,10 @@ export class ViewUniversityComponent implements OnInit {
     });
   }
 
+  openDeleteFacultyDialog(faculty: Faculty): void {
+    this.facultyService.deleteFaculty(this.university, faculty);
+  }
+
   openListMajorDialog(faculty: Faculty): void {
     const dialogRef = this.dialog.open(ListMajorDialog, {
       width: '50%',
@@ -119,8 +145,6 @@ export class ViewUniversityComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      // this[0].major_name = 'test';
     });
   }
 
