@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Faculty } from 'src/app/model/Faculty';
+import { University } from 'src/app/model/University';
 
 @Injectable({
   providedIn: 'root'
@@ -10,19 +11,13 @@ export class FacultyService {
   constructor(private firestore: AngularFirestore) {
   }
 
-  addFaculty(faculty: Faculty) {
-    let result: Boolean = false;
-    this.firestore.collection('Faculty').ref.where('faculty_name', '==', faculty.faculty_name)
-      .where('university', '==', faculty.university).get().then(snapshot => {
-        if (!snapshot.empty) {
-          this.firestore.collection('Faculty').add(faculty);
-          result = true;
-        } else {
-          throw Error(`มีข้อมูลคณะ ${faculty.faculty_name} อยู่แล้ว`);
-        }
-      }).catch(error => {
-        throw error;
-      });
-    return result;
+  addEditFaculty(university: University, faculty: Faculty) {
+    return this.firestore.collection('University').doc(university.university_name)
+      .collection('Faculty').doc(faculty.faculty_name).set(JSON.parse(JSON.stringify(faculty)));
+  }
+
+  getAllFaculty(university_name: string) {
+    return this.firestore.collection('University').doc(university_name)
+      .collection('Faculty').snapshotChanges();
   }
 }

@@ -8,7 +8,8 @@ import { Major } from 'src/app/model/Major';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { AddMajorDialog } from './dialog/add-major-dialog';
 import { ListMajorDialog } from './dialog/list-major-dialog';
-import { AddEditFacultyDialog } from './dialog/add-edit-faculty-dialog';
+import { AddEditFacultyDialogComponent } from './dialog/add-edit-faculty-dialog/add-edit-faculty-dialog.component';
+import { FacultyService } from 'src/app/services/faculty-service/faculty.service';
 
 declare const google: any;
 
@@ -26,23 +27,22 @@ declare const google: any;
 })
 export class ViewUniversityComponent implements OnInit {
   university: University;
-  listMajor: Major[] | null;
   uniOsb;
 
   facultyLtb: MatTableDataSource<Faculty>;
   displayedColumns: string[] = ['faculty_name', 'url', 'major', 'manage'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(public dialog: MatDialog, private router: Router, private route: ActivatedRoute, private universityService: UniversityService) { }
+  constructor(private universityService: UniversityService, private facultyService: FacultyService, public dialog: MatDialog, private router: Router, private route: ActivatedRoute) { }
 
   async ngOnInit() {
-    this.listMajor = new Array<Major>();
-    const university_id = this.route.snapshot.paramMap.get('university_id');
+    const university_id = this.route.snapshot.paramMap.get('university');
     if (university_id === null) {
       window.location.replace('/admin');
     }
-    await this.getUniversity(university_id);
-    await this.getMap();
+    await this.getUniversity(university_id).then(() => {
+      this.getMap();
+    });
   }
 
   getMap() {
@@ -56,7 +56,7 @@ export class ViewUniversityComponent implements OnInit {
 
     var marker = new google.maps.Marker({
       position: myLatlng,
-      title: "Hello World!"
+      title: this.university.university_name,
     });
 
     // To add the marker to the map, call setMap();
@@ -64,21 +64,18 @@ export class ViewUniversityComponent implements OnInit {
   }
 
   async getUniversity(university_id: string) {
-    let listFaculty: Array<Faculty> = new Array<Faculty>();
-    this.uniOsb = await this.universityService.getUniversity(university_id).subscribe(response => {
-      this.university = response.payload.data() as University;
-      this.university.faculty.forEach(listFacultyRef => {
-        listFacultyRef.get().then(facultyRef => {
-          listFaculty.push(facultyRef.data() as Faculty);
-          facultyRef.data().major.forEach(listMajorRef => {
-            listMajorRef.get().then(majorRef => {
-              this.listMajor.push(majorRef.data() as Major);
-            });
-          });
-          this.facultyLtb = new MatTableDataSource<Faculty>(listFaculty);
-          this.facultyLtb.paginator = this.paginator;
+    this.uniOsb = await this.universityService.getUniversity(university_id).subscribe(universityRes => {
+      this.university = universityRes.payload.data() as University;
+      this.facultyService.getAllFaculty(university_id).subscribe(listFctRes => {
+        let listFaculty = new Array<Faculty>();
+        listFctRes.forEach(fctRes => {
+          listFaculty.push(fctRes.payload.doc.data() as Faculty);
         });
-      });
+        this.university.faculty = listFaculty;
+        console.log(this.university.faculty.length);
+        this.facultyLtb = new MatTableDataSource<Faculty>(this.university.faculty);
+        this.facultyLtb.paginator = this.paginator;
+      })
     });
   }
 
@@ -94,14 +91,18 @@ export class ViewUniversityComponent implements OnInit {
     });
   }
 
-  openAddEditFacultyDialog(faculty: Faculty): void {
-    const dialogRef = this.dialog.open(AddEditFacultyDialog, {
+  openAddEditFacultyDialog(faculty?: Faculty): void {
+    const dialogRef = this.dialog.open(AddEditFacultyDialogComponent, {
       width: '50%',
-      data: faculty,
+      data: faculty ? faculty : new Faculty,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+    dialogRef.afterClosed().subscribe(facultyRs => {
+      if (faculty) {
+
+      } else {
+        this.universityService.updateUniversity(this.university, facultyRs);
+      }
     });
   }
 

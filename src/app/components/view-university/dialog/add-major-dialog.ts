@@ -18,13 +18,13 @@ import { Component, OnInit, Inject } from '@angular/core';
     }
   
     async ngOnInit() {
-      this.data.major.forEach(async listMajorRef => {
-        let observer = listMajorRef.onSnapshot(async result => {
-          console.log(result.data());
-          await this.listMajor.push(await result.data() as Major);
-          this.majorLtb = await new MatTableDataSource<Major>(this.listMajor);
-        });
-      });
+      // this.data.major.forEach(async listMajorRef => {
+      //   let observer = listMajorRef.onSnapshot(async result => {
+      //     console.log(result.data());
+      //     await this.listMajor.push(await result.data() as Major);
+      //     this.majorLtb = await new MatTableDataSource<Major>(this.listMajor);
+      //   });
+      // });
       console.log(await this.listMajor[0]);
     }
   

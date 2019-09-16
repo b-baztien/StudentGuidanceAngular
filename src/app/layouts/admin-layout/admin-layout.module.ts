@@ -20,10 +20,12 @@ import { ListUniversityComponent } from 'src/app/components/list-university/list
 import { ComponentsModule } from 'src/app/components/navigation/components.module';
 import { PhonePipe } from 'src/app/pipe/phone.pipe';
 import { ViewUniversityComponent } from 'src/app/components/view-university/view-university.component';
+import { ListUserComponent } from 'src/app/components/list-user/list-user.component';
 @NgModule({
   declarations: [
     ListUniversityComponent,
     ViewUniversityComponent,
+    ListUserComponent,
     PhonePipe,
   ],
   imports: [

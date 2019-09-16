@@ -30,8 +30,8 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
   constructor(public dialogRef: MatDialogRef<AddUniversityDialogComponent>, private universityService: UniversityService) {
   }
 
-  async ngOnInit() {
-
+  ngOnInit() {
+    this.dialogRef.disableClose = true;
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

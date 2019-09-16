@@ -10,7 +10,8 @@ export class University {
     university_detail: string;
     zone: string;
     view: number;
-    image: string;
+    image: DocumentReference;
     location: firebase.firestore.GeoPoint;
-    faculty: DocumentReference[];
+
+    faculty: Faculty[];
 }

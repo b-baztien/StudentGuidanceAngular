@@ -16,7 +16,11 @@ import { AddUniversityDialogComponent } from './dialog/add-university-dialog/add
 export class ListUniversityComponent implements OnInit {
   universityList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
   displayedColumns: string[] = ['university_name', 'phone_no', 'url', 'view', 'zone'];
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+
+  resultsLength = 0;
+  isLoadingResults = true;
+  
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
   listUniObs;
 
@@ -50,7 +54,7 @@ export class ListUniversityComponent implements OnInit {
     });
   }
 
-  onUniversityClick(university_id: string) {
-    this.router.navigate(['/admin/list-university/view-university', { university_id: university_id }]);
+  onUniversityClick(university: string) {
+    this.router.navigate(['/admin/list-university/view-university', { university: university }]);
   }
 }

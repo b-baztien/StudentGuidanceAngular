@@ -19,8 +19,9 @@ import { ComponentsModule } from './components/navigation/components.module';
 import { AgmCoreModule } from '@agm/core';
 import { ListMajorDialog } from './components/view-university/dialog/list-major-dialog';
 import { AddMajorDialog } from './components/view-university/dialog/add-major-dialog';
-import { AddEditFacultyDialog } from './components/view-university/dialog/add-edit-faculty-dialog';
 import { AddUniversityDialogComponent } from './components/list-university/dialog/add-university-dialog/add-university-dialog.component';
+import { AddEditFacultyDialogComponent } from './components/view-university/dialog/add-edit-faculty-dialog/add-edit-faculty-dialog.component';
+import { ListUserComponent } from './components/list-user/list-user.component';
 
 @NgModule({
   declarations: [
@@ -29,13 +30,13 @@ import { AddUniversityDialogComponent } from './components/list-university/dialo
     AdminLayoutComponent,
     ListMajorDialog,
     AddMajorDialog,
-    AddEditFacultyDialog,
+    AddEditFacultyDialogComponent,
     AddUniversityDialogComponent,
   ],
   entryComponents: [
     ListMajorDialog,
     AddMajorDialog,
-    AddEditFacultyDialog,
+    AddEditFacultyDialogComponent,
     AddUniversityDialogComponent,
   ],
   imports: [
