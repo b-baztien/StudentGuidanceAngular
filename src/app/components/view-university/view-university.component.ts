@@ -10,6 +10,7 @@ import { ListMajorDialog } from './dialog/list-major-dialog';
 import { AddEditFacultyDialogComponent } from './dialog/add-edit-faculty-dialog/add-edit-faculty-dialog.component';
 import { FacultyService } from 'src/app/services/faculty-service/faculty.service';
 import { AddMajorDialogComponent } from './dialog/add-major-dialog/add-major-dialog.component';
+import { MajorService } from 'src/app/services/major-service/major.service';
 
 declare const google: any;
 
@@ -36,7 +37,7 @@ export class ViewUniversityComponent implements OnInit {
   displayedColumns: string[] = ['faculty_name', 'url', 'major', 'manage'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private universityService: UniversityService, private facultyService: FacultyService, public dialog: MatDialog, private router: Router, private route: ActivatedRoute) { }
+  constructor(private universityService: UniversityService, private facultyService: FacultyService, private majorService: MajorService, public dialog: MatDialog, private router: Router, private route: ActivatedRoute) { }
 
   async ngOnInit() {
     const university_id = this.route.snapshot.paramMap.get('university');
@@ -84,14 +85,13 @@ export class ViewUniversityComponent implements OnInit {
   }
 
   openAddMajorDialog(faculty: Faculty): void {
+    // let major = this.majorService.getMajor(this.university, faculty);
     const dialogRef = this.dialog.open(AddMajorDialogComponent, {
       width: '50%',
-      data: faculty,
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      // this[0].major_name = 'test';
+      this.majorService.addMajor(this.university, faculty, result.major);
     });
   }
 
@@ -103,9 +103,9 @@ export class ViewUniversityComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(facultyRs => {
       if (facultyRs.faculty !== null) {
-        if(facultyRs.mode === 'เพิ่ม') {
-        this.facultyService.addFaculty(this.university, facultyRs.faculty);
-        } else if(facultyRs.mode === 'แก้ไข') {
+        if (facultyRs.mode === 'เพิ่ม') {
+          this.facultyService.addFaculty(this.university, facultyRs.faculty);
+        } else if (facultyRs.mode === 'แก้ไข') {
           this.facultyService.updateFaculty(this.university, facultyRs.faculty);
         }
       }

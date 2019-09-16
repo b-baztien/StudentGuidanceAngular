@@ -16,7 +16,13 @@ export class UniversityService {
 
   addUniversity(university: University) {
     const universityJSON = JSON.stringify(university);
-    return this.firestore.collection('University').doc(university.university_name).set(JSON.parse(universityJSON));
+    this.firestore.collection('University').doc(university.university_name).get().subscribe(result => {
+      if (!result.exists) {
+        return this.firestore.collection('University').doc(university.university_name).set(JSON.parse(universityJSON));
+      } else {
+        throw new Error('มีมหาวิทยาลัยนี้อยู่ในระบบแล้ว');
+      }
+    })
   }
 
   updateUniversity(university: University, faculty: Faculty) {

@@ -1,12 +1,23 @@
-<table mat-table [dataSource]="majorLtb" class="table">
-    <ng-container matColumnDef="major_name">
-        <th mat-header-cell *matHeaderCellDef>ชื่อ</th>
-        <td mat-cell *matCellDef="let major"> {{major.major_name}} </td>
-    </ng-container>
-    <ng-container matColumnDef="url">
-        <th mat-header-cell *matHeaderCellDef> เว็บไซต์ </th>
-        <td mat-cell *matCellDef="let major"> {{major.url}} </td>
-    </ng-container>
-    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+<form [formGroup]="majorForm">
+    <h1 mat-dialog-title>{{mode}}ข้อมูลสาขา</h1>
+    <div mat-dialog-content>
+        <mat-form-field>
+            <input matInput placeholder="ชื่อสาขา" required formControlName="major_name" readonly
+                *ngIf="mode === 'แก้ไข'">
+            <input matInput placeholder="ชื่อสาขา" required formControlName="major_name" *ngIf="mode === 'เพิ่ม'">
+            <mat-error *ngIf="majorForm.controls.major_name.hasError('required')">
+                กรุณากรอกชื่อสาขา
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="ที่อยู่เว็บไซต์" required formControlName="url">
+            <mat-error *ngIf="majorForm.controls.url.hasError('required')">
+                กรุณากรอกที่อยู่เว็บไซต์
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <div mat-dialog-actions>
+        <button mat-button (click)="onNoClick()">ปิด</button>
+        <button mat-button (click)="onSubmit()">{{mode}}ข้อมูล</button>
+    </div>
+</form>

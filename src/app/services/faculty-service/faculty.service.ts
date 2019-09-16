@@ -13,17 +13,15 @@ export class FacultyService {
   }
 
   addFaculty(university: University, faculty: Faculty) {
-    let existsData: Boolean = false;
     this.firestore.collection('University').doc(university.university_name)
       .collection('Faculty').doc(faculty.faculty_name).get().subscribe(result => {
-        existsData = result.exists;
+        if (!result.exists) {
+          return this.firestore.collection('University').doc(university.university_name)
+            .collection('Faculty').doc(faculty.faculty_name).set(JSON.parse(JSON.stringify(faculty)));
+        } else {
+          throw new Error('มีคณะนี้อยู่ในระบบแล้ว');
+        }
       });
-    if (!existsData) {
-      return this.firestore.collection('University').doc(university.university_name)
-        .collection('Faculty').doc(faculty.faculty_name).set(JSON.parse(JSON.stringify(faculty)));
-    } else {
-      throw new Error('มีขคณะนี้อยู่ในระบบแล้ว');
-    }
   }
 
   updateFaculty(university: University, faculty: Faculty) {

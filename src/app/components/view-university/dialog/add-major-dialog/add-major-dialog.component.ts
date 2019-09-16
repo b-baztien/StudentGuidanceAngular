@@ -1,10 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatTableDataSource, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Major } from 'src/app/model/Major';
-import { Faculty } from 'src/app/model/Faculty';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
-import { FacultyService } from 'src/app/services/faculty-service/faculty.service';
-import { MajorService } from 'src/app/services/major-service/major.service';
 
 @Component({
   selector: 'app-add-major-dialog',
@@ -13,10 +10,8 @@ import { MajorService } from 'src/app/services/major-service/major.service';
 })
 export class AddMajorDialogComponent implements OnInit {
   majorForm = new FormGroup({
-    major_name: new FormControl(this.data === null ? null : this.data.major_name, [
-      Validators.required]),
-    url: new FormControl(this.data === null ? null : this.data.url, [
-      Validators.required]),
+    major_name: new FormControl(null, [Validators.required]),
+    url: new FormControl(null, [Validators.required]),
   });
 
   major: Major;
@@ -47,7 +42,7 @@ export class AddMajorDialogComponent implements OnInit {
     if (this.majorForm.valid) {
       this.major.major_name = this.majorForm.get('major_name').value;
       this.major.url = this.majorForm.get('url').value;
-      this.dialogRef.close({major: this.major, mode: this.mode});
+      this.dialogRef.close({ major: this.major, mode: this.mode });
     }
   }
 }
