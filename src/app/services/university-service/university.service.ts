@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentChangeAction } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { University } from 'src/app/model/University';
 import { Faculty } from 'src/app/model/Faculty';
+import { firestore } from 'firebase';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,10 @@ export class UniversityService {
   }
 
   addUniversity(university: University) {
+    university.location = new firestore.GeoPoint(18.7917493, 98.97431);
+    console.log(university.location);
+    console.log(university.location.latitude);
+    console.log(university.location.longitude);
     const universityJSON = JSON.stringify(university);
     this.firestore.collection('University').doc(university.university_name).get().subscribe(result => {
       if (!result.exists) {

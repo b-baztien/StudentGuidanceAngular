@@ -12,11 +12,7 @@ export class MajorService {
   constructor(private firestore: AngularFirestore) {
   }
 
-  getAllMajor() {
-    return this.firestore.collection('Major').snapshotChanges();
-  }
-
-  getMajor(university: University, faculty: Faculty) {
+  getAllMajor(university: University, faculty: Faculty) {
     return this.firestore.collection('University').doc(university.university_name)
       .collection('Faculty').doc(faculty.faculty_name).collection('Major').snapshotChanges;
   }

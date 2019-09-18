@@ -56,13 +56,13 @@ export class ViewUniversityComponent implements OnInit {
 
   getMap() {
     this.mapsAPILoader.load().then(() => {
+      console.log(this.university.location);
       var myLatlng = new google.maps.LatLng(this.university.location.latitude, this.university.location.longitude);
       var mapOptions = {
         zoom: 16,
         center: myLatlng,
         scrollwheel: false,
       };
-      console.log(document.getElementById("map"));
       var map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
       var marker = new google.maps.Marker({
