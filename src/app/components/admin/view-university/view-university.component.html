@@ -1,7 +1,7 @@
 <div class="main-content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12" *ngIf="showContent">
                 <div class="card card-profile">
                     <div class="card-avatar">
                         <a href="{{university.url}}" target="_blank">
@@ -13,6 +13,35 @@
                         <p class="card-description">
                             {{university.university_detail}}
                         </p>
+                        <div class="card-profile-contact">
+                            <p class="card-description">
+                                <mat-icon matTooltip="จำนวนการเข้าชม">visibility
+                                </mat-icon> {{university.view}}
+                            </p>
+                            <p class="card-description">
+                                <mat-icon matTooltip="หมายเลขโทรศัพท์">phone
+                                </mat-icon> {{university.phone_no | phone: 'TH'}}
+                            </p>
+                            <p class="card-description">
+                                <mat-icon matTooltip="ที่อยู่เว็บไซต์">language
+                                </mat-icon><a href="{{university.url}}"> {{university.url}} </a>
+                            </p>
+
+                            <p class="card-description">
+                                <mat-icon matTooltip="ที่อยู่">home
+                                </mat-icon> {{university.address}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-description">
+                            <button mat-raised-button class="btn-warning button-margin-right"
+                                (click)="openAddEditFacultyDialog()">
+                                <mat-icon>edit</mat-icon> แก้ไขข้อมูล
+                            </button><button mat-raised-button class="btn-danger" (click)="openAddEditFacultyDialog()">
+                                <mat-icon>delete</mat-icon> ลบข้อมูล
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

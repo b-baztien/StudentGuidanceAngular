@@ -31,6 +31,7 @@ export class ViewUniversityComponent implements OnInit {
   university: University;
   uniOsb;
 
+  showContent: boolean = false;
   showTable: boolean = false;
 
   facultyLtb: MatTableDataSource<Faculty>;
@@ -51,7 +52,7 @@ export class ViewUniversityComponent implements OnInit {
     if (university_id === null) {
       window.location.replace('/admin');
     }
-    await this.getUniversity(university_id)
+    await this.getUniversity(university_id);
   }
 
   getMap() {
@@ -89,11 +90,11 @@ export class ViewUniversityComponent implements OnInit {
         this.showTable = this.facultyLtb.data.length === 0 ? false : true;
       })
         this.getMap();
+        this.showContent = true;
     });
   }
 
   openAddMajorDialog(faculty: Faculty): void {
-    // let major = this.majorService.getMajor(this.university, faculty);
     const dialogRef = this.dialog.open(AddMajorDialogComponent, {
       width: '50%',
     });

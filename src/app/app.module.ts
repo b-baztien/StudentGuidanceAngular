@@ -21,6 +21,9 @@ import { ListMajorDialog } from './components/admin/view-university/dialog/list-
 import { AddUniversityDialogComponent } from './components/admin/list-university/dialog/add-university-dialog/add-university-dialog.component';
 import { AddEditFacultyDialogComponent } from './components/admin/view-university/dialog/add-edit-faculty-dialog/add-edit-faculty-dialog.component';
 import { AddMajorDialogComponent } from './components/admin/view-university/dialog/add-major-dialog/add-major-dialog.component';
+import { MatStepperModule, MatAutocompleteModule, MatSelectModule } from '@angular/material';
+import { HttpClientModule } from '@angular/common/http';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -45,6 +48,7 @@ import { AddMajorDialogComponent } from './components/admin/view-university/dial
     AngularMaterialModule,
     MatProgressSpinnerModule,
     MatProgressButtonsModule,
+    MatStepperModule,
     ReactiveFormsModule,
     MatDialogModule,
     FormsModule,
@@ -56,6 +60,10 @@ import { AddMajorDialogComponent } from './components/admin/view-university/dial
     }),
     AngularFirestoreModule,
     ComponentsModule,
+    MatAutocompleteModule,
+    HttpClientModule,
+    MatSelectModule,
+    SharedModule,
   ],
   providers: [LoginService],
   bootstrap: [AppComponent],

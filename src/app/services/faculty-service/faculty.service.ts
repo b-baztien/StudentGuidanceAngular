@@ -17,7 +17,7 @@ export class FacultyService {
       .collection('Faculty').doc(faculty.faculty_name).get().subscribe(result => {
         if (!result.exists) {
           return this.firestore.collection('University').doc(university.university_name)
-            .collection('Faculty').doc(faculty.faculty_name).set(JSON.parse(JSON.stringify(faculty)));
+            .collection('Faculty').doc(faculty.faculty_name).set(Object.assign({}, faculty));
         } else {
           throw new Error('มีคณะนี้อยู่ในระบบแล้ว');
         }
@@ -26,7 +26,7 @@ export class FacultyService {
 
   updateFaculty(university: University, faculty: Faculty) {
     return this.firestore.collection('University').doc(university.university_name)
-      .collection('Faculty').doc(faculty.faculty_name).set(JSON.parse(JSON.stringify(faculty)));
+      .collection('Faculty').doc(faculty.faculty_name).set(Object.assign({}, faculty));
   }
 
   getAllFaculty(university_name: string) {

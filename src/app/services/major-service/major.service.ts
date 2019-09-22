@@ -23,7 +23,7 @@ export class MajorService {
       .get().subscribe(result => {
         if (!result.exists) {
           return this.firestore.collection('University').doc(university.university_name)
-            .collection('Faculty').doc(faculty.faculty_name).collection('Major').doc(major.major_name).set(JSON.parse(JSON.stringify(major)));
+            .collection('Faculty').doc(faculty.faculty_name).collection('Major').doc(major.major_name).set(Object.assign({}, major));
         } else {
           throw new Error('มีสาขานี้อยู่ในระบบแล้ว');
         }

@@ -15,24 +15,23 @@ export class UniversityService {
   ngOnInit() {
   }
 
-  addUniversity(university: University) {
-    university.location = new firestore.GeoPoint(18.7917493, 98.97431);
-    console.log(university.location);
-    console.log(university.location.latitude);
-    console.log(university.location.longitude);
-    const universityJSON = JSON.stringify(university);
+  addUniversity(university: University): Boolean {
+    let addResult: Boolean = false;
     this.firestore.collection('University').doc(university.university_name).get().subscribe(result => {
       if (!result.exists) {
-        return this.firestore.collection('University').doc(university.university_name).set(JSON.parse(universityJSON));
-      } else {
-        throw new Error('มีมหาวิทยาลัยนี้อยู่ในระบบแล้ว');
+        this.firestore.collection('University').doc(university.university_name).set(Object.assign({}, university)).then(() => {
+          addResult = true;
+        }).catch((e) => {
+          throw e;
+        });
       }
     })
+    return addResult;
   }
 
   updateUniversity(university: University, faculty: Faculty) {
     return this.firestore.collection('University').doc(university.university_name)
-      .collection('Faculty').doc(faculty.faculty_name).set(JSON.parse(JSON.stringify(faculty)));
+      .collection('Faculty').doc(faculty.faculty_name).set(Object.assign({}, faculty));
   }
 
   getAllUniversity() {

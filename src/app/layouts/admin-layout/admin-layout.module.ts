@@ -14,7 +14,9 @@ import {
   MatTableModule,
   MatPaginatorModule,
   MatCardModule,
-  MatIconModule
+  MatIconModule,
+  MatStepperModule,
+  MatAutocompleteModule
 } from '@angular/material';
 import { ListUniversityComponent } from 'src/app/components/admin/list-university/list-university.component';
 import { ComponentsModule } from 'src/app/components/navigation/components.module';
@@ -44,6 +46,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     MatIconModule,
     MatPaginatorModule,
     SharedModule,
+    MatStepperModule,
+    MatAutocompleteModule,
   ], exports: [ComponentsModule]
 })
 
