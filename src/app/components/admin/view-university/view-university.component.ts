@@ -11,6 +11,7 @@ import { FacultyService } from 'src/app/services/faculty-service/faculty.service
 import { AddMajorDialogComponent } from './dialog/add-major-dialog/add-major-dialog.component';
 import { MajorService } from 'src/app/services/major-service/major.service';
 import { MapsAPILoader } from '@agm/core';
+import { EditUniversityDialogComponent } from './dialog/edit-university-dialog/edit-university-dialog.component';
 
 
 declare const google: any;
@@ -55,27 +56,6 @@ export class ViewUniversityComponent implements OnInit {
     await this.getUniversity(university_id);
   }
 
-  getMap() {
-    this.mapsAPILoader.load().then(() => {
-      console.log(this.university.location);
-      var myLatlng = new google.maps.LatLng(this.university.location.latitude, this.university.location.longitude);
-      var mapOptions = {
-        zoom: 16,
-        center: myLatlng,
-        scrollwheel: false,
-      };
-      var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-
-      var marker = new google.maps.Marker({
-        position: myLatlng,
-        title: this.university.university_name
-      });
-
-      marker.setMap(map);
-    });
-  }
-
-
   async getUniversity(university_id: string) {
     this.uniOsb = await this.universityService.getUniversity(university_id).subscribe(universityRes => {
       this.university = universityRes.payload.data() as University;
@@ -89,8 +69,24 @@ export class ViewUniversityComponent implements OnInit {
         this.facultyLtb.paginator = this.paginator;
         this.showTable = this.facultyLtb.data.length === 0 ? false : true;
       })
-        this.getMap();
         this.showContent = true;
+    });
+  }
+
+  openEditUniversityDialog(): void {
+    const dialogRef = this.dialog.open(EditUniversityDialogComponent, {
+      width: '50%',
+      data: this.university,
+    });
+
+    dialogRef.afterClosed().subscribe(facultyRs => {
+      if (facultyRs.faculty !== null) {
+        if (facultyRs.mode === 'เพิ่ม') {
+          this.facultyService.addFaculty(this.university, facultyRs.faculty);
+        } else if (facultyRs.mode === 'แก้ไข') {
+          this.facultyService.updateFaculty(this.university, facultyRs.faculty);
+        }
+      }
     });
   }
 

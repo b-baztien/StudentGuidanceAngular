@@ -24,6 +24,9 @@ import { AddMajorDialogComponent } from './components/admin/view-university/dial
 import { MatStepperModule, MatAutocompleteModule, MatSelectModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from './shared/shared.module';
+import { EditUniversityDialogComponent } from './components/admin/view-university/dialog/edit-university-dialog/edit-university-dialog.component';
+import { DeleteUniversityComponent } from './components/admin/view-university/dialog/delete-university-dialog/delete-university.component';
+import { AddUserDialogComponent } from './components/admin/list-user/dialog/add-user-dialog/add-user-dialog.component';
 
 @NgModule({
   declarations: [
@@ -34,12 +37,17 @@ import { SharedModule } from './shared/shared.module';
     AddEditFacultyDialogComponent,
     AddUniversityDialogComponent,
     AddMajorDialogComponent,
+    EditUniversityDialogComponent,
+    DeleteUniversityComponent,
+    AddUserDialogComponent,
   ],
   entryComponents: [
     ListMajorDialog,
     AddEditFacultyDialogComponent,
     AddUniversityDialogComponent,
     AddMajorDialogComponent,
+    EditUniversityDialogComponent,
+    DeleteUniversityComponent,
   ],
   imports: [
     BrowserModule,

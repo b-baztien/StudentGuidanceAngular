@@ -4,14 +4,18 @@ import { firestore } from 'firebase';
 
 export class University {
     university_name: string;
-    address: string;
     url: string;
     phone_no: string;
     university_detail: string;
-    zone: string;
     view: number;
     image: DocumentReference;
     location: firestore.GeoPoint;
+    address: string;
+    tambon: string;
+    amphur: string;
+    province: string;
+    zipcode: string;
+    zone: string;
 
     faculty: Faculty[];
 }
