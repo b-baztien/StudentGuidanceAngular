@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialModule } from './angular-material.module';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { LoginService } from './services/login-service/login.service';
@@ -27,7 +27,12 @@ import { SharedModule } from './shared/shared.module';
 import { EditUniversityDialogComponent } from './components/admin/view-university/dialog/edit-university-dialog/edit-university-dialog.component';
 import { DeleteUniversityComponent } from './components/admin/view-university/dialog/delete-university-dialog/delete-university.component';
 import { AddUserDialogComponent } from './components/admin/list-user/dialog/add-user-dialog/add-user-dialog.component';
+import { AddNewsDialogComponent } from './components/teacher/list-news/dialog/add-news-dialog/add-news-dialog.component';
+import { registerLocaleData } from '@angular/common';
+import localeTh from '@angular/common/locales/th';
+import localeThExtra from '@angular/common/locales/extra/th';
 
+registerLocaleData(localeTh, 'th-TH', localeThExtra );
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,6 +45,7 @@ import { AddUserDialogComponent } from './components/admin/list-user/dialog/add-
     EditUniversityDialogComponent,
     DeleteUniversityComponent,
     AddUserDialogComponent,
+    AddNewsDialogComponent,
   ],
   entryComponents: [
     ListMajorDialog,
@@ -48,6 +54,8 @@ import { AddUserDialogComponent } from './components/admin/list-user/dialog/add-
     AddMajorDialogComponent,
     EditUniversityDialogComponent,
     DeleteUniversityComponent,
+    AddUserDialogComponent,
+    AddNewsDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -73,7 +81,7 @@ import { AddUserDialogComponent } from './components/admin/list-user/dialog/add-
     MatSelectModule,
     SharedModule,
   ],
-  providers: [LoginService],
+  providers: [LoginService, { provide: LOCALE_ID, useValue: 'th-TH' }],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

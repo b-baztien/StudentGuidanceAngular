@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
 import { QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
-import { UniversityService } from 'src/app/services/university-service/university.service';
-import { AddUniversityDialogComponent } from '../../admin/list-university/dialog/add-university-dialog/add-university-dialog.component';
+import { NewsService } from 'src/app/services/news-service/news.service';
+import { AddNewsDialogComponent } from './dialog/add-news-dialog/add-news-dialog.component';
 
 @Component({
   selector: 'app-list-news',
@@ -11,38 +11,39 @@ import { AddUniversityDialogComponent } from '../../admin/list-university/dialog
   styleUrls: ['./list-news.component.css']
 })
 export class ListNewsComponent implements OnInit {
-  universityList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
-  displayedColumns: string[] = ['university_name', 'phone_no', 'url', 'view', 'zone'];
+  newsList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
+  displayedColumns: string[] = ['topic', 'detail', 'start_time', 'end_time'];
 
   resultsLength = 0;
   isLoadingResults = true;
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
-  listUniObs;
+  listNewsObs;
 
   showTable: boolean = false;
 
-  constructor(public dialog: MatDialog, private router: Router, private universityService: UniversityService) { }
+  constructor(public dialog: MatDialog, private router: Router, private newsService: NewsService) {
+  }
 
   async ngOnInit() {
-    this.listUniObs = await this.universityService.getAllUniversity().subscribe(result => {
+    this.listNewsObs = await this.newsService.getAllNews().subscribe(result => {
       let resultListUniversity = new Array<QueryDocumentSnapshot<Object>>();
       result.forEach(element => {
         resultListUniversity.push(element.payload.doc);
       });
-      this.universityList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListUniversity);
-      this.universityList.paginator = this.paginator;
-      this.showTable = this.universityList.data.length === 0 ? false : true;
+      this.newsList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListUniversity);
+      this.newsList.paginator = this.paginator;
+      this.showTable = this.newsList.data.length === 0 ? false : true;
     });
   }
 
   ngOnDestroy() {
-    this.listUniObs.unsubscribe();
+    this.listNewsObs.unsubscribe();
   }
 
   openAddUniversityDialog(): void {
-    const dialogRef = this.dialog.open(AddUniversityDialogComponent, {
+    const dialogRef = this.dialog.open(AddNewsDialogComponent, {
       width: '50%',
     });
 
@@ -54,7 +55,7 @@ export class ListNewsComponent implements OnInit {
     });
   }
 
-  onUniversityClick(university: string) {
-    this.router.navigate(['/admin/list-university/view-university', { university: university }]);
+  onNewsClick(news_id: string) {
+    this.router.navigate(['/teacher/list-news/view-news', { news_id: news_id }]);
   }
 }

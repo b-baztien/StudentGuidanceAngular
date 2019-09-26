@@ -21,6 +21,10 @@
                         </div>
                     </div>
                     <div class="card-body table-responsive" *ngIf="showTable">
+                        <mat-form-field>
+                            <input matInput placeholder="ค้นหามหาวิทยาลัย ภายในระบบ..."
+                                (keyup)="applyFilter($event.target.value)">
+                        </mat-form-field>
                         <table mat-table [dataSource]="universityList" class="table table-hover">
                             <ng-container matColumnDef="university_name">
                                 <th mat-header-cell *matHeaderCellDef>ชื่อ</th>
@@ -48,6 +52,14 @@
                             <tr class="row-hover" mat-row *matRowDef="let row; columns: displayedColumns;"
                                 (click)="onUniversityClick(row.id)"></tr>
                         </table>
+                        <div class="card-profile" *ngIf="universityList.filteredData.length == 0">
+                            <div class="card-body">
+                                <h4 class="card-title">ไม่พบข้อมูลผู้ใช้ที่ค้นหา</h4>
+                                <p class="card-description">
+                                    ไม่พบข้อมูลผู้ใช้ตามเงื่อนไขที่ค้นหา กรุณาค้นหาด้วยเงื่อนไขอื่น
+                                </p>
+                            </div>
+                        </div>
                         <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons>
                         </mat-paginator>
                     </div>

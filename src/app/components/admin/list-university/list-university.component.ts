@@ -41,6 +41,10 @@ export class ListUniversityComponent implements OnInit {
     this.listUniObs.unsubscribe();
   }
 
+  applyFilter(filterValue: string) {
+    this.universityList.filter = filterValue.trim().toLowerCase();
+  }
+
   openAddUniversityDialog(): void {
     const dialogRef = this.dialog.open(AddUniversityDialogComponent, {
       width: '50%',

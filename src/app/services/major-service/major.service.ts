@@ -28,6 +28,5 @@ export class MajorService {
           throw new Error('มีสาขานี้อยู่ในระบบแล้ว');
         }
       });
-
   }
 }

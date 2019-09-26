@@ -34,8 +34,9 @@ export class LoginService {
     });
   }
 
-
-
+  getAllLogin() {
+    return this.firestore.collection('Login').snapshotChanges();
+  }
 
   logout() {
   }

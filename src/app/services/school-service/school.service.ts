@@ -4,11 +4,11 @@ import { AngularFirestore } from '@angular/fire/firestore';
 @Injectable({
   providedIn: 'root'
 })
-export class NewsService {
+export class SchoolService {
   constructor(private firestore: AngularFirestore) {
   }
 
-  getAllNews() {
-    return this.firestore.collection('News').snapshotChanges();
+  getAllSchool() {
+    return this.firestore.collection('School').snapshotChanges();
   }
 }
