@@ -2,6 +2,8 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatTableDataSource, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Major } from 'src/app/model/Major';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
+import { MajorService } from 'src/app/services/major-service/major.service';
+import { CarrerService } from 'src/app/services/carrer-service/carrer.service';
 
 @Component({
   selector: 'app-add-major-dialog',
@@ -12,16 +14,17 @@ export class AddMajorDialogComponent implements OnInit {
   majorForm = new FormGroup({
     major_name: new FormControl(null, [Validators.required]),
     url: new FormControl(null, [Validators.required]),
+    entrance_detail: new FormControl(null),
   });
 
   major: Major;
-  mode: string;
 
   constructor(
     public dialogRef: MatDialogRef<AddMajorDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Major | null,
+    private majorService: MajorService,
+    private carrerService: CarrerService,
+    @Inject(MAT_DIALOG_DATA) public data: string,
   ) {
-    this.mode = this.data === null ? 'เพิ่ม' : 'แก้ไข';
   }
 
   ngOnInit() {
@@ -42,7 +45,10 @@ export class AddMajorDialogComponent implements OnInit {
     if (this.majorForm.valid) {
       this.major.major_name = this.majorForm.get('major_name').value;
       this.major.url = this.majorForm.get('url').value;
-      this.dialogRef.close({ major: this.major, mode: this.mode });
+      this.major.entrance_detail = this.majorForm.get('entrance_detail').value;
+
+      this.majorService.addMajor(this.data, this.major);
+      this.dialogRef.close();
     }
   }
 }

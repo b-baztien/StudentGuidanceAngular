@@ -1,9 +1,8 @@
 import { DocumentReference } from '@angular/fire/firestore';
-import { Major } from './Major';
 
 export class Faculty {
     faculty_name: string;
-    major: Major[];
+    major: DocumentReference[];
     url: string;
     university: DocumentReference;
 }

@@ -5,6 +5,7 @@ import { University } from 'src/app/model/University';
 import { UniversityService } from 'src/app/services/university-service/university.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 declare var $: any;
 
@@ -43,10 +44,13 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
 
   university: University;
 
+  imgURL: any = 'assets/img/college-graduation.png';
+
   constructor(
     private http: HttpClient,
     public dialogRef: MatDialogRef<AddUniversityDialogComponent>,
-    private universityService: UniversityService
+    private universityService: UniversityService,
+    private afStorage: AngularFireStorage
   ) {
   }
 
@@ -63,29 +67,62 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
     this.dialogRef.disableClose = true;
   }
 
+  async upload(event) {
+    const metadata = {
+      contentType: 'image/jpeg',
+    };
+
+    const fileName = event.files[0].name;
+    if (event.files[0].type.split('/')[0] == 'image') {
+      await this.afStorage.upload(`university/${fileName}`, event.files[0], metadata).then(async result => {
+        this.university.image = await result.ref.fullPath;
+      });
+    }
+  }
+
+  preview(event) {
+    if (event.target.files[0] !== undefined) {
+      let reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]);
+      reader.onload = (_event) => {
+        this.imgURL = reader.result;
+      }
+    } else {
+      this.imgURL = 'assets/img/college-graduation.png';
+    }
+  }
+
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 
   onNoClick(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(null);
   }
 
-  onSubmit() {
+  async onSubmit() {
     this.university = new University();
-    if (this.universityDetailForm.valid) {
-      this.university.university_name = this.universityDetailForm.get('university_name').value;
-      this.university.address =
-        `${this.universityAddressForm.get('address').value} ตำบล${this.universityAddressForm.get('tambon').value} อำเภอ${this.universityAddressForm.get('amphur').value} จังหวัด${this.universityAddressForm.get('province').value.province_name} ${this.universityAddressForm.get('zipcode').value}`;
-      this.university.zone = this.universityAddressForm.get('province').value.zone;
-      this.university.url = this.universityDetailForm.get('url').value;
-      this.university.phone_no = this.universityDetailForm.get('phone_no').value;
-      this.university.university_detail = this.universityDetailForm.get('university_detail').value;
-      this.university.zone = this.universityAddressForm.get('province').value.zone;
-      this.university.view = 0;
-      this.universityService.addUniversity(this.university)
-      // this.dialogRef.close(this.universityService.addUniversity(this.university));
+    try {
+      if (this.universityDetailForm.valid) {
+        this.university.university_name = this.universityDetailForm.get('university_name').value;
+        this.university.address = this.universityAddressForm.get('address').value;
+        this.university.tambon = this.universityAddressForm.get('tambon').value;
+        this.university.amphur = this.universityAddressForm.get('amphur').value;
+        this.university.province = this.universityAddressForm.get('province').value.province_name;
+        this.university.zipcode = this.universityAddressForm.get('zipcode').value;
+        this.university.zone = this.universityAddressForm.get('province').value.zone;
+        this.university.url = this.universityDetailForm.get('url').value;
+        this.university.phone_no = this.universityDetailForm.get('phone_no').value;
+        this.university.university_detail = this.universityDetailForm.get('university_detail').value;
+        this.university.zone = this.universityAddressForm.get('province').value.zone;
+        this.university.view = 0;
+        await this.upload(document.getElementById('logoImage'));
+        const universityId = await this.universityService.addUniversity(this.university);
+        this.dialogRef.close(universityId);
+      }
+    } catch (error) {
+      console.log(error.message);
     }
   }
 }

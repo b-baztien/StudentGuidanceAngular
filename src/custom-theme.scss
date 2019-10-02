@@ -62,6 +62,17 @@ mat-icon {
   vertical-align: middle;
 }
 
+mat-icon.card-title {
+  height: auto;
+  width: auto;
+  font-size: 3.3125rem;
+  color: #999999;
+}
+
+.mat-step-footer {
+  margin-top: 2vw;
+}
+
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/

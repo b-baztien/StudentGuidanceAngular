@@ -12,7 +12,7 @@ import { AddUniversityDialogComponent } from './dialog/add-university-dialog/add
 })
 export class ListUniversityComponent implements OnInit {
   universityList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
-  displayedColumns: string[] = ['university_name', 'phone_no', 'url', 'view', 'zone'];
+  displayedColumns: string[] = ['university_name', 'phone_no', 'url', 'view', 'province', 'zone'];
 
   resultsLength = 0;
   isLoadingResults = true;
@@ -23,7 +23,11 @@ export class ListUniversityComponent implements OnInit {
 
   showTable: boolean = false;
 
-  constructor(public dialog: MatDialog, private router: Router, private universityService: UniversityService) { }
+  constructor(
+    public dialog: MatDialog,
+    private router: Router,
+    private universityService: UniversityService
+  ) { }
 
   async ngOnInit() {
     this.listUniObs = await this.universityService.getAllUniversity().subscribe(result => {
@@ -50,11 +54,10 @@ export class ListUniversityComponent implements OnInit {
       width: '50%',
     });
 
-    dialogRef.beforeClose().subscribe()
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      console.log(result);
+    dialogRef.afterClosed().subscribe(async universityId => {
+      if (universityId != null) {
+        this.router.navigate(['/admin/list-university/view-university', { university: universityId }]);
+      }
     });
   }
 

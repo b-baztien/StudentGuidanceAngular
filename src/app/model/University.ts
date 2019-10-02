@@ -1,6 +1,4 @@
 import { DocumentReference } from '@angular/fire/firestore';
-import { Faculty } from './Faculty';
-import { firestore } from 'firebase';
 
 export class University {
     university_name: string;
@@ -8,14 +6,12 @@ export class University {
     phone_no: string;
     university_detail: string;
     view: number;
-    image: DocumentReference;
-    location: firestore.GeoPoint;
+    image: string;
     address: string;
     tambon: string;
     amphur: string;
     province: string;
     zipcode: string;
     zone: string;
-
-    faculty: Faculty[];
+    faculty: DocumentReference[];
 }

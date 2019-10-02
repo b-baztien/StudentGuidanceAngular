@@ -1,37 +1,51 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
 import { University } from 'src/app/model/University';
-import { Faculty } from 'src/app/model/Faculty';
-import { firestore } from 'firebase';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UniversityService {
-  constructor(private firestore: AngularFirestore) {
+  constructor(
+    private firestore: AngularFirestore, 
+    private afStorage: AngularFireStorage
+    ) {
   }
 
   ngOnInit() {
   }
 
-  addUniversity(university: University): Boolean {
-    let addResult: Boolean = false;
-    this.firestore.collection('University').doc(university.university_name).get().subscribe(result => {
-      if (!result.exists) {
-        this.firestore.collection('University').doc(university.university_name).set(Object.assign({}, university)).then(() => {
-          addResult = true;
-        }).catch((e) => {
-          throw e;
-        });
-      }
-    })
-    return addResult;
+  async addUniversity(university: University) {
+    const universityId = this.firestore.createId();
+    return await this.firestore.collection('University').ref.where('university_name', '==', university.university_name)
+      .get().then(universityRes => {
+        if (universityRes.empty) {
+          this.firestore.collection('University').doc(universityId).set(Object.assign({}, university));
+          return universityId;
+        } else {
+          throw new Error('มีข้อมูลมหาวิทยาลัยนี้อยู่ในระบบแล้ว');
+        }
+      })
   }
 
-  updateUniversity(university: University, faculty: Faculty) {
-    return this.firestore.collection('University').doc(university.university_name)
-      .collection('Faculty').doc(faculty.faculty_name).set(Object.assign({}, faculty));
+  updateUniversity(universityId: string, university: University) {
+    return this.firestore.collection('University').doc(universityId).update(Object.assign({}, university));
+  }
+
+  deleteUniversity(universityId: string) {
+    this.firestore.collection('University').doc(universityId).snapshotChanges().subscribe(result => {
+      const university = result.payload.data() as University;
+      if (undefined !== university.image) {
+        this.afStorage.ref(university.image).delete();
+      }
+      if (undefined !== university.faculty) {
+        university.faculty.forEach(fct => {
+          this.firestore.collection('Faculty').doc(fct.id).delete();
+        });
+      }
+      this.firestore.collection('University').doc(universityId).delete();
+    });
   }
 
   getAllUniversity() {

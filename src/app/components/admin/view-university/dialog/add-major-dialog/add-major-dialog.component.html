@@ -1,10 +1,15 @@
+<div class="row">
+    <div class="col-sm-11">
+        <h1 mat-dialog-title>เพิ่มข้อมูลสาขา</h1>
+    </div>
+    <div class="col-sm-1" class="hover-cursor">
+        <mat-icon class="hover-cursor" (click)="onNoClick()">close</mat-icon>
+    </div>
+</div>
 <form [formGroup]="majorForm">
-    <h1 mat-dialog-title>{{mode}}ข้อมูลสาขา</h1>
     <div mat-dialog-content>
         <mat-form-field>
-            <input matInput placeholder="ชื่อสาขา" required formControlName="major_name" readonly
-                *ngIf="mode === 'แก้ไข'">
-            <input matInput placeholder="ชื่อสาขา" required formControlName="major_name" *ngIf="mode === 'เพิ่ม'">
+            <input matInput placeholder="ชื่อสาขา" required formControlName="major_name">
             <mat-error *ngIf="majorForm.controls.major_name.hasError('required')">
                 กรุณากรอกชื่อสาขา
             </mat-error>
@@ -15,9 +20,13 @@
                 กรุณากรอกที่อยู่เว็บไซต์
             </mat-error>
         </mat-form-field>
+        <mat-form-field>
+            <textarea matInput placeholder="เงื่อนไขการเข้าศึกษาต่อ" required
+                formControlName="entrance_detail"></textarea>
+        </mat-form-field>
     </div>
     <div mat-dialog-actions>
         <button mat-button (click)="onNoClick()">ปิด</button>
-        <button mat-button (click)="onSubmit()">{{mode}}ข้อมูล</button>
+        <button mat-button (click)="onSubmit()">เพิ่มข้อมูล</button>
     </div>
 </form>

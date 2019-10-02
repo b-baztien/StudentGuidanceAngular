@@ -1,7 +1,22 @@
 .card-profile {
+  margin-top: 50px;
   text-align: center;
 
   .card-avatar {
+    margin: -50px auto 0;
+    overflow: hidden;
+    padding: 0;
+
+    & + .card-body {
+      margin-top: 15px;
+    }
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .card-news {
     margin: -50px auto 0;
     overflow: hidden;
     padding: 0;
@@ -47,4 +62,62 @@
   .card-avatar {
     max-width: 130px;
   }
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.input-image-content {
+  text-align: center;
+}
+
+label.label-input-image {
+  display: block;
+}
+
+.input-image {
+  height: 100%;
+  width: 100%;
+}
+
+.hoverable {
+  position: relative;
+  cursor: pointer;
+  width: 10vw;
+  border: 3px solid #999999;
+}
+
+.hoverable .hover-text {
+  position: absolute;
+  display: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  font-size: 1.5vw;
+}
+
+.hoverable .background {
+  position: absolute;
+  display: none;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hoverable:hover .hover-text {
+  display: block;
+}
+
+.hoverable:hover .background {
+  display: block;
+}
+
+#logoImage {
+  display: none;
 }

@@ -1,51 +1,26 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, QueryDocumentSnapshot } from '@angular/fire/firestore';
-import { Faculty } from 'src/app/model/Faculty';
-import { Major } from 'src/app/model/Major';
+import { AngularFirestore, QueryDocumentSnapshot, DocumentReference } from '@angular/fire/firestore';
 import { FacultyService } from '../faculty-service/faculty.service';
+import { University } from 'src/app/model/University';
+import { Faculty } from 'src/app/model/Faculty';
 import { Subject } from 'rxjs';
-import { DocumentReference } from '@angular/fire/firestore';
+import { Major } from 'src/app/model/Major';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MajorService {
-
+export class CarrerService {
   constructor(
     private firestore: AngularFirestore,
     private facultyService: FacultyService,
   ) {
   }
 
-  getAllMajor() {
-    return this.firestore.collection('Major').snapshotChanges;
+  getAllCarrer() {
+    return this.firestore.collection('Carrer').snapshotChanges();
   }
 
-  getMajorByFacultyId(facultyId: string) {
-    let osbMajor = new Subject<Array<QueryDocumentSnapshot<unknown>>>();
-    let listMajor = new Array<QueryDocumentSnapshot<unknown>>();
-    this.firestore.collection('Major').snapshotChanges().subscribe(mjDoc => {
-      mjDoc.forEach(mj => {
-        let major = mj.payload.doc;
-        let dupMajor = false;
-        if ((major.data() as Major).faculty.id == facultyId) {
-          for(let i = 0; i < listMajor.length; i++) {
-            if (listMajor[i].id == major.id) {
-              dupMajor = true;
-              listMajor.splice(i, 1, major);
-            }
-          }
-          if (!dupMajor) {
-            listMajor.push(major);
-          }
-        }
-        osbMajor.next(listMajor);
-      });
-    });
-    return osbMajor.asObservable();
-  }
-
-  addMajor(facultyId: string, major: Major) {
+  addCarrer(facultyId: string, major: Major) {
     console.log(facultyId);
     console.log(major);
     major.faculty = this.firestore.collection('Faculty').doc(facultyId).ref;

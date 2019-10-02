@@ -14,11 +14,12 @@ import {
   MatTableModule,
   MatPaginatorModule,
   MatCardModule,
-  MatIconModule
+  MatIconModule,
+  MatStepperModule,
+  MatAutocompleteModule
 } from '@angular/material';
 import { ComponentsModule } from 'src/app/components/navigation/components.module';
 import { ListNewsComponent } from 'src/app/components/teacher/list-news/list-news.component';
-import { PhonePipe } from 'src/app/pipe/phone.pipe';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { DashboardComponent } from 'src/app/components/teacher/dashboard/dashboard.component';
 import { ListStudentComponent } from 'src/app/components/teacher/list-student/list-student.component';
@@ -43,6 +44,9 @@ import { ListStudentComponent } from 'src/app/components/teacher/list-student/li
     MatCardModule,
     MatIconModule,
     MatPaginatorModule,
+    SharedModule,
+    MatStepperModule,
+    MatAutocompleteModule,
     SharedModule,
   ], exports: [ComponentsModule]
 })

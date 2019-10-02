@@ -44,6 +44,10 @@
                                 <th mat-header-cell *matHeaderCellDef>จำนวนเข้าชม (ครั้ง)</th>
                                 <td mat-cell *matCellDef="let university"> {{university.data().view | number}} </td>
                             </ng-container>
+                            <ng-container matColumnDef="province">
+                                <th mat-header-cell *matHeaderCellDef>จังหวัด</th>
+                                <td mat-cell *matCellDef="let university"> {{university.data().province}} </td>
+                            </ng-container>
                             <ng-container matColumnDef="zone">
                                 <th mat-header-cell *matHeaderCellDef>ภาค</th>
                                 <td mat-cell *matCellDef="let university"> {{university.data().zone}} </td>

@@ -11,4 +11,8 @@ export class NewsService {
   getAllNews() {
     return this.firestore.collection('News').snapshotChanges();
   }
+
+  getNews(news_id : string) {
+    return this.firestore.collection('News').doc(news_id).snapshotChanges();
+  }
 }

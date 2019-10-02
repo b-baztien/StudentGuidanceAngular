@@ -1,20 +1,20 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { University } from 'src/app/model/University';
 import { UniversityService } from 'src/app/services/university-service/university.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Faculty } from 'src/app/model/Faculty';
 import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { ListMajorDialog } from './dialog/list-major-dialog';
 import { AddEditFacultyDialogComponent } from './dialog/add-edit-faculty-dialog/add-edit-faculty-dialog.component';
 import { FacultyService } from 'src/app/services/faculty-service/faculty.service';
 import { AddMajorDialogComponent } from './dialog/add-major-dialog/add-major-dialog.component';
 import { MajorService } from 'src/app/services/major-service/major.service';
-import { MapsAPILoader } from '@agm/core';
 import { EditUniversityDialogComponent } from './dialog/edit-university-dialog/edit-university-dialog.component';
+import { QueryDocumentSnapshot } from '@angular/fire/firestore';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { ListMajorDialogComponent } from './dialog/list-major-dialog/list-major-dialog.component';
 
 
-declare const google: any;
 
 @Component({
   selector: 'app-view-university',
@@ -28,14 +28,18 @@ declare const google: any;
     ]),
   ],
 })
-export class ViewUniversityComponent implements OnInit {
+export class ViewUniversityComponent implements OnInit, AfterViewInit {
   university: University;
-  uniOsb;
+  listFaculty: Array<QueryDocumentSnapshot<unknown>>;
+
+  university_id: string;
+
+  universityImg: string;
 
   showContent: boolean = false;
   showTable: boolean = false;
 
-  facultyLtb: MatTableDataSource<Faculty>;
+  facultyLtb: MatTableDataSource<QueryDocumentSnapshot<unknown>>;
   displayedColumns: string[] = ['faculty_name', 'url', 'major', 'manage'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
@@ -44,60 +48,65 @@ export class ViewUniversityComponent implements OnInit {
     private facultyService: FacultyService,
     private majorService: MajorService,
     public dialog: MatDialog,
-    private route: ActivatedRoute,
-    private mapsAPILoader: MapsAPILoader,
+    private activeRoute: ActivatedRoute,
+    private router: Router,
+    private afStorage: AngularFireStorage,
   ) { }
 
-  async ngOnInit() {
-    const university_id = this.route.snapshot.paramMap.get('university');
-    if (university_id === null) {
+  ngOnInit() {
+    this.university_id = this.activeRoute.snapshot.paramMap.get('university');
+    if (this.university_id === null) {
       window.location.replace('/admin');
     }
-    await this.getUniversity(university_id);
+  }
+
+  async ngAfterViewInit() {
+    await this.getUniversity(this.university_id);
   }
 
   async getUniversity(university_id: string) {
-    this.uniOsb = await this.universityService.getUniversity(university_id).subscribe(universityRes => {
+    await this.universityService.getUniversity(university_id).subscribe(async universityRes => {
       this.university = universityRes.payload.data() as University;
-      this.facultyService.getAllFaculty(university_id).subscribe(listFctRes => {
-        let listFaculty = new Array<Faculty>();
-        listFctRes.forEach(fctRes => {
-          listFaculty.push(fctRes.payload.doc.data() as Faculty);
+      if (this.university.image !== undefined) {
+        this.afStorage.storage.ref(this.university.image).getDownloadURL().then(url => {
+          this.universityImg = url;
         });
-        this.university.faculty = listFaculty;
-        this.facultyLtb = new MatTableDataSource<Faculty>(this.university.faculty);
+      }
+      this.facultyService.getFacultyByUniversityId(university_id).subscribe(fct => {
+        this.listFaculty = new Array<QueryDocumentSnapshot<unknown>>();
+        this.listFaculty = fct;
+        this.facultyLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(this.listFaculty);
         this.facultyLtb.paginator = this.paginator;
         this.showTable = this.facultyLtb.data.length === 0 ? false : true;
       })
-        this.showContent = true;
+      this.showContent = this.university === undefined ? false : true;
     });
   }
 
   openEditUniversityDialog(): void {
     const dialogRef = this.dialog.open(EditUniversityDialogComponent, {
-      width: '50%',
-      data: this.university,
+      width: '60%',
+      data: { universityId: this.university_id, university: this.university },
     });
 
-    dialogRef.afterClosed().subscribe(facultyRs => {
-      if (facultyRs.faculty !== null) {
-        if (facultyRs.mode === 'เพิ่ม') {
-          this.facultyService.addFaculty(this.university, facultyRs.faculty);
-        } else if (facultyRs.mode === 'แก้ไข') {
-          this.facultyService.updateFaculty(this.university, facultyRs.faculty);
-        }
-      }
+    dialogRef.afterClosed().subscribe(universityRs => {
+      this.universityService.updateUniversity(this.university_id, universityRs);
     });
   }
 
-  openAddMajorDialog(faculty: Faculty): void {
+  openDeleteUniversityDialog() {
+    this.universityService.deleteUniversity(this.university_id);
+    this.router.navigate(['/admin/list-university/']);
+  }
+
+  openAddMajorDialog(faculty: QueryDocumentSnapshot<unknown>) {
+    console.log(faculty);
     const dialogRef = this.dialog.open(AddMajorDialogComponent, {
       width: '50%',
+      data: faculty.id,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      this.majorService.addMajor(this.university, faculty, result.major);
-    });
+    dialogRef.afterClosed().subscribe();
   }
 
   openAddEditFacultyDialog(faculty?: Faculty): void {
@@ -109,29 +118,25 @@ export class ViewUniversityComponent implements OnInit {
     dialogRef.afterClosed().subscribe(facultyRs => {
       if (facultyRs.faculty !== null) {
         if (facultyRs.mode === 'เพิ่ม') {
-          this.facultyService.addFaculty(this.university, facultyRs.faculty);
+          this.facultyService.addFaculty(this.university_id, facultyRs.faculty);
         } else if (facultyRs.mode === 'แก้ไข') {
-          this.facultyService.updateFaculty(this.university, facultyRs.faculty);
+          this.facultyService.updateFaculty(this.university_id, facultyRs.faculty);
         }
       }
     });
   }
 
-  openDeleteFacultyDialog(faculty: Faculty): void {
-    this.facultyService.deleteFaculty(this.university, faculty);
+  openDeleteFacultyDialog(faculty: QueryDocumentSnapshot<unknown>) {
+    this.facultyService.deleteFaculty(faculty);
   }
 
-  openListMajorDialog(faculty: Faculty): void {
-    const dialogRef = this.dialog.open(ListMajorDialog, {
+  openListMajorDialog(faculty: QueryDocumentSnapshot<unknown>): void {
+    const dialogRef = this.dialog.open(ListMajorDialogComponent, {
       width: '50%',
       data: faculty,
     });
 
     dialogRef.afterClosed().subscribe(() => {
     });
-  }
-
-  ngOnDestroy(): void {
-    this.uniOsb.unsubscribe();
   }
 }

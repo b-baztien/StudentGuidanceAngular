@@ -16,12 +16,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { UserLayoutComponent } from './layouts/user-layout/user-layout.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { ComponentsModule } from './components/navigation/components.module';
-import { AgmCoreModule } from '@agm/core';
-import { ListMajorDialog } from './components/admin/view-university/dialog/list-major-dialog';
 import { AddUniversityDialogComponent } from './components/admin/list-university/dialog/add-university-dialog/add-university-dialog.component';
 import { AddEditFacultyDialogComponent } from './components/admin/view-university/dialog/add-edit-faculty-dialog/add-edit-faculty-dialog.component';
 import { AddMajorDialogComponent } from './components/admin/view-university/dialog/add-major-dialog/add-major-dialog.component';
-import { MatStepperModule, MatAutocompleteModule, MatSelectModule } from '@angular/material';
+import { MatStepperModule, MatAutocompleteModule, MatSelectModule, MatFormFieldModule, MatChipsModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from './shared/shared.module';
 import { EditUniversityDialogComponent } from './components/admin/view-university/dialog/edit-university-dialog/edit-university-dialog.component';
@@ -31,6 +29,8 @@ import { AddNewsDialogComponent } from './components/teacher/list-news/dialog/ad
 import { registerLocaleData } from '@angular/common';
 import localeTh from '@angular/common/locales/th';
 import localeThExtra from '@angular/common/locales/extra/th';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+import { ListMajorDialogComponent } from './components/admin/view-university/dialog/list-major-dialog/list-major-dialog.component';
 
 registerLocaleData(localeTh, 'th-TH', localeThExtra );
 @NgModule({
@@ -38,7 +38,6 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra );
     AppComponent,
     UserLayoutComponent,
     AdminLayoutComponent,
-    ListMajorDialog,
     AddEditFacultyDialogComponent,
     AddUniversityDialogComponent,
     AddMajorDialogComponent,
@@ -46,9 +45,9 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra );
     DeleteUniversityComponent,
     AddUserDialogComponent,
     AddNewsDialogComponent,
+    ListMajorDialogComponent,
   ],
   entryComponents: [
-    ListMajorDialog,
     AddEditFacultyDialogComponent,
     AddUniversityDialogComponent,
     AddMajorDialogComponent,
@@ -56,6 +55,7 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra );
     DeleteUniversityComponent,
     AddUserDialogComponent,
     AddNewsDialogComponent,
+    ListMajorDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -70,16 +70,15 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra );
     FormsModule,
     FlexLayoutModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyB7QdE_1fl9WHwXo5srPbRbEvZqBrj8NVE',
-      language: localStorage && localStorage.gml || 'th'
-    }),
     AngularFirestoreModule,
+    AngularFireStorageModule,
     ComponentsModule,
     MatAutocompleteModule,
     HttpClientModule,
     MatSelectModule,
     SharedModule,
+    MatFormFieldModule,
+    MatChipsModule,
   ],
   providers: [LoginService, { provide: LOCALE_ID, useValue: 'th-TH' }],
   bootstrap: [AppComponent],

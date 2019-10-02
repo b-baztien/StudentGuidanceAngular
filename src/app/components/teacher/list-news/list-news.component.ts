@@ -11,17 +11,16 @@ import { AddNewsDialogComponent } from './dialog/add-news-dialog/add-news-dialog
   styleUrls: ['./list-news.component.css']
 })
 export class ListNewsComponent implements OnInit {
-  newsList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
+  newsList;
   displayedColumns: string[] = ['topic', 'detail', 'start_time', 'end_time'];
 
   resultsLength = 0;
-  isLoadingResults = true;
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
   listNewsObs;
 
-  showTable: boolean = false;
+  showContent: boolean = false;
 
   constructor(public dialog: MatDialog, private router: Router, private newsService: NewsService) {
   }
@@ -32,9 +31,8 @@ export class ListNewsComponent implements OnInit {
       result.forEach(element => {
         resultListUniversity.push(element.payload.doc);
       });
-      this.newsList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListUniversity);
-      this.newsList.paginator = this.paginator;
-      this.showTable = this.newsList.data.length === 0 ? false : true;
+      this.newsList = resultListUniversity;
+      this.showContent = this.newsList.length === 0 ? false : true;
     });
   }
 
