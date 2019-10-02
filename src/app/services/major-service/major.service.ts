@@ -29,7 +29,7 @@ export class MajorService {
         let major = mj.payload.doc;
         let dupMajor = false;
         if ((major.data() as Major).faculty.id == facultyId) {
-          for(let i = 0; i < listMajor.length; i++) {
+          for (let i = 0; i < listMajor.length; i++) {
             if (listMajor[i].id == major.id) {
               dupMajor = true;
               listMajor.splice(i, 1, major);
@@ -45,20 +45,20 @@ export class MajorService {
     return osbMajor.asObservable();
   }
 
-  addMajor(facultyId: string, major: Major) {
-    console.log(facultyId);
-    console.log(major);
+  async addMajor(facultyId: string, major: Major) {
     major.faculty = this.firestore.collection('Faculty').doc(facultyId).ref;
-    this.firestore.collection('Major').doc(major.major_name + facultyId).get().subscribe(result => {
+    return await this.firestore.collection('Major').doc(major.major_name + facultyId).ref.get().then(async result => {
       if (!result.exists) {
-        this.firestore.collection('Major').doc(major.major_name + facultyId).set(Object.assign({}, major)).then(
-          () => {
-            major.faculty.get().then(facultyRef => {
+        return await this.firestore.collection('Major').doc(major.major_name + facultyId).set(Object.assign({}, major)).then(
+          async () => {
+            return await major.faculty.get().then(facultyRef => {
               const faculty = facultyRef.data() as Faculty;
               console.log(faculty);
               faculty.major = faculty.major === undefined ? new Array<DocumentReference>() : faculty.major;
               faculty.major.push(this.firestore.collection('Faculty').doc(major.major_name + facultyId).ref);
               this.facultyService.updateFaculty(facultyId, faculty);
+
+              return this.firestore.collection('Faculty').doc(major.major_name + facultyId).ref
             });
           });
       } else {

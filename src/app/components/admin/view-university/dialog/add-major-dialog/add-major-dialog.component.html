@@ -24,6 +24,24 @@
             <textarea matInput placeholder="เงื่อนไขการเข้าศึกษาต่อ" required
                 formControlName="entrance_detail"></textarea>
         </mat-form-field>
+        <mat-form-field>
+            <mat-chip-list #chipList aria-label="Carrer selection">
+                <mat-chip *ngFor="let carrer_name of listCarrer_name" [selectable]="selectable" [removable]="removable"
+                    (removed)="removeCarrer(carrer_name)">
+                    {{carrer_name}}
+                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                </mat-chip>
+                <input placeholder="อาชีพเมื่อสำเร็จการศึกษา" #carrerInput formControlName="carrer"
+                    [matAutocomplete]="auto" [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                    (matChipInputTokenEnd)="addCarrer($event)">
+            </mat-chip-list>
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                <mat-option *ngFor="let carrer of filteredCarrer | async" [value]="carrer">
+                    {{carrer}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
     </div>
     <div mat-dialog-actions>
         <button mat-button (click)="onNoClick()">ปิด</button>

@@ -5,6 +5,7 @@ import { University } from 'src/app/model/University';
 import { Faculty } from 'src/app/model/Faculty';
 import { Subject } from 'rxjs';
 import { Major } from 'src/app/model/Major';
+import { Carrer } from 'src/app/model/Carrer';
 
 @Injectable({
   providedIn: 'root'
@@ -20,25 +21,28 @@ export class CarrerService {
     return this.firestore.collection('Carrer').snapshotChanges();
   }
 
-  addCarrer(facultyId: string, major: Major) {
-    console.log(facultyId);
-    console.log(major);
-    major.faculty = this.firestore.collection('Faculty').doc(facultyId).ref;
-    this.firestore.collection('Major').doc(major.major_name + facultyId).get().subscribe(result => {
-      if (!result.exists) {
-        this.firestore.collection('Major').doc(major.major_name + facultyId).set(Object.assign({}, major)).then(
-          () => {
-            major.faculty.get().then(facultyRef => {
-              const faculty = facultyRef.data() as Faculty;
-              console.log(faculty);
-              faculty.major = faculty.major === undefined ? new Array<DocumentReference>() : faculty.major;
-              faculty.major.push(this.firestore.collection('Faculty').doc(major.major_name + facultyId).ref);
-              this.facultyService.updateFaculty(facultyId, faculty);
+  async addCarrer(carrer: Carrer) {
+    return await this.firestore.collection('Carrer').doc(carrer.carrer_name).ref.get().then(async carrerRes => {
+      if (!carrerRes.exists) { //ถ้าข้อมูล Carrer เก่าใน Database ยังไม่มี ให้ เพิ่มข้อมูล Carrer ลงไป
+        this.firestore.collection('Carrer').doc(carrer.carrer_name).set(Object.assign({}, carrer));
+      } else { //ถ้าข้อมูล Carrer เก่าใน Database มีแล้ว ให้เช็คว่า Major ใน Carrer ซ้ำหรือไม่
+        const carrerData: Carrer = carrerRes.data() as Carrer;
+        if (carrerData.major !== undefined) {
+          carrer.major.forEach(majorNewRef => {
+            let dupMajor = false;
+            carrerData.major.forEach(majorOldRef => {
+              dupMajor = majorNewRef.id == majorOldRef.id;
             });
+            if (!dupMajor) {
+              carrerData.major.push(majorNewRef);
+            }
           });
-      } else {
-        throw new Error('มีสาขานี้อยู่ในระบบแล้ว');
+        } else {
+          carrerData.major = carrer.major;
+        }
+        this.firestore.collection('Carrer').doc(carrer.carrer_name).update(carrerData);
       }
+      return this.firestore.collection('Carrer').doc(carrer.carrer_name).ref;
     });
   }
 }
