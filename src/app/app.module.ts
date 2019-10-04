@@ -19,7 +19,7 @@ import { ComponentsModule } from './components/navigation/components.module';
 import { AddUniversityDialogComponent } from './components/admin/list-university/dialog/add-university-dialog/add-university-dialog.component';
 import { AddEditFacultyDialogComponent } from './components/admin/view-university/dialog/add-edit-faculty-dialog/add-edit-faculty-dialog.component';
 import { AddMajorDialogComponent } from './components/admin/view-university/dialog/add-major-dialog/add-major-dialog.component';
-import { MatStepperModule, MatAutocompleteModule, MatSelectModule, MatFormFieldModule, MatChipsModule } from '@angular/material';
+import { MatStepperModule, MatAutocompleteModule, MatSelectModule, MatFormFieldModule, MatChipsModule, MatExpansionModule, MatDatepickerModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from './shared/shared.module';
 import { EditUniversityDialogComponent } from './components/admin/view-university/dialog/edit-university-dialog/edit-university-dialog.component';
@@ -79,6 +79,8 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra );
     SharedModule,
     MatFormFieldModule,
     MatChipsModule,
+    MatExpansionModule,
+    MatDatepickerModule,
   ],
   providers: [LoginService, { provide: LOCALE_ID, useValue: 'th-TH' }],
   bootstrap: [AppComponent],

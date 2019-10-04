@@ -4,12 +4,17 @@ import { Faculty } from 'src/app/model/Faculty';
 import { University } from 'src/app/model/University';
 import { UniversityService } from '../university-service/university.service';
 import { Subject } from 'rxjs';
+import { MajorService } from '../major-service/major.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FacultyService {
-  constructor(private firestore: AngularFirestore, private universityService: UniversityService) {
+  constructor(
+    private firestore: AngularFirestore,
+    private universityService: UniversityService,
+    private majorService: MajorService,
+  ) {
   }
 
   addFaculty(universityId: string, faculty: Faculty) {
@@ -31,8 +36,8 @@ export class FacultyService {
     });
   }
 
-  updateFaculty(universityId: string, faculty: Faculty) {
-    return this.firestore.collection('Faculty').doc(universityId).set(Object.assign({}, faculty));
+  updateFaculty(facultyId: string, faculty: Faculty) {
+    return this.firestore.collection('Faculty').doc(facultyId).set(Object.assign({}, faculty));
   }
 
 
@@ -68,20 +73,25 @@ export class FacultyService {
     return this.firestore.collection('Faculty').doc(facultyId).snapshotChanges();
   }
 
-  deleteFaculty(faculty: QueryDocumentSnapshot<unknown>) {
+  async deleteFaculty(faculty: QueryDocumentSnapshot<unknown>) {
     try {
-      this.firestore.collection('University').ref.where('faculty', 'array-contains', faculty.ref).onSnapshot(result => {
+      await this.firestore.collection('Major').ref.where('faculty', '==', faculty.ref).onSnapshot(result => {
         result.forEach(docsRs => {
-          const university = docsRs.data() as University;
-          for (let i = 0; i < university.faculty.length; i++) {
-            if (university.faculty[i].id == faculty.id) {
-              university.faculty.splice(i, 1);
-              this.universityService.updateUniversity(docsRs.id, university);
-              this.firestore.collection('Faculty').doc(faculty.id).delete();
-            }
-          }
+          this.majorService.deleteMajor(docsRs);
         })
-      })
+      }),
+        await this.firestore.collection('University').ref.where('faculty', 'array-contains', faculty.ref).onSnapshot(result => {
+          result.forEach(docsRs => {
+            const university = docsRs.data() as University;
+            for (let i = 0; i < university.faculty.length; i++) {
+              if (university.faculty[i].id == faculty.id) {
+                university.faculty.splice(i, 1);
+                this.universityService.updateUniversity(docsRs.id, university);
+                this.firestore.collection('Faculty').doc(faculty.id).delete();
+              }
+            }
+          })
+        })
     } catch (error) {
       console.log(error);
       throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');

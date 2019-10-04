@@ -8,7 +8,6 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { AddEditFacultyDialogComponent } from './dialog/add-edit-faculty-dialog/add-edit-faculty-dialog.component';
 import { FacultyService } from 'src/app/services/faculty-service/faculty.service';
 import { AddMajorDialogComponent } from './dialog/add-major-dialog/add-major-dialog.component';
-import { MajorService } from 'src/app/services/major-service/major.service';
 import { EditUniversityDialogComponent } from './dialog/edit-university-dialog/edit-university-dialog.component';
 import { QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { AngularFireStorage } from '@angular/fire/storage';
@@ -34,7 +33,7 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
 
   university_id: string;
 
-  universityImg: string;
+  universityImg: string = 'assets/img/college-graduation.png';
 
   showContent: boolean = false;
   showTable: boolean = false;
@@ -46,7 +45,6 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
   constructor(
     private universityService: UniversityService,
     private facultyService: FacultyService,
-    private majorService: MajorService,
     public dialog: MatDialog,
     private activeRoute: ActivatedRoute,
     private router: Router,

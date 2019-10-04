@@ -8,9 +8,9 @@ import { AngularFireStorage } from '@angular/fire/storage';
 })
 export class UniversityService {
   constructor(
-    private firestore: AngularFirestore, 
+    private firestore: AngularFirestore,
     private afStorage: AngularFireStorage
-    ) {
+  ) {
   }
 
   ngOnInit() {
@@ -54,5 +54,12 @@ export class UniversityService {
 
   getUniversity(university_id: string) {
     return this.firestore.collection('University').doc(university_id).snapshotChanges();
+  }
+
+  async getUniversityByUniversityName(university_name: string) {
+    return await this.firestore.collection('University').ref.where('university_name', '==', university_name)
+      .get().then(async result => {
+        return await result.docs[0].exists ? result.docs[0].ref : null;
+      });
   }
 }

@@ -21,6 +21,10 @@ export class CarrerService {
     return this.firestore.collection('Carrer').snapshotChanges();
   }
 
+  getCarrer(carrerId: string) {
+    return this.firestore.collection('Carrer').doc(carrerId).snapshotChanges();
+  }
+
   async addCarrer(carrer: Carrer) {
     return await this.firestore.collection('Carrer').doc(carrer.carrer_name).ref.get().then(async carrerRes => {
       if (!carrerRes.exists) { //ถ้าข้อมูล Carrer เก่าใน Database ยังไม่มี ให้ เพิ่มข้อมูล Carrer ลงไป
@@ -40,9 +44,13 @@ export class CarrerService {
         } else {
           carrerData.major = carrer.major;
         }
-        this.firestore.collection('Carrer').doc(carrer.carrer_name).update(carrerData);
+        this.firestore.collection('Carrer').doc(carrer.carrer_name).set(Object.assign({}, carrerData));
       }
       return this.firestore.collection('Carrer').doc(carrer.carrer_name).ref;
     });
+  }
+
+  updateCarrer(carrerId: string, carerer: Carrer) {
+    this.firestore.collection('Carrer').doc(carrerId).set(Object.assign({}, carerer));
   }
 }

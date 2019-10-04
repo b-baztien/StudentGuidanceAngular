@@ -1,10 +1,10 @@
-import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatAutocomplete, MatChipInputEvent, MatAutocompleteSelectedEvent } from '@angular/material';
 import { Major } from 'src/app/model/Major';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 import { MajorService } from 'src/app/services/major-service/major.service';
 import { CarrerService } from 'src/app/services/carrer-service/carrer.service';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { ENTER } from '@angular/cdk/keycodes';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { DocumentReference } from '@angular/fire/firestore';
@@ -15,7 +15,7 @@ import { Carrer } from 'src/app/model/Carrer';
   templateUrl: './add-major-dialog.component.html',
   styleUrls: ['./add-major-dialog.component.css']
 })
-export class AddMajorDialogComponent implements OnInit {
+export class AddMajorDialogComponent implements OnInit, AfterViewInit {
   majorForm = new FormGroup({
     major_name: new FormControl(null, [Validators.required]),
     url: new FormControl(null, [Validators.required]),
@@ -28,10 +28,12 @@ export class AddMajorDialogComponent implements OnInit {
   allCarrer: string[] = new Array<string>();
   filteredCarrer: Observable<string[]>;
 
+  loadData = false;
+
   selectable = true;
   addOnBlur = true;
   removable = true;
-  separatorKeysCodes: number[] = [ENTER, COMMA];
+  separatorKeysCodes: number[] = [ENTER];
 
   @ViewChild('carrerInput', { static: false }) carrerInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
@@ -42,19 +44,24 @@ export class AddMajorDialogComponent implements OnInit {
     private carrerService: CarrerService,
     @Inject(MAT_DIALOG_DATA) public data: string,
   ) {
-    carrerService.getAllCarrer().subscribe(listCarrerRes => {
-      listCarrerRes.forEach(carrerRes => {
-        const carrer = carrerRes.payload.doc.data() as Carrer;
-        this.allCarrer.push(carrer.carrer_name);
-      });
-    }),
-      this.filteredCarrer = this.majorForm.get('carrer').valueChanges.pipe(
-        startWith(null),
-        map((carrer: string | null) => carrer ? this._filter(carrer) : this.allCarrer.slice()));
+
   }
 
   ngOnInit() {
     this.dialogRef.disableClose = true;
+  }
+
+  async ngAfterViewInit() {
+    await this.carrerService.getAllCarrer().subscribe(listCarrerRes => {
+      listCarrerRes.forEach(carrerRes => {
+        const carrer = carrerRes.payload.doc.data() as Carrer;
+        this.allCarrer.push(carrer.carrer_name);
+      }),
+        this.loadData = true;
+    }),
+      this.filteredCarrer = this.majorForm.get('carrer').valueChanges.pipe(
+        startWith(null),
+        map((carrer: string | null) => carrer ? this._filter(carrer) : this.allCarrer.slice()));
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -100,25 +107,38 @@ export class AddMajorDialogComponent implements OnInit {
 
   async onSubmit() {
     this.major = new Major;
-    if (this.majorForm.valid) {
-      this.major.major_name = this.majorForm.get('major_name').value;
-      this.major.url = this.majorForm.get('url').value;
-      this.major.entrance_detail = this.majorForm.get('entrance_detail').value;
+    if (this.majorForm.valid && this.listCarrer_name.length !== 0) {
+      try {
+        this.major.major_name = this.majorForm.get('major_name').value;
+        this.major.url = this.majorForm.get('url').value;
+        this.major.entrance_detail = this.majorForm.get('entrance_detail').value;
 
-      await this.majorService.addMajor(this.data, this.major).then(async majorRef => {
-        let listCarrerRef = new Array<DocumentReference>();
-        const setCarrer = new Set(this.listCarrer_name);
-        await setCarrer.forEach(carrerName => {
-          const carrer = new Carrer();
-          carrer.carrer_name = carrerName;
-          carrer.major === undefined ? new Array<DocumentReference>() : carrer.major;
-          carrer.major.push(majorRef);
-          this.carrerService.addCarrer(carrer).then(carrerDocRef => {
-            listCarrerRef.push(carrerDocRef);
-          }).catch();
+        await this.majorService.addMajor(this.data, this.major).then(async majorRef => {
+          console.log(majorRef);
+          majorRef.get().then(dd => {
+            console.log(dd.data());
+          })
+          let listCarrerRef = new Array<DocumentReference>();
+          const setCarrer = new Set(this.listCarrer_name);
+          await setCarrer.forEach(async carrerName => {
+            const carrer = new Carrer();
+            carrer.carrer_name = carrerName;
+            carrer.major = carrer.major === undefined ? new Array<DocumentReference>() : carrer.major;
+            carrer.major.push(majorRef);
+            await this.carrerService.addCarrer(carrer).then(async carrerDocRef => {
+              await listCarrerRef.push(carrerDocRef);
+              this.majorService.getMajor(majorRef.id).subscribe(async majorData => {
+                let major: Major = majorData.payload.data() as Major;
+                major.carrer = await listCarrerRef;
+                this.majorService.updateMajor(majorData.payload.id, major);
+              });
+            });
+          });
         });
-      });
-
+      }
+      catch (error) {
+        console.log(error);
+      }
       this.dialogRef.close();
     }
   }

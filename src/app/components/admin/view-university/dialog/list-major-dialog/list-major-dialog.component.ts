@@ -1,7 +1,9 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatTableDataSource, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { QueryDocumentSnapshot } from '@angular/fire/firestore';
+import { QueryDocumentSnapshot, DocumentReference } from '@angular/fire/firestore';
 import { MajorService } from 'src/app/services/major-service/major.service';
+import { Carrer } from 'src/app/model/Carrer';
+import { CarrerService } from 'src/app/services/carrer-service/carrer.service';
 import { Major } from 'src/app/model/Major';
 
 @Component({
@@ -11,28 +13,39 @@ import { Major } from 'src/app/model/Major';
 })
 export class ListMajorDialogComponent implements OnInit {
   displayedColumns: string[] = ['major_name', 'url'];
-  majorLtb: MatTableDataSource<QueryDocumentSnapshot<unknown>>;
-  listMajor = new Array<QueryDocumentSnapshot<unknown>>();
-  showTable = false;
+  listMajor = new Array<Major>();
+  listCarrer = new Array<QueryDocumentSnapshot<unknown>>();
+  haveCarrer = false;
+  showData = false;
 
   constructor(
+    private carrerService: CarrerService,
     private majorService: MajorService,
     public dialogRef: MatDialogRef<ListMajorDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: QueryDocumentSnapshot<unknown>) {
   }
 
   async ngOnInit() {
+    this.majorService.getMajorByFacultyId(this.data.id).subscribe(listMajorDoc => {
+      this.listMajor = new Array<Major>();
+      listMajorDoc.forEach(major => {
+        this.listMajor.push(major.data() as Major);
+      })
+      if (this.listMajor === undefined || this.listMajor.length === 0) {
+        this.showData = false;
+      } else {
+        this.showData = true;
+      }
+    });
   }
 
   ngAfterViewInit() {
-    this.majorService.getMajorByFacultyId(this.data.id).subscribe(listMajorDoc => {
-      this.listMajor = listMajorDoc;
-      this.majorLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(this.listMajor);
-      if(this.majorLtb === undefined || this.majorLtb.data.length === 0) {
-        this.showTable = false;
-      } else {
-        this.showTable = true;
-      }
+
+  }
+
+  onDelete(major: Major) {
+    this.majorService.getMajor(`${major.major_name}${major.faculty.id}`).subscribe(result => {
+      this.majorService.deleteMajor(result.payload);
     });
   }
 

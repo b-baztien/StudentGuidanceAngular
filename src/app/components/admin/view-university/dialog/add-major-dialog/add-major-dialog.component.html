@@ -6,7 +6,7 @@
         <mat-icon class="hover-cursor" (click)="onNoClick()">close</mat-icon>
     </div>
 </div>
-<form [formGroup]="majorForm">
+<form [formGroup]="majorForm" *ngIf="loadData">
     <div mat-dialog-content>
         <mat-form-field>
             <input matInput placeholder="ชื่อสาขา" required formControlName="major_name">
@@ -23,10 +23,13 @@
         <mat-form-field>
             <textarea matInput placeholder="เงื่อนไขการเข้าศึกษาต่อ" required
                 formControlName="entrance_detail"></textarea>
+            <mat-error *ngIf="majorForm.controls.url.hasError('required')">
+                กรุณากรอกเงื่อนไขการเข้าศึกษาต่อ
+            </mat-error>
         </mat-form-field>
         <mat-form-field>
-            <mat-chip-list #chipList aria-label="Carrer selection">
-                <mat-chip *ngFor="let carrer_name of listCarrer_name" [selectable]="selectable" [removable]="removable"
+            <mat-chip-list #chipList aria-label="Carrer">
+                <mat-chip *ngFor="let carrer_name of listCarrer_name" [removable]="removable"
                     (removed)="removeCarrer(carrer_name)">
                     {{carrer_name}}
                     <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
@@ -35,6 +38,9 @@
                     [matAutocomplete]="auto" [matChipInputFor]="chipList"
                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
                     (matChipInputTokenEnd)="addCarrer($event)">
+                <mat-error *ngIf="listCarrer_name.length === 0 && majorForm.get('carrer').touched">
+                    กรุณากรอกอาชีพเมื่อสำเร็จการศึกษา
+                </mat-error>
             </mat-chip-list>
             <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
                 <mat-option *ngFor="let carrer of filteredCarrer | async" [value]="carrer">
@@ -44,7 +50,7 @@
         </mat-form-field>
     </div>
     <div mat-dialog-actions>
-        <button mat-button (click)="onNoClick()">ปิด</button>
-        <button mat-button (click)="onSubmit()">เพิ่มข้อมูล</button>
+        <button mat-raised-button class="btn-secondary" (click)="onNoClick()">ปิด</button>
+        <button mat-raised-button class="btn-success" (click)="onSubmit()">เพิ่มข้อมูล</button>
     </div>
 </form>

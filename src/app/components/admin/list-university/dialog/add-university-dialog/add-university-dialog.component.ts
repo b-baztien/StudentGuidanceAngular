@@ -44,7 +44,7 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
 
   university: University;
 
-  imgURL: any = 'assets/img/college-graduation.png';
+  imgURL: any = 'assets/img/no-photo-available.png';
 
   constructor(
     private http: HttpClient,
@@ -88,7 +88,7 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
         this.imgURL = reader.result;
       }
     } else {
-      this.imgURL = 'assets/img/college-graduation.png';
+      this.imgURL = 'assets/img/no-photo-available.png';
     }
   }
 

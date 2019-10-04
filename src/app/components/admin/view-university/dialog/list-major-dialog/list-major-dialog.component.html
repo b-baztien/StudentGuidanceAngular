@@ -6,21 +6,39 @@
         <mat-icon class="hover-cursor" (click)="onNoClick()">close</mat-icon>
     </div>
 </div>
-<div *ngIf="showTable">
-    <table mat-table [dataSource]="majorLtb" class="table">
-        <ng-container matColumnDef="major_name">
-            <th mat-header-cell *matHeaderCellDef>ชื่อ</th>
-            <td mat-cell *matCellDef="let major"> {{major.data().major_name}} </td>
-        </ng-container>
-        <ng-container matColumnDef="url">
-            <th mat-header-cell *matHeaderCellDef> เว็บไซต์ </th>
-            <td mat-cell *matCellDef="let major"> {{major.data().url}} </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+<div *ngIf="showData">
+    <mat-accordion>
+        <mat-expansion-panel *ngFor="let major of listMajor">
+            <mat-expansion-panel-header>
+                <mat-panel-title>{{major.major_name}}</mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-panel-description>
+                <mat-icon>language</mat-icon> ที่อยู่เว็บไซต์
+            </mat-panel-description>
+            <mat-panel-title><a href="{{major.url}}">{{major.url}}</a></mat-panel-title><br>
+            <mat-panel-description>
+                <mat-icon>school</mat-icon> เงื่อนไขการเข้าศึกษาต่อ
+            </mat-panel-description>
+            <mat-panel-title>
+                <p>{{major.entrance_detail}}</p>
+            </mat-panel-title><br>
+            <mat-panel-description>
+                <mat-icon>build</mat-icon> อาชีพเมื่อสำเร็จการศึกษา
+            </mat-panel-description>
+            <mat-panel-title>
+                <mat-chip-list >
+                    <mat-chip *ngFor="let carrer of major.carrer">
+                        {{carrer.id}}
+                    </mat-chip>
+                </mat-chip-list>
+            </mat-panel-title>
+            <mat-action-row>
+                <button mat-raised-button color="warn" (click)="onDelete(major)">ลบข้อมูลสาขา</button>
+            </mat-action-row>
+        </mat-expansion-panel>
+    </mat-accordion>
 </div>
-<div class="card-profile no-margin" *ngIf="!showTable">
+<div class="card-profile no-margin" *ngIf="!showData">
     <div class="card-body">
         <h4 class="card-title">ไม่พบข้อมูลสาขา</h4>
         <p class="card-description">

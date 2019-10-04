@@ -5,6 +5,8 @@ import { Major } from 'src/app/model/Major';
 import { FacultyService } from '../faculty-service/faculty.service';
 import { Subject } from 'rxjs';
 import { DocumentReference } from '@angular/fire/firestore';
+import { Carrer } from 'src/app/model/Carrer';
+import { CarrerService } from '../carrer-service/carrer.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,18 +15,21 @@ export class MajorService {
 
   constructor(
     private firestore: AngularFirestore,
-    private facultyService: FacultyService,
   ) {
   }
 
   getAllMajor() {
-    return this.firestore.collection('Major').snapshotChanges;
+    return this.firestore.collection('Major').snapshotChanges();
+  }
+
+  getMajor(majorId: string) {
+    return this.firestore.collection('Major').doc(majorId).snapshotChanges();
   }
 
   getMajorByFacultyId(facultyId: string) {
     let osbMajor = new Subject<Array<QueryDocumentSnapshot<unknown>>>();
-    let listMajor = new Array<QueryDocumentSnapshot<unknown>>();
     this.firestore.collection('Major').snapshotChanges().subscribe(mjDoc => {
+      let listMajor = new Array<QueryDocumentSnapshot<unknown>>();
       mjDoc.forEach(mj => {
         let major = mj.payload.doc;
         let dupMajor = false;
@@ -45,25 +50,86 @@ export class MajorService {
     return osbMajor.asObservable();
   }
 
+  // getMajorByFacultyRef(faculty: DocumentReference) {
+  //   let osbMajor = new Subject<Array<QueryDocumentSnapshot<unknown>>>();
+  //   let listMajor = new Array<QueryDocumentSnapshot<unknown>>();
+  //   this.firestore.collection('Major').ref.where('faculty', '==', faculty).get().then(listMajorRef => {
+  //     listMajorRef.docs.forEach(mj => {
+  //       mj.
+  //     })
+  //   }).snapshotChanges().subscribe(mjDoc => {
+  //     mjDoc.forEach(mj => {
+  //       let major = mj.payload.doc;
+  //       let dupMajor = false;
+  //       if ((major.data() as Major).faculty.id == facultyId) {
+  //         for (let i = 0; i < listMajor.length; i++) {
+  //           if (listMajor[i].id == major.id) {
+  //             dupMajor = true;
+  //             listMajor.splice(i, 1, major);
+  //           }
+  //         }
+  //         if (!dupMajor) {
+  //           listMajor.push(major);
+  //         }
+  //       }
+  //       osbMajor.next(listMajor);
+  //     });
+  //   });
+  //   return osbMajor.asObservable();
+  // }
+
   async addMajor(facultyId: string, major: Major) {
     major.faculty = this.firestore.collection('Faculty').doc(facultyId).ref;
     return await this.firestore.collection('Major').doc(major.major_name + facultyId).ref.get().then(async result => {
       if (!result.exists) {
-        return await this.firestore.collection('Major').doc(major.major_name + facultyId).set(Object.assign({}, major)).then(
-          async () => {
+        return await this.firestore.collection('Major').doc(major.major_name + facultyId).set(Object.assign({}, major))
+          .then(async () => {
             return await major.faculty.get().then(facultyRef => {
               const faculty = facultyRef.data() as Faculty;
-              console.log(faculty);
               faculty.major = faculty.major === undefined ? new Array<DocumentReference>() : faculty.major;
-              faculty.major.push(this.firestore.collection('Faculty').doc(major.major_name + facultyId).ref);
-              this.facultyService.updateFaculty(facultyId, faculty);
-
-              return this.firestore.collection('Faculty').doc(major.major_name + facultyId).ref
+              faculty.major.push(this.firestore.collection('Major').doc(major.major_name + facultyId).ref);
+              this.firestore.collection('Faculty').doc(facultyId).set(Object.assign({}, faculty));
+              return this.firestore.collection('Major').doc(major.major_name + facultyId).ref
             });
           });
       } else {
         throw new Error('มีสาขานี้อยู่ในระบบแล้ว');
       }
     });
+  }
+
+  updateMajor(majorId: string, major: Major) {
+    return this.firestore.collection('Major').doc(majorId).set(Object.assign({}, major));
+  }
+
+  deleteMajor(major: QueryDocumentSnapshot<unknown>) {
+    try {
+      this.firestore.collection('Carrer').ref.where('major', 'array-contains', major.ref).onSnapshot(result => {
+        result.forEach(docsRs => {
+          const carrer = docsRs.data() as Carrer;
+          for (let i = 0; i < carrer.major.length; i++) {
+            if (carrer.major[i].id == major.id) {
+              carrer.major.splice(i, 1);
+              this.firestore.collection('Carrer').doc(docsRs.id).set(Object.assign({}, carrer));
+            }
+          }
+        })
+      });
+      this.firestore.collection('Faculty').ref.where('major', 'array-contains', major.ref).onSnapshot(result => {
+        result.forEach(docsRs => {
+          const faculty = docsRs.data() as Faculty;
+          for (let i = 0; i < faculty.major.length; i++) {
+            if (faculty.major[i].id == major.id) {
+              faculty.major.splice(i, 1);
+              this.firestore.collection('Faculty').doc(docsRs.id).set(Object.assign({}, faculty));
+            }
+          }
+          this.firestore.collection('Major').doc(major.id).delete();
+        })
+      });
+    } catch (error) {
+      console.log(error);
+      throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
+    }
   }
 }

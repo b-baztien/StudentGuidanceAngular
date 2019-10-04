@@ -47,7 +47,6 @@ import { ListStudentComponent } from 'src/app/components/teacher/list-student/li
     SharedModule,
     MatStepperModule,
     MatAutocompleteModule,
-    SharedModule,
   ], exports: [ComponentsModule]
 })
 

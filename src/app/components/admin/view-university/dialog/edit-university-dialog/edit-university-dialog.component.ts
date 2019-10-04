@@ -43,7 +43,7 @@ export class EditUniversityDialogComponent implements OnInit {
 
   university: University;
 
-  imgURL: any = 'assets/img/college-graduation.png';
+  imgURL: any = 'assets/img/no-photo-available.png';
 
   constructor(
     private http: HttpClient,
