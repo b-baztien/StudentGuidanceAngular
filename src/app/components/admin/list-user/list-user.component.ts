@@ -52,7 +52,7 @@ export class ListUserComponent implements OnInit {
 
   openAddUserDialog(): void {
     const dialogRef = this.dialog.open(AddUserDialogComponent, {
-      width: '50%',
+      width: '60%',
     });
 
     dialogRef.beforeClose().subscribe()

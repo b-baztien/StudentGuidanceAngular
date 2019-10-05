@@ -1,19 +1,19 @@
 <div class="row">
     <div class="col-sm-11">
-      <h1 mat-dialog-title>เพิ่มข้อมูลมหาวิทยาลัย</h1>
+      <h1 mat-dialog-title>เพิ่มข้อมูลผู้ใช้</h1>
     </div>
     <div class="col-sm-1" class="hover-cursor">
       <mat-icon class="hover-cursor" (click)="onNoClick()">close</mat-icon>
     </div>
   </div>
   <mat-vertical-stepper [linear]="true" #stepper>
-    <mat-step [stepControl]="universityDetailForm">
-      <form [formGroup]="universityDetailForm">
+    <mat-step [stepControl]="userForm">
+      <form [formGroup]="userForm">
         <ng-template matStepLabel>ข้อมูลรายละเอียดมหาวิทยาลัย</ng-template>
         <div mat-dialog-content>
           <mat-form-field>
             <input matInput placeholder="ชื่อมหาวิทยาลัย" required formControlName="university_name">
-            <mat-error *ngIf="universityDetailForm.controls.university_name.hasError('required')">
+            <mat-error *ngIf="userForm.controls.university_name.hasError('required')">
               กรุณากรอกชื่อมหาวิทยาลัย
             </mat-error>
           </mat-form-field>
@@ -22,16 +22,16 @@
           </mat-form-field>
           <mat-form-field>
             <input matInput type="tel" placeholder="เบอร์โทรศัพท์" required formControlName="phone_no">
-            <mat-error *ngIf="universityDetailForm.controls.phone_no.hasError('required')">
+            <mat-error *ngIf="userForm.controls.phone_no.hasError('required')">
               กรุณากรอกเบอร์โทรศัพท์
             </mat-error>
-            <mat-error *ngIf="universityDetailForm.controls.phone_no.hasError('pattern')">
+            <mat-error *ngIf="userForm.controls.phone_no.hasError('pattern')">
               เบอร์โทรศัพท์ต้องเป็นตัวเลขเท่านั้น
             </mat-error>
           </mat-form-field>
           <mat-form-field>
             <input type="url" matInput placeholder="ที่อยู่เว็บไซต์" required formControlName="url">
-            <mat-error *ngIf="universityDetailForm.controls.url.hasError('required')">
+            <mat-error *ngIf="userForm.controls.url.hasError('required')">
               กรุณากรอกที่อยู่เว็บไซต์
             </mat-error>
           </mat-form-field>

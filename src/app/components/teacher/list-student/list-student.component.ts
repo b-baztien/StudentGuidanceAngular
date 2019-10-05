@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
 import { QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
@@ -10,9 +10,9 @@ import { AddUniversityDialogComponent } from '../../admin/list-university/dialog
   templateUrl: './list-student.component.html',
   styleUrls: ['./list-student.component.css']
 })
-export class ListStudentComponent implements OnInit {
+export class ListStudentComponent implements OnInit, AfterViewInit, OnDestroy {
   universityList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
-  displayedColumns: string[] = ['university_name', 'phone_no', 'url', 'view', 'zone'];
+  displayedColumns: string[] = ['university_name', 'phone_no', 'url', 'view', 'province', 'zone'];
 
   resultsLength = 0;
   isLoadingResults = true;
@@ -23,10 +23,17 @@ export class ListStudentComponent implements OnInit {
 
   showTable: boolean = false;
 
-  constructor(public dialog: MatDialog, private router: Router, private universityService: UniversityService) { }
+  constructor(
+    public dialog: MatDialog,
+    private router: Router,
+    private universityService: UniversityService
+  ) { }
 
-  async ngOnInit() {
-    this.listUniObs = await this.universityService.getAllUniversity().subscribe(result => {
+  ngOnInit() {
+  }
+
+  ngAfterViewInit(): void {
+    this.listUniObs = this.universityService.getAllUniversity().subscribe(result => {
       let resultListUniversity = new Array<QueryDocumentSnapshot<Object>>();
       result.forEach(element => {
         resultListUniversity.push(element.payload.doc);
@@ -50,11 +57,10 @@ export class ListStudentComponent implements OnInit {
       width: '50%',
     });
 
-    dialogRef.beforeClose().subscribe()
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      console.log(result);
+    dialogRef.afterClosed().subscribe(async universityId => {
+      if (universityId != null) {
+        this.router.navigate(['/admin/list-university/view-university', { university: universityId }]);
+      }
     });
   }
 

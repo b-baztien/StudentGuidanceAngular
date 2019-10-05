@@ -28,7 +28,7 @@ export class FacultyService {
               university.faculty = university.faculty === undefined ? new Array<DocumentReference>() : university.faculty;
               university.faculty.push(this.firestore.collection('Faculty').doc(faculty.faculty_name + universityId).ref);
               this.universityService.updateUniversity(universityId, university);
-            })
+            });
           });
       } else {
         throw new Error('มีคณะนี้อยู่ในระบบแล้ว');
