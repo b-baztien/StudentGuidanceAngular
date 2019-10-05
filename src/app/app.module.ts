@@ -31,6 +31,7 @@ import localeTh from '@angular/common/locales/th';
 import localeThExtra from '@angular/common/locales/extra/th';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { ListMajorDialogComponent } from './components/admin/view-university/dialog/list-major-dialog/list-major-dialog.component';
+import { EditNewsDialogComponent } from './components/teacher/list-news/dialog/edit-news-dialog/edit-news-dialog.component';
 
 registerLocaleData(localeTh, 'th-TH', localeThExtra );
 @NgModule({
@@ -46,6 +47,7 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra );
     AddUserDialogComponent,
     AddNewsDialogComponent,
     ListMajorDialogComponent,
+    EditNewsDialogComponent,
   ],
   entryComponents: [
     AddEditFacultyDialogComponent,
@@ -56,6 +58,7 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra );
     AddUserDialogComponent,
     AddNewsDialogComponent,
     ListMajorDialogComponent,
+    EditNewsDialogComponent,
   ],
   imports: [
     BrowserModule,

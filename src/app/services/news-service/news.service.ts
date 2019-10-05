@@ -25,6 +25,10 @@ export class NewsService {
     return this.firestore.collection('News').add(Object.assign({}, news));
   }
 
+  editNews(news_id: string, news: News) {
+    return this.firestore.collection('News').doc(news_id).update(Object.assign({}, news));
+  }
+
   getNews(news_id: string) {
     return this.firestore.collection('News').doc(news_id).snapshotChanges();
   }

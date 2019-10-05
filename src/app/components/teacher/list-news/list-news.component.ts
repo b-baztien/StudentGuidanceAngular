@@ -8,6 +8,7 @@ import { AngularFireStorage } from '@angular/fire/storage';
 import { News } from 'src/app/model/News';
 import { UniversityService } from 'src/app/services/university-service/university.service';
 import { University } from 'src/app/model/University';
+import { EditNewsDialogComponent } from './dialog/edit-news-dialog/edit-news-dialog.component';
 
 @Component({
   selector: 'app-list-news',
@@ -82,18 +83,29 @@ export class ListNewsComponent implements OnInit, AfterViewInit {
     this.listNewsObs.unsubscribe();
   }
 
-  openAddUniversityDialog(): void {
+  openAddNewsDialog(): void {
     const dialogRef = this.dialog.open(AddNewsDialogComponent, {
-      width: '50%',
+      width: '60%',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result);
+    });
+  }
+
+  openEditNewsDialog(news: DocumentReference): void {
+    const dialogRef = this.dialog.open(EditNewsDialogComponent, {
+      width: '60%',
+      data: news,
     });
 
     dialogRef.beforeClose().subscribe()
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
       console.log(result);
     });
   }
+
 
   openDeleteNewsDialog(newsId: string) {
     this.newsService.deleteNews(newsId);

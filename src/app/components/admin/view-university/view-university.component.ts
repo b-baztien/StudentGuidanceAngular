@@ -33,7 +33,7 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
 
   university_id: string;
 
-  universityImg: string = 'assets/img/college-graduation.png';
+  universityImg: string = 'assets/img/no-photo-available.png';
 
   showContent: boolean = false;
   showTable: boolean = false;
