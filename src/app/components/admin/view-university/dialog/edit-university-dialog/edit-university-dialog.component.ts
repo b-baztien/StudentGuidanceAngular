@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { AddUniversityDialogComponent } from '../../../list-university/dialog/add-university-dialog/add-university-dialog.component';
 import { UniversityService } from 'src/app/services/university-service/university.service';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-edit-university-dialog',
@@ -50,6 +51,7 @@ export class EditUniversityDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<AddUniversityDialogComponent>,
     private universityService: UniversityService,
     private afStorage: AngularFireStorage,
+    private afirestore: AngularFirestore,
     @Inject(MAT_DIALOG_DATA) public data: { universityId: string, university: University },
   ) {
     this.university = data.university;
@@ -77,7 +79,7 @@ export class EditUniversityDialogComponent implements OnInit {
       contentType: 'image/jpeg',
     };
 
-    const fileName = event.files[0].name;
+    const fileName = this.afirestore.createId();
     if (event.files[0].type.split('/')[0] == 'image') {
       await this.afStorage.upload(`university/${fileName}`, event.files[0], metadata).then(async result => {
         this.university.image = await result.ref.fullPath;

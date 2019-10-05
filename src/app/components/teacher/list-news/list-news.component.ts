@@ -1,11 +1,13 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
-import { QueryDocumentSnapshot } from '@angular/fire/firestore';
+import { QueryDocumentSnapshot, DocumentReference } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { NewsService } from 'src/app/services/news-service/news.service';
 import { AddNewsDialogComponent } from './dialog/add-news-dialog/add-news-dialog.component';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { News } from 'src/app/model/News';
+import { UniversityService } from 'src/app/services/university-service/university.service';
+import { University } from 'src/app/model/University';
 
 @Component({
   selector: 'app-list-news',
@@ -17,6 +19,8 @@ export class ListNewsComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['topic', 'detail', 'start_time', 'end_time'];
 
   resultsLength = 0;
+
+  mapUniversity = new Map();
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
@@ -30,6 +34,7 @@ export class ListNewsComponent implements OnInit, AfterViewInit {
     public dialog: MatDialog,
     private router: Router,
     private newsService: NewsService,
+    private universityService: UniversityService,
     private afStorage: AngularFireStorage,
   ) {
   }
@@ -38,22 +43,38 @@ export class ListNewsComponent implements OnInit, AfterViewInit {
   }
 
   async ngAfterViewInit() {
-    this.listNewsObs = await this.newsService.getAllNews().subscribe(result => {
-      let resultListUniversity = new Array<QueryDocumentSnapshot<Object>>();
-      result.forEach(element => {
-        let news = element.payload.doc.data() as News;
-        if (news.image !== undefined) {
-          this.afStorage.storage.ref(news.image).getDownloadURL().then(url => {
-            this.imagePath.set(element.payload.doc.id, url);
-          });
-        } else {
-          this.imagePath.set(element.payload.doc.id, 'assets/img/no-photo-available.png');
-        }
+    this.listNewsObs = await this.newsService.getAllNews().subscribe(() => {
+      this.newsService.getAllNewsOrderByDate().then(result => {
+        let resultListUniversity = new Array<QueryDocumentSnapshot<Object>>();
+        result.forEach(element => {
+          let news = element.data() as News;
+          if (news.image !== undefined) {
+            this.afStorage.storage.ref(news.image).getDownloadURL().then(url => {
+              this.imagePath.set(element.id, url);
+            });
+          } else {
+            this.imagePath.set(element.id, 'assets/img/no-photo-available.png');
+          }
+          let listUniName = new Array<string>();
+          if (news.university !== undefined) {
+            news.university.forEach(uniRef => {
+              this.universityService.getUniversity(uniRef.id).subscribe(result => {
+                let uni = result.payload.data() as University;
+                listUniName.push(uni.university_name);
+                if (listUniName.length === news.university.length) {
+                  this.mapUniversity.set(element.id, listUniName);
+                }
+              });
+            });
+          } else {
+            this.mapUniversity.set(element.id, null);
+          }
 
-        resultListUniversity.push(element.payload.doc);
+          resultListUniversity.push(element);
+        });
+        this.newsList = resultListUniversity;
+        this.showContent = this.newsList.length === 0 ? false : true;
       });
-      this.newsList = resultListUniversity;
-      this.showContent = this.newsList.length === 0 ? false : true;
     });
   }
 
@@ -72,6 +93,10 @@ export class ListNewsComponent implements OnInit, AfterViewInit {
       console.log('The dialog was closed');
       console.log(result);
     });
+  }
+
+  openDeleteNewsDialog(newsId: string) {
+    this.newsService.deleteNews(newsId);
   }
 
   onNewsClick(news_id: string) {

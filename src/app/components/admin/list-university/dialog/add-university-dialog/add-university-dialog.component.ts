@@ -6,6 +6,7 @@ import { UniversityService } from 'src/app/services/university-service/universit
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 declare var $: any;
 
@@ -50,7 +51,8 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
     private http: HttpClient,
     public dialogRef: MatDialogRef<AddUniversityDialogComponent>,
     private universityService: UniversityService,
-    private afStorage: AngularFireStorage
+    private afStorage: AngularFireStorage,
+    private afirestore: AngularFirestore,
   ) {
   }
 
@@ -72,7 +74,7 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
       contentType: 'image/jpeg',
     };
 
-    const fileName = event.files[0].name;
+    const fileName = this.afirestore.createId();
     if (event.files[0].type.split('/')[0] == 'image') {
       await this.afStorage.upload(`university/${fileName}`, event.files[0], metadata).then(async result => {
         this.university.image = await result.ref.fullPath;

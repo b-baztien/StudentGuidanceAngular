@@ -16,7 +16,8 @@ import {
   MatCardModule,
   MatIconModule,
   MatStepperModule,
-  MatAutocompleteModule
+  MatAutocompleteModule,
+  MatChipsModule
 } from '@angular/material';
 import { ComponentsModule } from 'src/app/components/navigation/components.module';
 import { ListNewsComponent } from 'src/app/components/teacher/list-news/list-news.component';
@@ -47,6 +48,7 @@ import { ListStudentComponent } from 'src/app/components/teacher/list-student/li
     SharedModule,
     MatStepperModule,
     MatAutocompleteModule,
+    MatChipsModule,
   ], exports: [ComponentsModule]
 })
 

@@ -50,34 +50,6 @@ export class MajorService {
     return osbMajor.asObservable();
   }
 
-  // getMajorByFacultyRef(faculty: DocumentReference) {
-  //   let osbMajor = new Subject<Array<QueryDocumentSnapshot<unknown>>>();
-  //   let listMajor = new Array<QueryDocumentSnapshot<unknown>>();
-  //   this.firestore.collection('Major').ref.where('faculty', '==', faculty).get().then(listMajorRef => {
-  //     listMajorRef.docs.forEach(mj => {
-  //       mj.
-  //     })
-  //   }).snapshotChanges().subscribe(mjDoc => {
-  //     mjDoc.forEach(mj => {
-  //       let major = mj.payload.doc;
-  //       let dupMajor = false;
-  //       if ((major.data() as Major).faculty.id == facultyId) {
-  //         for (let i = 0; i < listMajor.length; i++) {
-  //           if (listMajor[i].id == major.id) {
-  //             dupMajor = true;
-  //             listMajor.splice(i, 1, major);
-  //           }
-  //         }
-  //         if (!dupMajor) {
-  //           listMajor.push(major);
-  //         }
-  //       }
-  //       osbMajor.next(listMajor);
-  //     });
-  //   });
-  //   return osbMajor.asObservable();
-  // }
-
   async addMajor(facultyId: string, major: Major) {
     major.faculty = this.firestore.collection('Faculty').doc(facultyId).ref;
     return await this.firestore.collection('Major').doc(major.major_name + facultyId).ref.get().then(async result => {

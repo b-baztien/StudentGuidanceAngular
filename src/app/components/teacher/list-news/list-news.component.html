@@ -33,6 +33,13 @@
                                 {{news.data().detail}}
                             </p>
                         </div>
+                        <div class="card-footer" *ngIf="mapUniversity.get(news.id) !== null">
+                            <mat-chip-list>
+                                <mat-chip *ngFor="let university_name of mapUniversity.get(news.id)">
+                                    {{university_name}}
+                                </mat-chip>
+                            </mat-chip-list>
+                        </div>
                         <div class="card-footer">
                             <p class="card-description">
                                 <mat-icon matTooltip="วันที่เผยแพร่">visibility
@@ -46,7 +53,7 @@
                                     (click)="openEditUniversityDialog()">
                                     <mat-icon>edit</mat-icon> แก้ไขข้อมูลข่าว
                                 </button><button mat-raised-button class="btn-danger"
-                                    (click)="openAddEditFacultyDialog()">
+                                    (click)="openDeleteNewsDialog(news.id)">
                                     <mat-icon>delete</mat-icon> ลบข้อมูลข่าว
                                 </button>
                             </div>

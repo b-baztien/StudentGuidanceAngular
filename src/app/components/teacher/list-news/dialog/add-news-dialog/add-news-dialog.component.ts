@@ -1,11 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { ENTER } from '@angular/cdk/keycodes';
 import { MatAutocomplete, MatDialogRef, MAT_DIALOG_DATA, MatChipInputEvent, MatAutocompleteSelectedEvent } from '@angular/material';
 import { AddMajorDialogComponent } from 'src/app/components/admin/view-university/dialog/add-major-dialog/add-major-dialog.component';
 import { startWith, map } from 'rxjs/operators';
-import { DocumentReference } from '@angular/fire/firestore';
+import { DocumentReference, AngularFirestore } from '@angular/fire/firestore';
 import { News } from 'src/app/model/News';
 import { UniversityService } from 'src/app/services/university-service/university.service';
 import { University } from 'src/app/model/University';
@@ -47,6 +46,7 @@ export class AddNewsDialogComponent implements OnInit {
     private newsService: NewsService,
     private universityService: UniversityService,
     private afStorage: AngularFireStorage,
+    private afirestore: AngularFirestore,
     @Inject(MAT_DIALOG_DATA) public data: string,
   ) {
 
@@ -91,10 +91,13 @@ export class AddNewsDialogComponent implements OnInit {
       contentType: 'image/jpeg',
     };
 
-    const fileName = event.files[0].name;
+    const fileName = this.afirestore.createId();
+    console.log(fileName);
+    console.log(event.files[0].name);
     if (event.files[0].type.split('/')[0] == 'image') {
       await this.afStorage.upload(`news/${fileName}`, event.files[0], metadata).then(async result => {
         this.news.image = await result.ref.fullPath;
+        console.log(result.ref.fullPath);
       });
     }
   }
@@ -144,12 +147,13 @@ export class AddNewsDialogComponent implements OnInit {
                 listUniversityRef.push(universityRef);
               }
               if (setUniversity.size === listUniversityRef.length) {
+                this.news.university = listUniversityRef;
                 this.newsService.addNews(this.news);
               }
             });
           });
-          this.news.university = listUniversityRef;
         } else {
+          this.news.university = listUniversityRef;
           this.newsService.addNews(this.news);
         }
       }
