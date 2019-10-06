@@ -39,5 +39,7 @@ export class LoginService {
   }
 
   logout() {
+    localStorage.setItem('userData',null)
+    location.reload();
   }
 }

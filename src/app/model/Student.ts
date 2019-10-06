@@ -1,7 +1,6 @@
-import { firestore } from 'firebase';
 import { DocumentReference } from '@angular/fire/firestore';
 
-export class News {
+export class Student {
     student_id: string;
     firstname: DocumentReference;
     lastname: string;

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { University } from 'src/app/model/University';
 import { Faculty } from 'src/app/model/Faculty';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import { Major } from 'src/app/model/Major';
 import { Teacher } from 'src/app/model/Teacher';
 
@@ -13,9 +13,16 @@ export class TeacherService {
   constructor(private firestore: AngularFirestore) {
   }
 
-  getAllMajor(university: University, faculty: Faculty) {
-    return this.firestore.collection('University').doc(university.university_name)
-      .collection('Faculty').doc(faculty.faculty_name).collection('Major').snapshotChanges;
+  getTeacher(teacherId: string) {
+    return this.firestore.collection('Teacher').doc(teacherId).snapshotChanges();
+  }
+
+  async getTeacherByUsername(username: string) {
+    let login: DocumentReference = this.firestore.collection('Login').doc(username).ref;
+    console.log(login)
+    return await this.firestore.collection('Teacher').ref.where('login', '==', login).get().then(async result => {
+      return await result.docs[0];
+    });
   }
 
   addTeacher() {

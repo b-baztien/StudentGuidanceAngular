@@ -11,4 +11,8 @@ export class SchoolService {
   getAllSchool() {
     return this.firestore.collection('School').snapshotChanges();
   }
+
+  getSchool(schoolId: string) {
+    return this.firestore.collection('School').doc(schoolId).snapshotChanges();
+  }
 }
