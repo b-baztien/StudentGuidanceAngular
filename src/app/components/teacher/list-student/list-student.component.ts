@@ -71,7 +71,7 @@ export class ListStudentComponent implements OnInit, AfterViewInit, OnDestroy {
     this.studentList.filter = filterValue.trim().toLowerCase();
   }
 
-  openAddUniversityDialog(): void {
+  openAddStudentDialog(): void {
     const dialogRef = this.dialog.open(AddUniversityDialogComponent, {
       width: '50%',
     });
@@ -83,7 +83,15 @@ export class ListStudentComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  onUniversityClick(university: string) {
-    this.router.navigate(['/admin/list-university/view-university', { university: university }]);
+  onStudentClick(university: string) {
+    const dialogRef = this.dialog.open(AddUniversityDialogComponent, {
+      width: '50%',
+    });
+
+    dialogRef.afterClosed().subscribe(async universityId => {
+      if (universityId != null) {
+        this.router.navigate(['/admin/list-university/view-university', { university: universityId }]);
+      }
+    });
   }
 }

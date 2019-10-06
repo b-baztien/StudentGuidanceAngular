@@ -1,17 +1,16 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatTableDataSource, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { QueryDocumentSnapshot, DocumentReference } from '@angular/fire/firestore';
-import { MajorService } from 'src/app/services/major-service/major.service';
-import { Carrer } from 'src/app/model/Carrer';
-import { CarrerService } from 'src/app/services/carrer-service/carrer.service';
 import { Major } from 'src/app/model/Major';
+import { QueryDocumentSnapshot } from '@angular/fire/firestore';
+import { CarrerService } from 'src/app/services/carrer-service/carrer.service';
+import { MajorService } from 'src/app/services/major-service/major.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'app-list-major-dialog',
   templateUrl: './list-major-dialog.component.html',
   styleUrls: ['./list-major-dialog.component.css']
 })
-export class ListMajorAdminDialogComponent implements OnInit {
+export class ListMajorTeacherDialogComponent implements OnInit {
   displayedColumns: string[] = ['major_name', 'url'];
   listMajor = new Array<Major>();
   listCarrer = new Array<QueryDocumentSnapshot<unknown>>();
@@ -21,7 +20,7 @@ export class ListMajorAdminDialogComponent implements OnInit {
   constructor(
     private carrerService: CarrerService,
     private majorService: MajorService,
-    public dialogRef: MatDialogRef<ListMajorAdminDialogComponent>,
+    public dialogRef: MatDialogRef<ListMajorTeacherDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: QueryDocumentSnapshot<unknown>) {
   }
 
@@ -41,12 +40,6 @@ export class ListMajorAdminDialogComponent implements OnInit {
 
   ngAfterViewInit() {
 
-  }
-
-  onDelete(major: Major) {
-    this.majorService.getMajor(`${major.major_name}${major.faculty.id}`).subscribe(result => {
-      this.majorService.deleteMajor(result.payload);
-    });
   }
 
   onNoClick(): void {

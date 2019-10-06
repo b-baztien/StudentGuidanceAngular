@@ -11,7 +11,7 @@ import { AddMajorDialogComponent } from './dialog/add-major-dialog/add-major-dia
 import { EditUniversityDialogComponent } from './dialog/edit-university-dialog/edit-university-dialog.component';
 import { QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { ListMajorDialogComponent } from './dialog/list-major-dialog/list-major-dialog.component';
+import { ListMajorAdminDialogComponent } from './dialog/list-major-dialog/list-major-dialog.component';
 
 
 
@@ -129,7 +129,7 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
   }
 
   openListMajorDialog(faculty: QueryDocumentSnapshot<unknown>): void {
-    const dialogRef = this.dialog.open(ListMajorDialogComponent, {
+    const dialogRef = this.dialog.open(ListMajorAdminDialogComponent, {
       width: '50%',
       data: faculty,
     });

@@ -15,14 +15,14 @@
                             </div>
                             <div class="col-sm-4 card-button-right">
                                 <button mat-raised-button class="btn-success" (click)="openAddStudentDialog()">
-                                    <mat-icon>add</mat-icon> เพิ่มข้อมูลมหาวิทยาลัย
+                                    <mat-icon>add</mat-icon> เพิ่มข้อมูลนักเรียน
                                 </button>
                             </div>
                         </div>
                     </div>
                     <div class="card-body table-responsive" *ngIf="showTable">
                         <mat-form-field>
-                            <input matInput placeholder="ค้นหามหาวิทยาลัย ภายในระบบ..."
+                            <input matInput placeholder="ค้นหานักเรียน ภายในระบบ..."
                                 (keyup)="applyFilter($event.target.value)">
                         </mat-form-field>
                         <table mat-table [dataSource]="studentList" class="table table-hover">
@@ -50,13 +50,13 @@
                             </ng-container>
                             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                             <tr class="row-hover" mat-row *matRowDef="let row; columns: displayedColumns;"
-                                (click)="onstudentClick(row.id)"></tr>
+                                (click)="onStudentClick(row.id)"></tr>
                         </table>
                         <div class="card-profile" *ngIf="studentList.filteredData.length == 0">
                             <div class="card-body">
-                                <h4 class="card-title">ไม่พบข้อมูลมหาวิทยาลัยที่ค้นหา</h4>
+                                <h4 class="card-title">ไม่พบข้อมูลนักเรียนที่ค้นหา</h4>
                                 <p class="card-description">
-                                    ไม่พบข้อมูลมหาวิทยาลัยตามเงื่อนไขที่ค้นหา กรุณาค้นหาด้วยเงื่อนไขอื่น
+                                    ไม่พบข้อมูลนักเรียนตามเงื่อนไขที่ค้นหา กรุณาค้นหาด้วยเงื่อนไขอื่น
                                 </p>
                             </div>
                         </div>
@@ -65,9 +65,9 @@
                     </div>
                     <div class="card-profile" *ngIf="!showTable">
                         <div class="card-body">
-                            <h4 class="card-title">ไม่พบข้อมูลมหาวิทยาลัย</h4>
+                            <h4 class="card-title">ไม่พบข้อมูลนักเรียน</h4>
                             <p class="card-description">
-                                ไม่พบข้อมูลมหาวิทยาลัยในระบบ กรุณาเพิ่มข้อมูลมหาวิทยาลัย
+                                ไม่พบข้อมูลนักเรียนในระบบ กรุณาเพิ่มข้อมูลนักเรียน
                             </p>
                         </div>
                     </div>

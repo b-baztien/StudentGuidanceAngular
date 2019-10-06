@@ -30,9 +30,10 @@ import { registerLocaleData } from '@angular/common';
 import localeTh from '@angular/common/locales/th';
 import localeThExtra from '@angular/common/locales/extra/th';
 import { AngularFireStorageModule } from '@angular/fire/storage';
-import { ListMajorDialogComponent } from './components/admin/view-university/dialog/list-major-dialog/list-major-dialog.component';
+import { ListMajorAdminDialogComponent } from './components/admin/view-university/dialog/list-major-dialog/list-major-dialog.component';
 import { EditNewsDialogComponent } from './components/teacher/list-news/dialog/edit-news-dialog/edit-news-dialog.component';
 import { LogoutComponent } from './components/logout/logout.component';
+import { ListMajorTeacherDialogComponent } from './components/teacher/view-university/dialog/list-major-dialog/list-major-dialog.component';
 
 registerLocaleData(localeTh, 'th-TH', localeThExtra );
 @NgModule({
@@ -47,9 +48,11 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra );
     DeleteUniversityComponent,
     AddUserDialogComponent,
     AddNewsDialogComponent,
-    ListMajorDialogComponent,
+    ListMajorAdminDialogComponent,
     EditNewsDialogComponent,
+    ListMajorTeacherDialogComponent,
     LogoutComponent,
+    
   ],
   entryComponents: [
     AddEditFacultyDialogComponent,
@@ -59,8 +62,9 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra );
     DeleteUniversityComponent,
     AddUserDialogComponent,
     AddNewsDialogComponent,
-    ListMajorDialogComponent,
+    ListMajorAdminDialogComponent,
     EditNewsDialogComponent,
+    ListMajorTeacherDialogComponent,
   ],
   imports: [
     BrowserModule,

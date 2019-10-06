@@ -24,11 +24,15 @@ import { ListNewsComponent } from 'src/app/components/teacher/list-news/list-new
 import { SharedModule } from 'src/app/shared/shared.module';
 import { DashboardComponent } from 'src/app/components/teacher/dashboard/dashboard.component';
 import { ListStudentComponent } from 'src/app/components/teacher/list-student/list-student.component';
+import { ListUniversityTeacherComponent } from 'src/app/components/teacher/list-university/list-university.component';
+import { ViewUniversityComponent } from 'src/app/components/teacher/view-university/view-university.component';
 @NgModule({
   declarations: [
     ListNewsComponent,
     DashboardComponent,
     ListStudentComponent,
+    ListUniversityTeacherComponent,
+    ViewUniversityComponent,
   ],
   imports: [
     CommonModule,
