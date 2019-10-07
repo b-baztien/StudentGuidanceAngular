@@ -43,7 +43,6 @@ export class ListStudentComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    //test Teacher
     this.teacher = new Teacher();
 
     this.teacherService.getTeacher('teacher1').subscribe(teacherRef => {

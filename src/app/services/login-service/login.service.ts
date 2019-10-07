@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentChangeAction } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import { Login } from '../../model/Login';
-import { Observable } from 'rxjs';
-import { University } from 'src/app/model/University';
-import { element } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
@@ -34,12 +31,36 @@ export class LoginService {
     });
   }
 
+  removeUser(user: Login, login: DocumentReference) {
+    if (user.type === 'teacher') {
+      this.firestore.collection('Teacher').ref.where('login', '==', login).get().then(teacherRef => {
+        if (teacherRef.docs[0].exists) {
+          let teacher = teacherRef.docs[0];
+          this.firestore.collection('News').ref.where('teacher', '==', teacher).get().then(listNewsRef => {
+            listNewsRef.docs.forEach(newsRef => {
+              this.firestore.collection('News').doc(newsRef.id).delete();
+            });
+          });
+          this.firestore.collection('Teacher').doc(teacher.id).delete();
+        }
+      });
+    } else if (user.type === 'student') {
+      this.firestore.collection('Student').ref.where('login', '==', login).get().then(studentRef => {
+        if (studentRef.docs[0].exists) {
+          let student = studentRef.docs[0];
+          this.firestore.collection('Student').doc(student.id).delete();
+        }
+      });
+    }
+    this.firestore.collection('Login').doc(user.username).delete();
+  }
+
   getAllLogin() {
     return this.firestore.collection('Login').snapshotChanges();
   }
 
   logout() {
-    localStorage.setItem('userData',null)
+    localStorage.setItem('userData', null)
     location.reload();
   }
 }
