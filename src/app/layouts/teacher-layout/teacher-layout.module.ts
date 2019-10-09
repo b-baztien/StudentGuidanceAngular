@@ -17,7 +17,8 @@ import {
   MatIconModule,
   MatStepperModule,
   MatAutocompleteModule,
-  MatChipsModule
+  MatChipsModule,
+  MatCheckboxModule
 } from '@angular/material';
 import { ComponentsModule } from 'src/app/components/navigation/components.module';
 import { ListNewsComponent } from 'src/app/components/teacher/list-news/list-news.component';
@@ -53,6 +54,7 @@ import { ViewUniversityComponent } from 'src/app/components/teacher/view-univers
     MatStepperModule,
     MatAutocompleteModule,
     MatChipsModule,
+    MatCheckboxModule,
   ], exports: [ComponentsModule]
 })
 

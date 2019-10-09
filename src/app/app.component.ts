@@ -10,7 +10,7 @@ export class AppComponent implements OnInit {
   
 constructor(private router: Router) {}
   ngOnInit() {
-    let userData = JSON.parse(localStorage.getItem('userData'))
+    let userData = JSON.parse(localStorage.getItem('userData'));
     if(userData === null || userData === undefined){
       this.router.navigateByUrl('/login');
     }

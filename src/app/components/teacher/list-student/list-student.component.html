@@ -14,8 +14,13 @@
                                 </p>
                             </div>
                             <div class="col-sm-4 card-button-right">
-                                <button mat-raised-button class="btn-success" (click)="openAddStudentDialog()">
+                                <button mat-raised-button class="btn-success" (click)="openAddStudentDialog()"
+                                    *ngIf="!selection.hasValue()">
                                     <mat-icon>add</mat-icon> เพิ่มข้อมูลนักเรียน
+                                </button>
+                                <button mat-raised-button class="btn-info" (click)="openAddStudentDialog()"
+                                    *ngIf="selection.hasValue()">
+                                    <mat-icon>done</mat-icon> เปลี่ยนสถานะนักเรียนที่เลือก
                                 </button>
                             </div>
                         </div>
@@ -26,6 +31,21 @@
                                 (keyup)="applyFilter($event.target.value)">
                         </mat-form-field>
                         <table mat-table [dataSource]="studentList" class="table table-hover">
+                            <ng-container matColumnDef="select">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                                        [checked]="selection.hasValue() && isAllSelected()"
+                                        [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                        [aria-label]="checkboxLabel()">
+                                    </mat-checkbox>
+                                </th>
+                                <td mat-cell *matCellDef="let row">
+                                    <mat-checkbox (click)="$event.stopPropagation()"
+                                        (change)="$event ? selection.toggle(row) : null"
+                                        [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+                                    </mat-checkbox>
+                                </td>
+                            </ng-container>
                             <ng-container matColumnDef="fullname">
                                 <th mat-header-cell *matHeaderCellDef>ชื่อ - นามสกุล</th>
                                 <td mat-cell *matCellDef="let student"> {{student.data().firstname}}
@@ -47,6 +67,17 @@
                             <ng-container matColumnDef="entry_year">
                                 <th mat-header-cell *matHeaderCellDef>ปีที่เข้ารับการศึกษา</th>
                                 <td mat-cell *matCellDef="let student"> {{student.data().entry_year}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="manage">
+                                <th mat-header-cell *matHeaderCellDef>จัดการสถานะนักเรียน
+                                </th>
+                                <td mat-cell *matCellDef=" let student">
+                                    <button mat-raised-button class=" btn-info" *ngIf="!selection.hasValue()"
+                                        (click)="openAddStudentDialog()">
+                                        <mat-icon>done</mat-icon> เปลี่ยนสถานะนักเรียน
+                                    </button>
+                                    <p *ngIf="selection.hasValue()">-</p>
+                                </td>
                             </ng-container>
                             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                             <tr class="row-hover" mat-row *matRowDef="let row; columns: displayedColumns;"

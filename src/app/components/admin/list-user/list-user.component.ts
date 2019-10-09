@@ -2,11 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
 import { QueryDocumentSnapshot, DocumentReference } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
-import { UniversityService } from 'src/app/services/university-service/university.service';
-import { AddUniversityDialogComponent } from '../list-university/dialog/add-university-dialog/add-university-dialog.component';
 import { AddUserDialogComponent } from './dialog/add-user-dialog/add-user-dialog.component';
 import { TeacherService } from 'src/app/services/teacher-service/teacher.service';
-import { SchoolService } from 'src/app/services/school-service/school.service';
 import { LoginService } from 'src/app/services/login-service/login.service';
 import { Login } from 'src/app/model/Login';
 

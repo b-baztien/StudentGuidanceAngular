@@ -76,7 +76,7 @@
             <mat-label>เลือกจังหวัด</mat-label>
             <mat-select formControlName="province" required>
               <mat-option>เลือกจังหวัด</mat-option>
-              <mat-option *ngFor="let province of listProvince" [value]="province.province_name">
+              <mat-option *ngFor="let province of listProvince" [value]="province">
                 {{province.province_name}}
               </mat-option>
             </mat-select>

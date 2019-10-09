@@ -113,13 +113,15 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
         this.university.amphur = this.universityAddressForm.get('amphur').value;
         this.university.province = this.universityAddressForm.get('province').value.province_name;
         this.university.zipcode = this.universityAddressForm.get('zipcode').value;
-        this.university.zone = this.universityAddressForm.get('province').value.zone;
         this.university.url = this.universityDetailForm.get('url').value;
         this.university.phone_no = this.universityDetailForm.get('phone_no').value;
         this.university.university_detail = this.universityDetailForm.get('university_detail').value;
         this.university.zone = this.universityAddressForm.get('province').value.zone;
         this.university.view = 0;
-        await this.upload(document.getElementById('logoImage'));
+        let files: any = document.getElementById('logoImage');
+        if (files.files[0] !== undefined) {
+          await this.upload(files);
+        }
         const universityId = await this.universityService.addUniversity(this.university);
         this.dialogRef.close(universityId);
       }

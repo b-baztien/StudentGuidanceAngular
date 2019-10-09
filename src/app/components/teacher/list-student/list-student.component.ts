@@ -9,6 +9,7 @@ import { School } from 'src/app/model/School';
 import { SchoolService } from 'src/app/services/school-service/school.service';
 import { TeacherService } from 'src/app/services/teacher-service/teacher.service';
 import { StudentService } from 'src/app/services/student-service/student.service';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-list-student',
@@ -19,7 +20,7 @@ export class ListStudentComponent implements OnInit, AfterViewInit, OnDestroy {
   teacher: Teacher;
   school: School;
   studentList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
-  displayedColumns: string[] = ['fullname', 'email', 'phone_no', 'gender', 'entry_year'];
+  displayedColumns: string[] = ['select', 'fullname', 'email', 'phone_no', 'gender', 'entry_year', 'manage'];
 
   resultsLength = 0;
   isLoadingResults = true;
@@ -30,6 +31,8 @@ export class ListStudentComponent implements OnInit, AfterViewInit, OnDestroy {
 
   showContent = false;
   showTable: boolean = false;
+
+  selection = new SelectionModel<QueryDocumentSnapshot<Object>>(true, []);
 
   constructor(
     public dialog: MatDialog,
@@ -92,5 +95,25 @@ export class ListStudentComponent implements OnInit, AfterViewInit, OnDestroy {
         this.router.navigate(['/admin/list-university/view-university', { university: universityId }]);
       }
     });
+  }
+
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.studentList.data.length;
+    return numSelected === numRows;
+  }
+
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.studentList.data.forEach(row => this.selection.select(row));
+  }
+
+  checkboxLabel(row?: QueryDocumentSnapshot<Object>): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row}`;
   }
 }
