@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
 import { QueryDocumentSnapshot, DocumentReference } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
@@ -12,7 +12,7 @@ import { Login } from 'src/app/model/Login';
   templateUrl: './list-user.component.html',
   styleUrls: ['./list-user.component.css']
 })
-export class ListUserComponent implements OnInit {
+export class ListUserComponent implements OnInit, AfterViewInit {
   userList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
   displayedColumns: string[] = ['username', 'type', 'manage'];
 
@@ -27,12 +27,17 @@ export class ListUserComponent implements OnInit {
 
   constructor(public dialog: MatDialog, private router: Router, private loginService: LoginService, private teacherService: TeacherService) { }
 
-  async ngOnInit() {
+  ngOnInit() {
+  }
+
+  async ngAfterViewInit(): Promise<void> {
     this.listUniObs = await this.loginService.getAllLogin().subscribe(result => {
       let resultListUser = new Array<QueryDocumentSnapshot<Object>>();
       result.forEach(element => {
-        resultListUser.push(element.payload.doc);
-        console.log(element.payload.doc.data());
+        let login: Login = element.payload.doc.data() as Login;
+        if (login.type != 'admin') {
+          resultListUser.push(element.payload.doc);
+        }
       });
       this.userList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListUser);
       this.userList.paginator = this.paginator;

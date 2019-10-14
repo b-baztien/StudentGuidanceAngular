@@ -114,10 +114,6 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
         this.major.entrance_detail = this.majorForm.get('entrance_detail').value;
 
         await this.majorService.addMajor(this.data, this.major).then(async majorRef => {
-          console.log(majorRef);
-          majorRef.get().then(dd => {
-            console.log(dd.data());
-          })
           let listCarrerRef = new Array<DocumentReference>();
           const setCarrer = new Set(this.listCarrer_name);
           await setCarrer.forEach(async carrerName => {
@@ -145,6 +141,6 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.allCarrer.filter(carrer => carrer.toLowerCase().indexOf(filterValue) === 0);
+    return this.allCarrer.filter(carrer => carrer.toLowerCase().includes(filterValue));
   }
 }

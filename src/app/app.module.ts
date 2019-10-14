@@ -19,7 +19,7 @@ import { ComponentsModule } from './components/navigation/components.module';
 import { AddUniversityDialogComponent } from './components/admin/list-university/dialog/add-university-dialog/add-university-dialog.component';
 import { AddEditFacultyDialogComponent } from './components/admin/view-university/dialog/add-edit-faculty-dialog/add-edit-faculty-dialog.component';
 import { AddMajorDialogComponent } from './components/admin/view-university/dialog/add-major-dialog/add-major-dialog.component';
-import { MatStepperModule, MatAutocompleteModule, MatSelectModule, MatFormFieldModule, MatChipsModule, MatExpansionModule, MatDatepickerModule, MatCheckboxModule } from '@angular/material';
+import { MatStepperModule, MatAutocompleteModule, MatSelectModule, MatFormFieldModule, MatChipsModule, MatExpansionModule, MatDatepickerModule, MatCheckboxModule, MatRadioModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from './shared/shared.module';
 import { EditUniversityDialogComponent } from './components/admin/view-university/dialog/edit-university-dialog/edit-university-dialog.component';
@@ -35,8 +35,9 @@ import { EditNewsDialogComponent } from './components/teacher/list-news/dialog/e
 import { LogoutComponent } from './components/logout/logout.component';
 import { ListMajorTeacherDialogComponent } from './components/teacher/view-university/dialog/list-major-dialog/list-major-dialog.component';
 import { ConfirmDialogComponent } from './components/util/confirm-dialog/confirm-dialog.component';
+import { EditPasswordDialogComponent } from './components/admin/dialog/edit-password-dialog/edit-password-dialog.component';
 
-registerLocaleData(localeTh, 'th-TH', localeThExtra );
+registerLocaleData(localeTh, 'th-TH', localeThExtra);
 @NgModule({
   declarations: [
     AppComponent,
@@ -54,7 +55,8 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra );
     ListMajorTeacherDialogComponent,
     LogoutComponent,
     ConfirmDialogComponent,
-    
+    EditPasswordDialogComponent,
+
   ],
   entryComponents: [
     AddEditFacultyDialogComponent,
@@ -68,6 +70,7 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra );
     EditNewsDialogComponent,
     ListMajorTeacherDialogComponent,
     ConfirmDialogComponent,
+    EditPasswordDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -94,6 +97,7 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra );
     MatExpansionModule,
     MatDatepickerModule,
     MatCheckboxModule,
+    MatRadioModule,
   ],
   providers: [LoginService, { provide: LOCALE_ID, useValue: 'th-TH' }],
   bootstrap: [AppComponent],

@@ -10,6 +10,7 @@ import { SchoolService } from 'src/app/services/school-service/school.service';
 import { TeacherService } from 'src/app/services/teacher-service/teacher.service';
 import { StudentService } from 'src/app/services/student-service/student.service';
 import { SelectionModel } from '@angular/cdk/collections';
+import { Student } from 'src/app/model/Student';
 
 @Component({
   selector: 'app-list-student',
@@ -97,6 +98,16 @@ export class ListStudentComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  onChangeStudentStatus(student?: QueryDocumentSnapshot<unknown>) {
+    if (student) {
+      this.selection.toggle(student);
+    }
+    this.selection.selected.forEach(studentRef => {
+      let std = studentRef.data() as Student;
+      std.student_status = 'สำเร็จการศึกษา';
+      this.studentService.updateStudent(studentRef.id, std);
+    });
+  }
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;

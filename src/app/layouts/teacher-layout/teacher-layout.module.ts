@@ -27,6 +27,7 @@ import { DashboardComponent } from 'src/app/components/teacher/dashboard/dashboa
 import { ListStudentComponent } from 'src/app/components/teacher/list-student/list-student.component';
 import { ListUniversityTeacherComponent } from 'src/app/components/teacher/list-university/list-university.component';
 import { ViewUniversityComponent } from 'src/app/components/teacher/view-university/view-university.component';
+import { ProfileComponent } from 'src/app/components/teacher/profile/profile.component';
 @NgModule({
   declarations: [
     ListNewsComponent,
@@ -34,6 +35,7 @@ import { ViewUniversityComponent } from 'src/app/components/teacher/view-univers
     ListStudentComponent,
     ListUniversityTeacherComponent,
     ViewUniversityComponent,
+    ProfileComponent,
   ],
   imports: [
     CommonModule,
@@ -54,6 +56,7 @@ import { ViewUniversityComponent } from 'src/app/components/teacher/view-univers
     MatStepperModule,
     MatAutocompleteModule,
     MatChipsModule,
+    MatCheckboxModule,
     MatCheckboxModule,
   ], exports: [ComponentsModule]
 })

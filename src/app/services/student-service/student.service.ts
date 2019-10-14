@@ -24,7 +24,7 @@ export class StudentService {
       stdDoc.forEach(std => {
         let studentRef = std.payload.doc;
         let dupStd = false;
-        if ((studentRef.data() as Student).school.id == schoolId) {
+        if ((studentRef.data() as Student).school.id == schoolId && (studentRef.data() as Student).student_status == 'กำลังศึกษา') {
           for (let i = 0; i < listStudent.length; i++) {
             if (listStudent[i].id == studentRef.id) {
               dupStd = true;
@@ -43,5 +43,9 @@ export class StudentService {
 
   getStudentByStudentId(studentId: string) {
     return this.firestore.collection('Student').doc(studentId).snapshotChanges();
+  }
+
+  updateStudent(studentId: string, student: Student) {
+    return this.firestore.collection('Student').doc(studentId).update(Object.assign({}, student));
   }
 }
