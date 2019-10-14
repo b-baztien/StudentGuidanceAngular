@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentReference, QueryDocumentSnapshot } from '@angular/fire/firestore';
-import { UniversityService } from '../university-service/university.service';
-import { MajorService } from '../major-service/major.service';
-import { University } from 'src/app/model/University';
+import { AngularFirestore, QueryDocumentSnapshot } from '@angular/fire/firestore';
+import { firebase } from '@firebase/app';
 import { Subject } from 'rxjs';
 import { Student } from 'src/app/model/Student';
+import { Login } from 'src/app/model/Login';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +11,6 @@ import { Student } from 'src/app/model/Student';
 export class StudentService {
   constructor(
     private firestore: AngularFirestore,
-    private universityService: UniversityService,
-    private majorService: MajorService,
   ) {
   }
 
@@ -47,5 +44,33 @@ export class StudentService {
 
   updateStudent(studentId: string, student: Student) {
     return this.firestore.collection('Student').doc(studentId).update(Object.assign({}, student));
+  }
+
+  addStudent(login: Login, student: Student, increase: boolean) {
+    this.firestore.collection('Student').doc(login.username).set(Object.assign({}, student)).then(() => {
+      if (increase) {
+        this.incrementStudentId();
+      }
+    });
+  }
+
+  getStudentId() {
+    let osbStudentId = new Subject<string>();
+    this.firestore.collection('Student').snapshotChanges().subscribe(() => {
+      this.firestore.collection('Shards').doc('sequence').ref.get().then(result => {
+        osbStudentId.next(result.data().student_id);
+      });
+    });
+    return osbStudentId.asObservable();
+  }
+
+  incrementStudentId() {
+    this.firestore.collection('Student').snapshotChanges().subscribe(() => {
+      this.firestore.collection('Shards').doc('sequence').ref.get().then(result => {
+        let sequenceData = result.data();
+        sequenceData.student_id += 1;
+        this.firestore.collection('Shards').doc('sequence').update(sequenceData);
+      });
+    });
   }
 }

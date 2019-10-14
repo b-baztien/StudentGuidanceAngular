@@ -12,8 +12,9 @@
       <div align="center">
         <p>ประเภทผู้ใช้งาน</p>
         <mat-radio-group aria-label="เลือกประเภทผู้ใช้งาน" formControlName="userType">
-          <mat-radio-button class="button-margin-right" value="teacher">คุณครู</mat-radio-button>
-          <mat-radio-button value="student">นักเรียน</mat-radio-button>
+          <mat-radio-button class="button-margin-right" value="teacher" (click)="onCreateUsername()">คุณครู
+          </mat-radio-button>
+          <mat-radio-button value="student" (click)="onCreateUsername()">นักเรียน</mat-radio-button>
         </mat-radio-group>
         <mat-form-field>
           <input matInput placeholder="โรงเรียน" required [matAutocomplete]="auto" formControlName="school">

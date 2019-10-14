@@ -10,6 +10,7 @@ import { Student } from 'src/app/model/Student';
 import { SchoolService } from 'src/app/services/school-service/school.service';
 import { School } from 'src/app/model/School';
 import { startWith, map } from 'rxjs/operators';
+import { StudentService } from 'src/app/services/student-service/student.service';
 
 @Component({
   selector: 'app-add-user-dialog',
@@ -82,6 +83,7 @@ export class AddUserDialogComponent implements OnInit {
     private http: HttpClient,
     public dialogRef: MatDialogRef<AddUserDialogComponent>,
     private teacherService: TeacherService,
+    private studentService: StudentService,
     private schoolService: SchoolService,
   ) { }
 
@@ -95,8 +97,13 @@ export class AddUserDialogComponent implements OnInit {
       this.listProvince = data;
     });
 
-    this.teacherService.generateTeacherId().subscribe(result => {
+    this.teacherService.getTeacherId().subscribe(result => {
       this.teacherId = result;
+      this.onCreateUsername();
+    });
+
+    this.studentService.getStudentId().subscribe(result => {
+      this.studentId = result;
       this.onCreateUsername();
     });
 
@@ -143,13 +150,17 @@ export class AddUserDialogComponent implements OnInit {
   }
 
   async onSubmit() {
+    this.login = new Login();
     this.teacher = new Teacher();
+    this.student = new Student();
     this.school = new School();
     if (this.userForm.valid) {
+      this.login.username = this.userForm.get('username').value;
+      this.login.password = this.userForm.get('password').value;
+      this.login.password = this.userForm.get('userType').value;
+      this.school.school_name = this.userForm.get('school').value;
+
       if (this.userForm.get('requestData').value) {
-        this.login.username = this.userForm.get('username').value;
-        this.login.password = this.userForm.get('password').value;
-        this.login.password = this.userForm.get('userType').value;
         if (this.userForm.get('userType').value === 'teacher') {
           this.teacher.school = await this.schoolService.addSchool(this.school).then(result => {
             return result;
@@ -160,16 +171,36 @@ export class AddUserDialogComponent implements OnInit {
             this.teacher.phone_no = this.teacherForm.get('phone_no').value;
             this.teacher.email = this.teacherForm.get('email').value;
           }
+          this.teacherService.addTeacher(this.login, this.teacher, this.userForm.get('isCreateId').value);
+          this.dialogRef.close();
         } else if (this.userForm.get('userType').value === 'student') {
-          if (this.studentForm.valid) { }
-          this.student.firstname = this.teacherForm.get('firstname').value;
-          this.student.lastname = this.teacherForm.get('lastname').value;
-          this.student.phone_no = this.teacherForm.get('phone_no').value;
-          this.student.email = this.teacherForm.get('email').value;
+          this.student.school = await this.schoolService.addSchool(this.school).then(result => {
+            return result;
+          });
+          if (this.studentForm.valid) {
+            this.student.firstname = this.teacherForm.get('firstname').value;
+            this.student.lastname = this.teacherForm.get('lastname').value;
+            this.student.phone_no = this.teacherForm.get('phone_no').value;
+            this.student.email = this.teacherForm.get('email').value;
+          }
+          this.studentService.addStudent(this.login, this.student, this.userForm.get('isCreateId').value);
+          this.dialogRef.close();
         }
-        this.teacherService.addTeacher(this.login, this.teacher);
+      } else {
+        if (this.userForm.get('userType').value === 'teacher') {
+          this.teacher.school = await this.schoolService.addSchool(this.school).then(result => {
+            return result;
+          });
+          this.teacherService.addTeacher(this.login, this.teacher, this.userForm.get('isCreateId').value);
+          this.dialogRef.close();
+        } else if (this.userForm.get('userType').value === 'student') {
+          this.student.school = await this.schoolService.addSchool(this.school).then(result => {
+            return result;
+          });
+          this.studentService.addStudent(this.login, this.student, this.userForm.get('isCreateId').value);
+          this.dialogRef.close();
+        }
       }
-
     }
   }
 

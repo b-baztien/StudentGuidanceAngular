@@ -21,12 +21,15 @@ export class TeacherService {
     });
   }
 
-  addTeacher(login: Login, teacher: Teacher) {
-    teacher.school = this.firestore.collection('School').doc('โรงเรียนทดสอบ').ref;
-    return this.firestore.collection('Teacher').add(Object.assign({}, teacher));
+  addTeacher(login: Login, teacher: Teacher, increase: boolean) {
+    this.firestore.collection('Teacher').doc(login.username).set(Object.assign({}, teacher)).then(() => {
+      if (increase) {
+        this.incrementTeacherId();
+      }
+    });
   }
 
-  generateTeacherId() {
+  getTeacherId() {
     let osbTeacherId = new Subject<string>();
     this.firestore.collection('Teacher').snapshotChanges().subscribe(() => {
       this.firestore.collection('Shards').doc('sequence').ref.get().then(result => {
@@ -34,5 +37,15 @@ export class TeacherService {
       });
     });
     return osbTeacherId.asObservable();
+  }
+
+  incrementTeacherId() {
+    this.firestore.collection('Teacher').snapshotChanges().subscribe(() => {
+      this.firestore.collection('Shards').doc('sequence').ref.get().then(result => {
+        let sequenceData = result.data();
+        sequenceData.teacher_id += 1;
+        this.firestore.collection('Shards').doc('sequence').update(sequenceData);
+      });
+    });
   }
 }

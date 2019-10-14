@@ -1,10 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, QueryDocumentSnapshot, DocumentReference } from '@angular/fire/firestore';
-import { FacultyService } from '../faculty-service/faculty.service';
-import { University } from 'src/app/model/University';
-import { Faculty } from 'src/app/model/Faculty';
-import { Subject } from 'rxjs';
-import { Major } from 'src/app/model/Major';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { Carrer } from 'src/app/model/Carrer';
 
 @Injectable({
@@ -13,7 +8,6 @@ import { Carrer } from 'src/app/model/Carrer';
 export class CarrerService {
   constructor(
     private firestore: AngularFirestore,
-    private facultyService: FacultyService,
   ) {
   }
 

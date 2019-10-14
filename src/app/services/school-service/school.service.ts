@@ -24,7 +24,7 @@ export class SchoolService {
           return this.firestore.collection('School').doc(school.school_name).ref;
         });
       } else {
-        return schoolRes.ref
+        return schoolRes.ref;
       }
     });
   }
