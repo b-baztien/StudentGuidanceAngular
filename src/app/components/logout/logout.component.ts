@@ -10,7 +10,7 @@ export class LogoutComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    localStorage.setItem('userData',null)
+    localStorage.clear();
     window.location.href = '/'
   }
 

@@ -11,6 +11,8 @@ import { SchoolService } from 'src/app/services/school-service/school.service';
 import { School } from 'src/app/model/School';
 import { startWith, map } from 'rxjs/operators';
 import { StudentService } from 'src/app/services/student-service/student.service';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-add-user-dialog',
@@ -61,11 +63,11 @@ export class AddUserDialogComponent implements OnInit {
 
   listProvince: Array<[]>;
 
-  login: Login;
-  teacher: Teacher;
-  student: Student;
+  login: Login = new Login();
+  teacher: Teacher = new Teacher();
+  student: Student = new Student();
 
-  school: School;
+  school: School = new School();
 
   imgURL: any = 'assets/img/no-photo-available.png';
 
@@ -85,6 +87,8 @@ export class AddUserDialogComponent implements OnInit {
     private teacherService: TeacherService,
     private studentService: StudentService,
     private schoolService: SchoolService,
+    private afStorage: AngularFireStorage,
+    private afirestore: AngularFirestore,
   ) { }
 
   getProvinceJSON(): Observable<any> {
@@ -126,6 +130,37 @@ export class AddUserDialogComponent implements OnInit {
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 
+  async upload(event) {
+    const metadata = {
+      contentType: 'image/jpeg',
+    };
+
+    const fileName = this.afirestore.createId();
+    if (event.files[0].type.split('/')[0] == 'image') {
+      if (this.userForm.get('userType').value === 'teacher') {
+        await this.afStorage.upload(`teacher/${fileName}`, event.files[0], metadata).then(async result => {
+          this.teacher.image = await result.ref.fullPath;
+        });
+      } else if (this.userForm.get('userType').value === 'student') {
+        await this.afStorage.upload(`student/${fileName}`, event.files[0], metadata).then(async result => {
+          this.student.image = await result.ref.fullPath;
+        });
+      }
+    }
+  }
+
+  preview(event) {
+    if (event.target.files[0] !== undefined) {
+      let reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]);
+      reader.onload = (_event) => {
+        this.imgURL = reader.result;
+      }
+    } else {
+      this.imgURL = 'assets/img/no-photo-available.png';
+    }
+  }
+
   onCreateUsername() {
     if (this.userForm.get('isCreateId').value) {
       if (this.userForm.get('userType').value === 'teacher') {
@@ -150,10 +185,6 @@ export class AddUserDialogComponent implements OnInit {
   }
 
   async onSubmit() {
-    this.login = new Login();
-    this.teacher = new Teacher();
-    this.student = new Student();
-    this.school = new School();
     if (this.userForm.valid) {
       this.login.username = this.userForm.get('username').value;
       this.login.password = this.userForm.get('password').value;
@@ -170,21 +201,29 @@ export class AddUserDialogComponent implements OnInit {
             this.teacher.lastname = this.teacherForm.get('lastname').value;
             this.teacher.phone_no = this.teacherForm.get('phone_no').value;
             this.teacher.email = this.teacherForm.get('email').value;
+            let files: any = document.getElementById('logoImage');
+            if (files.files[0] !== undefined) {
+              await this.upload(files);
+            }
+            this.teacherService.addTeacher(this.login, this.teacher, this.userForm.get('isCreateId').value);
+            this.dialogRef.close();
           }
-          this.teacherService.addTeacher(this.login, this.teacher, this.userForm.get('isCreateId').value);
-          this.dialogRef.close();
         } else if (this.userForm.get('userType').value === 'student') {
           this.student.school = await this.schoolService.addSchool(this.school).then(result => {
             return result;
           });
           if (this.studentForm.valid) {
-            this.student.firstname = this.teacherForm.get('firstname').value;
-            this.student.lastname = this.teacherForm.get('lastname').value;
-            this.student.phone_no = this.teacherForm.get('phone_no').value;
-            this.student.email = this.teacherForm.get('email').value;
+            this.student.firstname = this.studentForm.get('firstname').value;
+            this.student.lastname = this.studentForm.get('lastname').value;
+            this.student.phone_no = this.studentForm.get('phone_no').value;
+            this.student.email = this.studentForm.get('email').value;
+            let files: any = document.getElementById('logoImage');
+            if (files.files[0] !== undefined) {
+              await this.upload(files);
+            }
+            this.studentService.addStudent(this.login, this.student, this.userForm.get('isCreateId').value);
+            this.dialogRef.close();
           }
-          this.studentService.addStudent(this.login, this.student, this.userForm.get('isCreateId').value);
-          this.dialogRef.close();
         }
       } else {
         if (this.userForm.get('userType').value === 'teacher') {

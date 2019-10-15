@@ -25,11 +25,11 @@ export class LogInComponent implements OnInit, ErrorStateMatcher {
   login: Login;
 
   constructor(
-    private loginService: LoginService, 
-    private router: Router, 
+    private loginService: LoginService,
+    private router: Router,
     private _snackBar: MatSnackBar,
     private teacherService: TeacherService,
-    ) { }
+  ) { }
 
   ngOnInit() {
     this.login = new Login();
@@ -61,30 +61,14 @@ export class LogInComponent implements OnInit, ErrorStateMatcher {
 
         this.spinnerButtonOptions.active = true;
         const typeUser = await this.loginService.Login(this.login);
+        this.login.type = typeUser;
+        localStorage.setItem('userData', JSON.stringify(this.login));
         if (typeUser === 'admin') {
-          let userData = {
-            role: 'admin'
-          }
-          localStorage.setItem('userData',JSON.stringify(userData))
-          
           this.router.navigate(['./admin']);
         } else if (typeUser === 'teacher') {
-         await this.teacherService.getTeacherByUsername(this.login.username).then(teacherRef => {
-            console.log(teacherRef.data())
-            let userData = {
-              email: teacherRef.data().email,
-              firstname: teacherRef.data().firstname,
-              lastname: teacherRef.data().lastname,
-              phone_no: teacherRef.data().phone_no,
-              role:'teacher'
-            }
-            localStorage.setItem('userData',JSON.stringify(userData))
-           
-          })
           this.router.navigate(['./teacher']);
-
         } else if (typeUser === 'student') {
-
+          throw new Error('เนื่องจากเว็บไซต์ไม่รองรับผู้ใช้ประเภทนักเรียน กรุณาเข้าใช้งานผ่านแอบพลิเคชัน Student Guidance');
         }
         this._snackBar.dismiss();
       }

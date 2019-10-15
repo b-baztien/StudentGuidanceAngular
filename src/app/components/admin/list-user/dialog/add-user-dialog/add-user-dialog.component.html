@@ -49,8 +49,11 @@
         </mat-form-field>
         <mat-form-field>
           <input matInput type="password" placeholder="ยืนยันรหัสผ่าน" required formControlName="conPassword">
-          <mat-error *ngIf="userForm.controls.password.hasError('required')">
-            กรุณากรอกรหัสผ่าน
+          <mat-error *ngIf="userForm.controls.conPassword.hasError('required')">
+            กรุณากรอกยืนยันรหัสผ่าน
+          </mat-error>
+          <mat-error *ngIf="userForm.controls.password.value !== userForm.controls.conPassword.value">
+            กรุณากรอกรหัสผ่านให้ตรงกัน
           </mat-error>
         </mat-form-field>
         <p>
@@ -63,12 +66,12 @@
       <form [formGroup]="teacherForm" *ngIf="userForm.get('userType').value === 'teacher'">
         <div class="input-image-content">
           <label class="label-input-image">รูปภาพครู</label>
-          <label class="hoverable" for="logoImage">
+          <label class="hoverable" for="inputImage">
             <img class="input-image" [src]="imgURL">
             <div class="hover-text">เลือกรูปภาพ..</div>
             <div class="background"></div>
           </label>
-          <input type="file" class="inputImage" id="logoImage" (change)="preview($event)" accept=".png,.jpg" />
+          <input type="file" class="inputImage" id="inputImage" (change)="preview($event)" accept=".png,.jpg" />
         </div>
         <mat-form-field>
           <input matInput placeholder="ชื่อ" required formControlName="firstname">
@@ -103,12 +106,12 @@
       <form [formGroup]="studentForm" *ngIf="userForm.get('userType').value === 'student'">
         <div class="input-image-content">
           <label class="label-input-image">รูปภาพนักเรียน</label>
-          <label class="hoverable" for="logoImage">
+          <label class="hoverable" for="inputImage">
             <img class="input-image" [src]="imgURL">
             <div class="hover-text">เลือกรูปภาพ..</div>
             <div class="background"></div>
           </label>
-          <input type="file" class="inputImage" id="logoImage" (change)="preview($event)" accept=".png,.jpg" />
+          <input type="file" class="inputImage" id="inputImage" (change)="preview($event)" accept=".png,.jpg" />
         </div>
         <mat-form-field>
           <input matInput placeholder="ชื่อ" required formControlName="firstname">

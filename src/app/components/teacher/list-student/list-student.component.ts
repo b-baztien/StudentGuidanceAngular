@@ -11,17 +11,23 @@ import { TeacherService } from 'src/app/services/teacher-service/teacher.service
 import { StudentService } from 'src/app/services/student-service/student.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Student } from 'src/app/model/Student';
+import { Login } from 'src/app/model/Login';
+import { AddStudentDialogComponent } from './dialog/add-student-dialog/add-student-dialog.component';
+import { AlumniService } from 'src/app/services/alumni-service/alumni.service';
 
 @Component({
   selector: 'app-list-student',
   templateUrl: './list-student.component.html',
   styleUrls: ['./list-student.component.css']
 })
-export class ListStudentComponent implements OnInit, AfterViewInit, OnDestroy {
-  teacher: Teacher;
+export class ListStudentComponent implements OnInit, AfterViewInit {
+  teacher: Teacher = new Teacher();
   school: School;
   studentList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
+  alumniList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
+
   displayedColumns: string[] = ['select', 'fullname', 'email', 'phone_no', 'gender', 'entry_year', 'manage'];
+  displayedAlumniColumns: string[] = ['fullname', 'email', 'phone_no', 'gender', 'entry_year'];
 
   resultsLength = 0;
   isLoadingResults = true;
@@ -31,70 +37,63 @@ export class ListStudentComponent implements OnInit, AfterViewInit, OnDestroy {
   listUniObs;
 
   showContent = false;
-  showTable: boolean = false;
+  showStudentTable: boolean = false;
+  showAlumniTable: boolean = false;
 
   selection = new SelectionModel<QueryDocumentSnapshot<Object>>(true, []);
 
   constructor(
     public dialog: MatDialog,
-    private router: Router,
     private studentService: StudentService,
+    private alumniService: AlumniService,
     private schoolService: SchoolService,
     private teacherService: TeacherService,
   ) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   ngAfterViewInit(): void {
-    this.teacher = new Teacher();
-
-    this.teacherService.getTeacher('teacher1').subscribe(teacherRef => {
+    let login: Login = JSON.parse(localStorage.getItem('userData')) as Login;
+    this.teacherService.getTeacher(login.username).subscribe(teacherRef => {
       this.teacher = teacherRef.payload.data() as Teacher;
       this.schoolService.getSchool(this.teacher.school.id).subscribe(schoolRef => {
         this.school = schoolRef.payload.data() as School;
         this.showContent = true;
         let resultListStudent = new Array<QueryDocumentSnapshot<Object>>();
-        this.listUniObs = this.studentService.getStudentBySchoolId(schoolRef.payload.id).subscribe(listStdRef => {
-          resultListStudent = listStdRef;
-
-          this.studentList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListStudent);
+        let resultListAlumni = new Array<QueryDocumentSnapshot<Object>>();
+        this.studentService.getStudentBySchoolId(schoolRef.payload.id).subscribe(listStdRef => {
+          this.studentList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(listStdRef);
           this.studentList.paginator = this.paginator;
-          this.showTable = this.studentList.data.length === 0 ? false : true;
+          this.showStudentTable = this.studentList.data.length === 0 ? false : true;
+        });
+        this.alumniService.getAlumniBySchoolId(schoolRef.payload.id).subscribe(listAlnRef => {
+          this.alumniList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(listAlnRef);
+          this.alumniList.paginator = this.paginator;
+          this.showAlumniTable = this.alumniList.data.length === 0 ? false : true;
         });
       });
     });
   }
 
-  ngOnDestroy() {
-    this.listUniObs.unsubscribe();
-  }
-
-  applyFilter(filterValue: string) {
+  applyStudentFilter(filterValue: string) {
     this.studentList.filter = filterValue.trim().toLowerCase();
   }
 
-  openAddStudentDialog(): void {
-    const dialogRef = this.dialog.open(AddUniversityDialogComponent, {
-      width: '50%',
-    });
+  applyAlumniFilter(filterValue: string) {
+    this.alumniList.filter = filterValue.trim().toLowerCase();
+  }
 
-    dialogRef.afterClosed().subscribe(async universityId => {
-      if (universityId != null) {
-        this.router.navigate(['/admin/list-university/view-university', { university: universityId }]);
-      }
+  openAddStudentDialog(): void {
+    const dialogRef = this.dialog.open(AddStudentDialogComponent, {
+      width: '50%',
+      data: this.teacher.school,
     });
   }
 
-  onStudentClick(university: string) {
-    const dialogRef = this.dialog.open(AddUniversityDialogComponent, {
+  onStudentClick() {
+    const dialogRef = this.dialog.open(AddStudentDialogComponent, {
       width: '50%',
-    });
-
-    dialogRef.afterClosed().subscribe(async universityId => {
-      if (universityId != null) {
-        this.router.navigate(['/admin/list-university/view-university', { university: universityId }]);
-      }
+      data: this.teacher.school,
     });
   }
 
