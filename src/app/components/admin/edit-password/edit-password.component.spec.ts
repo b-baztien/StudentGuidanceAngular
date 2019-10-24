@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditPasswordDialogComponent } from './edit-password-dialog.component';
+import { EditPasswordComponent } from './edit-password.component';
 
-describe('EditPasswordDialogComponent', () => {
-  let component: EditPasswordDialogComponent;
-  let fixture: ComponentFixture<EditPasswordDialogComponent>;
+describe('EditPasswordComponent', () => {
+  let component: EditPasswordComponent;
+  let fixture: ComponentFixture<EditPasswordComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EditPasswordDialogComponent ]
+      declarations: [ EditPasswordComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EditPasswordDialogComponent);
+    fixture = TestBed.createComponent(EditPasswordComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -24,11 +24,13 @@ import { ComponentsModule } from 'src/app/components/navigation/components.modul
 import { ViewUniversityComponent } from 'src/app/components/admin/view-university/view-university.component';
 import { ListUserComponent } from 'src/app/components/admin/list-user/list-user.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { EditPasswordComponent } from 'src/app/components/admin/edit-password/edit-password.component';
 @NgModule({
   declarations: [
     ListUniversityComponent,
     ViewUniversityComponent,
     ListUserComponent,
+    EditPasswordComponent,
   ],
   imports: [
     CommonModule,

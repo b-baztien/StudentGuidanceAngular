@@ -35,7 +35,6 @@ import { EditNewsDialogComponent } from './components/teacher/list-news/dialog/e
 import { LogoutComponent } from './components/logout/logout.component';
 import { ListMajorTeacherDialogComponent } from './components/teacher/view-university/dialog/list-major-dialog/list-major-dialog.component';
 import { ConfirmDialogComponent } from './components/util/confirm-dialog/confirm-dialog.component';
-import { EditPasswordDialogComponent } from './components/admin/dialog/edit-password-dialog/edit-password-dialog.component';
 import { AddStudentDialogComponent } from './components/teacher/list-student/dialog/add-student-dialog/add-student-dialog.component';
 import { EditMajorComponent } from './components/admin/view-university/dialog/list-major-dialog/dialog/edit-major/edit-major.component';
 
@@ -57,7 +56,6 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra);
     ListMajorTeacherDialogComponent,
     LogoutComponent,
     ConfirmDialogComponent,
-    EditPasswordDialogComponent,
     AddStudentDialogComponent,
     EditMajorComponent,
   ],
@@ -73,7 +71,6 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra);
     EditNewsDialogComponent,
     ListMajorTeacherDialogComponent,
     ConfirmDialogComponent,
-    EditPasswordDialogComponent,
     AddStudentDialogComponent,
     EditMajorComponent,
   ],
