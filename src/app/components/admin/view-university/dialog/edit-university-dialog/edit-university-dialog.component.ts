@@ -8,6 +8,7 @@ import { AddUniversityDialogComponent } from '../../../list-university/dialog/ad
 import { UniversityService } from 'src/app/services/university-service/university.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Notifications } from 'src/app/components/util/notification';
 
 @Component({
   selector: 'app-edit-university-dialog',
@@ -135,10 +136,11 @@ export class EditUniversityDialogComponent implements OnInit {
           await this.upload(imgFile);
         }
         const universityId = await this.universityService.updateUniversity(this.data.universityId, this.university);
+        new Notifications().showNotification('done', 'top', 'right', 'แก้ไขข้อมูลมหาวิทยาลัยสำเร็จแล้ว', 'success', 'สำเร็จ !');
         this.dialogRef.close(universityId);
       }
     } catch (error) {
-      console.log(error.message);
+      new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'แก้ไขข้อมูลล้มเหลว !');
     }
   }
 }

@@ -7,12 +7,15 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
   styleUrls: ['./confirm-dialog.component.css']
 })
 export class ConfirmDialogComponent implements OnInit {
+  showData = false;
+
   constructor(
     public dialogRef: MatDialogRef<ConfirmDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: string) {
   }
 
   ngOnInit() {
+    this.showData = true;
   }
 
   ngAfterViewInit() {

@@ -23,7 +23,6 @@ import { MatStepperModule, MatAutocompleteModule, MatSelectModule, MatFormFieldM
 import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from './shared/shared.module';
 import { EditUniversityDialogComponent } from './components/admin/view-university/dialog/edit-university-dialog/edit-university-dialog.component';
-import { DeleteUniversityComponent } from './components/admin/view-university/dialog/delete-university-dialog/delete-university.component';
 import { AddUserDialogComponent } from './components/admin/list-user/dialog/add-user-dialog/add-user-dialog.component';
 import { AddNewsDialogComponent } from './components/teacher/list-news/dialog/add-news-dialog/add-news-dialog.component';
 import { registerLocaleData } from '@angular/common';
@@ -48,7 +47,6 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra);
     AddUniversityDialogComponent,
     AddMajorDialogComponent,
     EditUniversityDialogComponent,
-    DeleteUniversityComponent,
     AddUserDialogComponent,
     AddNewsDialogComponent,
     ListMajorAdminDialogComponent,
@@ -64,7 +62,6 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra);
     AddUniversityDialogComponent,
     AddMajorDialogComponent,
     EditUniversityDialogComponent,
-    DeleteUniversityComponent,
     AddUserDialogComponent,
     AddNewsDialogComponent,
     ListMajorAdminDialogComponent,

@@ -12,6 +12,8 @@ import { EditUniversityDialogComponent } from './dialog/edit-university-dialog/e
 import { QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { ListMajorAdminDialogComponent } from './dialog/list-major-dialog/list-major-dialog.component';
+import { ConfirmDialogComponent } from '../../util/confirm-dialog/confirm-dialog.component';
+import { Notifications } from '../../util/notification';
 
 
 
@@ -93,8 +95,23 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
   }
 
   openDeleteUniversityDialog() {
-    this.universityService.deleteUniversity(this.university_id);
-    this.router.navigate(['/admin/list-university/']);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '60%',
+      data: `คุณต้องการลบข้อมูล${this.university.university_name} ใช่ หรือ ไม่ ?`,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      try {
+        if (result) {
+          this.universityService.deleteUniversity(this.university_id);
+          new Notifications().showNotification('done', 'top', 'right', 'ลบข้อมูลมหาวิทยาลัยสำเร็จแล้ว', 'success', 'สำเร็จ !');
+          this.router.navigate(['/admin/list-university/']);
+        }
+      } catch (error) {
+        new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'ลบข้อมูลล้มเหลว !');
+      }
+    });
+
   }
 
   openAddMajorDialog(faculty: QueryDocumentSnapshot<unknown>) {

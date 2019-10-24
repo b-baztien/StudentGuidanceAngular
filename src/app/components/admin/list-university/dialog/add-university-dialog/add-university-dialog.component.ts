@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Notifications } from 'src/app/components/util/notification';
 
 declare var $: any;
 
@@ -123,10 +124,11 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
           await this.upload(files);
         }
         const universityId = await this.universityService.addUniversity(this.university);
+        new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลมหาวิทยาลัยสำเร็จแล้ว', 'success', 'สำเร็จ !');
         this.dialogRef.close(universityId);
       }
     } catch (error) {
-      console.log(error.message);
+      new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'เพิ่มข้อมูลล้มเหลว !');
     }
   }
 }

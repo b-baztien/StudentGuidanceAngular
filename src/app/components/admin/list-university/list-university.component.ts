@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { UniversityService } from 'src/app/services/university-service/university.service';
 import { QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { AddUniversityDialogComponent } from './dialog/add-university-dialog/add-university-dialog.component';
+import { Notifications } from '../../util/notification';
 
 @Component({
   selector: 'app-list-university',
@@ -54,7 +55,7 @@ export class ListUniversityComponent implements OnInit, OnDestroy, AfterViewInit
 
   openAddUniversityDialog(): void {
     const dialogRef = this.dialog.open(AddUniversityDialogComponent, {
-      width: '50%',
+      width: '70%',
     });
 
     dialogRef.afterClosed().subscribe(async universityId => {
