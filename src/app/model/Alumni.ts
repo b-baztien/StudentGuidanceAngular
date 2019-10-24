@@ -1,6 +1,6 @@
 import { DocumentReference } from '@angular/fire/firestore';
 
-export class Carrer {
+export class Alumni {
     graduated_year: string;
     job: string;
     status: string;

@@ -23,7 +23,6 @@ import {
 import { ComponentsModule } from 'src/app/components/navigation/components.module';
 import { ListNewsComponent } from 'src/app/components/teacher/list-news/list-news.component';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { DashboardComponent } from 'src/app/components/teacher/dashboard/dashboard.component';
 import { ListStudentComponent } from 'src/app/components/teacher/list-student/list-student.component';
 import { ListUniversityTeacherComponent } from 'src/app/components/teacher/list-university/list-university.component';
 import { ViewUniversityComponent } from 'src/app/components/teacher/view-university/view-university.component';
@@ -31,7 +30,6 @@ import { ProfileComponent } from 'src/app/components/teacher/profile/profile.com
 @NgModule({
   declarations: [
     ListNewsComponent,
-    DashboardComponent,
     ListStudentComponent,
     ListUniversityTeacherComponent,
     ViewUniversityComponent,

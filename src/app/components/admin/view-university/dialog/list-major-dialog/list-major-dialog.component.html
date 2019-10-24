@@ -10,30 +10,43 @@
     <mat-accordion>
         <mat-expansion-panel *ngFor="let major of listMajor">
             <mat-expansion-panel-header>
-                <mat-panel-title>{{major.major_name}}</mat-panel-title>
+                <mat-panel-title>
+                    <h4>{{major.major_name}}</h4>
+                </mat-panel-title>
             </mat-expansion-panel-header>
             <mat-panel-description>
-                <mat-icon>language</mat-icon> ที่อยู่เว็บไซต์
+                <mat-icon>language</mat-icon>
+                <h4> ที่อยู่เว็บไซต์</h4>
             </mat-panel-description>
             <mat-panel-title><a href="{{major.url}}">{{major.url}}</a></mat-panel-title><br>
             <mat-panel-description>
-                <mat-icon>school</mat-icon> เงื่อนไขการเข้าศึกษาต่อ
+                <mat-icon>school</mat-icon>
+                <h4> เงื่อนไขการเข้าศึกษาต่อ</h4>
             </mat-panel-description>
             <mat-panel-title>
                 <p>{{major.entrance_detail}}</p>
             </mat-panel-title><br>
             <mat-panel-description>
-                <mat-icon>build</mat-icon> อาชีพเมื่อสำเร็จการศึกษา
+                <mat-icon>build</mat-icon>
+                <h4> อาชีพเมื่อสำเร็จการศึกษา</h4>
             </mat-panel-description>
             <mat-panel-title>
-                <mat-chip-list >
+                <p *ngIf="major.carrer === undefined">
+                    -
+                </p>
+                <mat-chip-list>
                     <mat-chip *ngFor="let carrer of major.carrer">
                         {{carrer.id}}
                     </mat-chip>
                 </mat-chip-list>
             </mat-panel-title>
             <mat-action-row>
-                <button mat-raised-button color="warn" (click)="onDelete(major)">ลบข้อมูลสาขา</button>
+                <button mat-raised-button color="primary" (click)="openEditMajorDialog(major.major_name + major.faculty.id)">
+                    <mat-icon>edit</mat-icon> แก้ไขข้อมูลสาขา
+                </button>
+                <button mat-raised-button color="warn" (click)="onDelete(major)">
+                    <mat-icon>delete</mat-icon> ลบข้อมูลสาขา
+                </button>
             </mat-action-row>
         </mat-expansion-panel>
     </mat-accordion>

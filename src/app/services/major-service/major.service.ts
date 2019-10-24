@@ -26,6 +26,10 @@ export class MajorService {
     return this.firestore.collection('Major').doc(majorId).snapshotChanges();
   }
 
+  getMajorById(majorId: string) {
+    return this.firestore.collection('Major').doc(majorId).snapshotChanges();
+  }
+
   getMajorByFacultyId(facultyId: string) {
     let osbMajor = new Subject<Array<QueryDocumentSnapshot<unknown>>>();
     this.firestore.collection('Major').snapshotChanges().subscribe(mjDoc => {

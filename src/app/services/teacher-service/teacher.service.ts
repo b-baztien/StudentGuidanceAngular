@@ -29,6 +29,10 @@ export class TeacherService {
     });
   }
 
+  updateTeacher(teacherId: string, teacher: Teacher) {
+    this.firestore.collection('Teacher').doc(teacherId).update(Object.assign({}, teacher));
+  }
+
   getTeacherId() {
     let osbTeacherId = new Subject<string>();
     this.firestore.collection('Teacher').snapshotChanges().subscribe(() => {

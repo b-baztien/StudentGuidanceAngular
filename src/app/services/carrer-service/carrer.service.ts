@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import { Carrer } from 'src/app/model/Carrer';
 
 @Injectable({
@@ -17,6 +17,10 @@ export class CarrerService {
 
   getCarrer(carrerId: string) {
     return this.firestore.collection('Carrer').doc(carrerId).snapshotChanges();
+  }
+
+  getCarrerByMajor(majorRef: DocumentReference) {
+    return this.firestore.collection('Carrer').ref.where('major', '==', majorRef).get();
   }
 
   async addCarrer(carrer: Carrer) {
@@ -44,7 +48,23 @@ export class CarrerService {
     });
   }
 
-  updateCarrer(carrerId: string, carerer: Carrer) {
-    this.firestore.collection('Carrer').doc(carrerId).set(Object.assign({}, carerer));
+  updateCarrer(carrerId: string, carrer: Carrer) {
+    this.firestore.collection('Carrer').doc(carrerId).set(Object.assign({}, carrer));
+  }
+
+  async deleteMajorInCarrer(major: DocumentReference) {
+    await this.firestore.collection('Carrer').ref.where('major', '==', major).get().then(async result => {
+      if (!result.empty) {
+        await result.docs.forEach(carrerRef => {
+          let carrer = carrerRef.data() as Carrer;
+          for (let i = 0; i < carrer.major.length; i++) {
+            if (carrer.major[i].id == major.id) {
+              carrer.major.splice(i, 1);
+              this.firestore.collection('Carrer').doc(carrerRef.id).update(Object.assign({}, carrer));
+            }
+          }
+        });
+      }
+    });
   }
 }

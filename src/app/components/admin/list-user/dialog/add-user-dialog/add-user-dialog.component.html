@@ -99,6 +99,9 @@
           <mat-error *ngIf="teacherForm.controls.email.hasError('required')">
             กรุณากรอกอีเมล
           </mat-error>
+          <mat-error *ngIf="teacherForm.controls.email.hasError('email')">
+              กรุณากรอกอีเมลให้ถูกต้อง
+          </mat-error>
         </mat-form-field>
       </form>
 

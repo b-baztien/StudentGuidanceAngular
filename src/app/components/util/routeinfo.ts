@@ -14,9 +14,9 @@ export const ADMINROUTES: RouteInfo[] = [
 ];
 
 export const TEACHERROUTES: RouteInfo[] = [
-  { path: '/teacher/dashboard', title: 'สถิตินักเรียน', icon: 'dashboard', class: '' },
-  { path: '/teacher/list-university', title: 'รายชื่อมหาวิทยาลัย', icon: 'school', class: '' },
-  { path: '/teacher/list-news', title: 'ข่าวสาร', icon: 'library_books', class: '' },
   { path: '/teacher/list-student', title: 'รายชื่อนักเรียนในโรงเรียน', icon: 'person', class: '' },
+  { path: '/teacher/list-news', title: 'ข่าวสาร', icon: 'library_books', class: '' },
+  { path: '/teacher/list-university', title: 'รายชื่อมหาวิทยาลัย', icon: 'school', class: '' },
+  { path: '/teacher/profile', title: 'แก้ไขข้อมูลส่วนตัว', icon: 'account_box', class: '' },
   { path: '/logout', title: 'ออกจากระบบ', icon: 'exit_to_app', class: 'active-pro' },
 ];

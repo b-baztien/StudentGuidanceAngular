@@ -1,1 +1,121 @@
-<p>profile works!</p>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-profile-round">
+                    <div class="card-header card-header-danger">
+                        <h4 class="card-title">แก้ไขข้อมูลส่วนตัว</h4>
+                        <p class="card-category">ข้อมูลส่วนตัวครู สามารถแก้ไขข้อมูลต่างๆ ของครูได้</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4>ข้อมูลส่วนตัว</h4>
+                            </div>
+                        </div>
+                        <form [formGroup]="teacherForm">
+                            <div class="input-image-content">
+                                <label class="label-input-image">รูปภาพครู</label>
+                                <label class="hoverable" for="logoImage">
+                                    <img class="input-image" [src]="imgURL">
+                                    <div class="hover-text">เลือกรูปภาพ..</div>
+                                    <div class="background"></div>
+                                </label>
+                                <input type="file" class="inputImage" id="logoImage" (change)="preview($event)"
+                                    accept=".png,.jpg" />
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <mat-form-field>
+                                        <input matInput placeholder="โรงเรียน" disabled formControlName="school">
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <mat-form-field>
+                                        <input matInput placeholder="ชื่อ" required formControlName="firstname">
+                                        <mat-error *ngIf="teacherForm.controls.firstname.hasError('required')">
+                                            กรุณากรอกชื่อ
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-6">
+                                    <mat-form-field>
+                                        <input matInput placeholder="นามสกุล" required formControlName="lastname">
+                                        <mat-error *ngIf="teacherForm.controls.lastname.hasError('required')">
+                                            กรุณากรอกนามสกุล
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <mat-form-field>
+                                        <input matInput placeholder="เบอร์โทรศัพท์" required formControlName="phone_no">
+                                        <mat-error *ngIf="teacherForm.controls.phone_no.hasError('required')">
+                                            กรุณากรอกเบอร์โทรศัพท์
+                                        </mat-error>
+                                        <mat-error *ngIf="teacherForm.controls.phone_no.hasError('pattern')">
+                                            เบอร์โทรศัพท์ต้องเป็นตัวเลขเท่านั้น
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-6">
+                                    <mat-form-field>
+                                        <input matInput placeholder="อีเมล" required formControlName="email">
+                                        <mat-error *ngIf="teacherForm.controls.email.hasError('required')">
+                                            กรุณากรอกอีเมล
+                                        </mat-error>
+                                        <mat-error *ngIf="teacherForm.controls.email.hasError('email')">
+                                            กรุณากรอกอีเมลให้ถูกต้อง
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </form>
+                        <br>
+                        <form [formGroup]="userForm">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4>ข้อมูลผู้ใช้</h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <mat-form-field>
+                                        <input matInput placeholder="ชื่อผู้ใช้" disabled formControlName="username">
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <mat-form-field>
+                                        <input type="password" matInput placeholder="รหัสผ่าน"
+                                            formControlName="password">
+                                        <mat-error *ngIf="userForm.controls.password.hasError('required')">
+                                            กรุณากรอกรหัสผ่าน
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <mat-form-field>
+                                        <input type="password" matInput placeholder="ยืนยันรหัสผ่าน"
+                                            formControlName="conPassword">
+                                        <mat-error *ngIf="userForm.controls.conPassword.hasError('required')">
+                                            กรุณากรอกรหัสผ่านให้ถูกต้อง
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </form>
+                        <button mat-raised-button class="btn btn-danger pull-right" (click)="onSubmit()">แก้ไขข้อมูล</button>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

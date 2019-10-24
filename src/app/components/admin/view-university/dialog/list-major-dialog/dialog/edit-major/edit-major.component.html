@@ -1,0 +1,56 @@
+<div class="row">
+    <div class="col-sm-11">
+        <h1 mat-dialog-title>แก้ไขข้อมูลสาขา</h1>
+    </div>
+    <div class="col-sm-1" class="hover-cursor">
+        <mat-icon class="hover-cursor" (click)="onNoClick()">close</mat-icon>
+    </div>
+</div>
+<form [formGroup]="majorForm" *ngIf="loadData">
+    <div mat-dialog-content>
+        <mat-form-field>
+            <input matInput placeholder="ชื่อสาขา" required formControlName="major_name">
+            <mat-error *ngIf="majorForm.controls.major_name.hasError('required')">
+                กรุณากรอกชื่อสาขา
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="ที่อยู่เว็บไซต์" required formControlName="url">
+            <mat-error *ngIf="majorForm.controls.url.hasError('required')">
+                กรุณากรอกที่อยู่เว็บไซต์
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <textarea matInput placeholder="เงื่อนไขการเข้าศึกษาต่อ" required
+                formControlName="entrance_detail"></textarea>
+            <mat-error *ngIf="majorForm.controls.url.hasError('required')">
+                กรุณากรอกเงื่อนไขการเข้าศึกษาต่อ
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-chip-list #chipList aria-label="Carrer">
+                <mat-chip *ngFor="let carrer_name of listCarrer_name" [removable]="removable"
+                    (removed)="removeCarrer(carrer_name)">
+                    {{carrer_name}}
+                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                </mat-chip>
+                <input placeholder="อาชีพเมื่อสำเร็จการศึกษา" #carrerInput formControlName="carrer"
+                    [matAutocomplete]="auto" [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                    (matChipInputTokenEnd)="addCarrer($event)">
+                <mat-error *ngIf="listCarrer_name.length === 0 && majorForm.get('carrer').touched">
+                    กรุณากรอกอาชีพเมื่อสำเร็จการศึกษา
+                </mat-error>
+            </mat-chip-list>
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                <mat-option *ngFor="let carrer of filteredCarrer | async" [value]="carrer">
+                    {{carrer}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </div>
+    <div mat-dialog-actions>
+        <button mat-raised-button class="btn-secondary" (click)="onNoClick()">ปิด</button>
+        <button mat-raised-button class="btn-success" (click)="onSubmit()">แก้ไขข้อมูล</button>
+    </div>
+</form>

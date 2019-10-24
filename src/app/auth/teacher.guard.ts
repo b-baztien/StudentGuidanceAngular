@@ -10,12 +10,12 @@ export class TeacherGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    let userData: Login = JSON.parse(localStorage.getItem('userData'))
+    let userData: Login = JSON.parse(localStorage.getItem('userData'));
     if (userData && userData.type) {
       if (userData.type === 'teacher') {
-        return true
+        return true;
       } else {
-        return false
+        return false;
       }
     } else {
       return false;

@@ -55,6 +55,10 @@ export class LoginService {
     this.firestore.collection('Login').doc(user.username).delete();
   }
 
+  updateLogin(login: Login) {
+    return this.firestore.collection('Login').doc(login.username).update(Object.assign({}, login));
+  }
+
   getAllLogin() {
     return this.firestore.collection('Login').snapshotChanges();
   }

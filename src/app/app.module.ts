@@ -37,6 +37,7 @@ import { ListMajorTeacherDialogComponent } from './components/teacher/view-unive
 import { ConfirmDialogComponent } from './components/util/confirm-dialog/confirm-dialog.component';
 import { EditPasswordDialogComponent } from './components/admin/dialog/edit-password-dialog/edit-password-dialog.component';
 import { AddStudentDialogComponent } from './components/teacher/list-student/dialog/add-student-dialog/add-student-dialog.component';
+import { EditMajorComponent } from './components/admin/view-university/dialog/list-major-dialog/dialog/edit-major/edit-major.component';
 
 registerLocaleData(localeTh, 'th-TH', localeThExtra);
 @NgModule({
@@ -58,6 +59,7 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra);
     ConfirmDialogComponent,
     EditPasswordDialogComponent,
     AddStudentDialogComponent,
+    EditMajorComponent,
   ],
   entryComponents: [
     AddEditFacultyDialogComponent,
@@ -73,6 +75,7 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra);
     ConfirmDialogComponent,
     EditPasswordDialogComponent,
     AddStudentDialogComponent,
+    EditMajorComponent,
   ],
   imports: [
     BrowserModule,

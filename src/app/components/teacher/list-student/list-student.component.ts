@@ -1,9 +1,6 @@
-import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
 import { QueryDocumentSnapshot } from '@angular/fire/firestore';
-import { Router } from '@angular/router';
-import { UniversityService } from 'src/app/services/university-service/university.service';
-import { AddUniversityDialogComponent } from '../../admin/list-university/dialog/add-university-dialog/add-university-dialog.component';
 import { Teacher } from 'src/app/model/Teacher';
 import { School } from 'src/app/model/School';
 import { SchoolService } from 'src/app/services/school-service/school.service';
@@ -12,7 +9,6 @@ import { StudentService } from 'src/app/services/student-service/student.service
 import { SelectionModel } from '@angular/cdk/collections';
 import { Student } from 'src/app/model/Student';
 import { Login } from 'src/app/model/Login';
-import { AddStudentDialogComponent } from './dialog/add-student-dialog/add-student-dialog.component';
 import { AlumniService } from 'src/app/services/alumni-service/alumni.service';
 
 @Component({
@@ -59,8 +55,6 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
       this.schoolService.getSchool(this.teacher.school.id).subscribe(schoolRef => {
         this.school = schoolRef.payload.data() as School;
         this.showContent = true;
-        let resultListStudent = new Array<QueryDocumentSnapshot<Object>>();
-        let resultListAlumni = new Array<QueryDocumentSnapshot<Object>>();
         this.studentService.getStudentBySchoolId(schoolRef.payload.id).subscribe(listStdRef => {
           this.studentList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(listStdRef);
           this.studentList.paginator = this.paginator;
@@ -84,17 +78,9 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
   }
 
   openAddStudentDialog(): void {
-    const dialogRef = this.dialog.open(AddStudentDialogComponent, {
-      width: '50%',
-      data: this.teacher.school,
-    });
   }
 
   onStudentClick() {
-    const dialogRef = this.dialog.open(AddStudentDialogComponent, {
-      width: '50%',
-      data: this.teacher.school,
-    });
   }
 
   onChangeStudentStatus(student?: QueryDocumentSnapshot<unknown>) {
