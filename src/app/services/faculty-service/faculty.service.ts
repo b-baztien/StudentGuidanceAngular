@@ -18,26 +18,41 @@ export class FacultyService {
   }
 
   addFaculty(universityId: string, faculty: Faculty) {
-    faculty.university = this.firestore.collection('University').doc(universityId).ref;
-    this.firestore.collection('Faculty').doc(faculty.faculty_name + universityId).get().subscribe(result => {
-      if (!result.exists) {
-        this.firestore.collection('Faculty').doc(faculty.faculty_name + universityId).set(Object.assign({}, faculty))
-          .then(() => {
-            faculty.university.get().then(universityRef => {
-              const university = universityRef.data() as University;
-              university.faculty = university.faculty === undefined ? new Array<DocumentReference>() : university.faculty;
-              university.faculty.push(this.firestore.collection('Faculty').doc(faculty.faculty_name + universityId).ref);
-              this.universityService.updateUniversity(universityId, university);
+    try {
+      faculty.university = this.firestore.collection('University').doc(universityId).ref;
+      this.firestore.collection('Faculty').doc(faculty.faculty_name + universityId).get().subscribe(result => {
+        if (!result.exists) {
+          this.firestore.collection('Faculty').doc(faculty.faculty_name + universityId).set(Object.assign({}, faculty))
+            .then(() => {
+              faculty.university.get().then(universityRef => {
+                const university = universityRef.data() as University;
+                university.faculty = university.faculty === undefined ? new Array<DocumentReference>() : university.faculty;
+                university.faculty.push(this.firestore.collection('Faculty').doc(faculty.faculty_name + universityId).ref);
+                this.universityService.updateUniversity(universityId, university);
+              });
             });
-          });
+        } else {
+          throw new Error('มีคณะนี้อยู่ในระบบแล้ว');
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      if (error.message == 'มีคณะนี้อยู่ในระบบแล้ว') {
+        throw error;
       } else {
-        throw new Error('มีคณะนี้อยู่ในระบบแล้ว');
+        throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
       }
-    });
+    }
+
   }
 
   updateFaculty(facultyId: string, faculty: Faculty) {
-    return this.firestore.collection('Faculty').doc(facultyId).set(Object.assign({}, faculty));
+    try {
+      return this.firestore.collection('Faculty').doc(facultyId).set(Object.assign({}, faculty));
+    } catch (error) {
+      console.log(error);
+      throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
+    }
   }
 
 
@@ -47,23 +62,10 @@ export class FacultyService {
 
   getFacultyByUniversityId(universityId: string) {
     let osbFaculty = new Subject<Array<QueryDocumentSnapshot<unknown>>>();
-    let listFaculty = new Array<QueryDocumentSnapshot<unknown>>();
-    this.firestore.collection('Faculty').snapshotChanges().subscribe(fctDoc => {
-      fctDoc.forEach(fct => {
-        let faculty = fct.payload.doc;
-        let dupFac = false;
-        if ((faculty.data() as Faculty).university.id == universityId) {
-          for (let i = 0; i < listFaculty.length; i++) {
-            if (listFaculty[i].id == faculty.id) {
-              dupFac = true;
-              listFaculty.splice(i, 1, faculty);
-            }
-          }
-          if (!dupFac) {
-            listFaculty.push(faculty);
-          }
-        }
-        osbFaculty.next(listFaculty);
+    this.firestore.collection('Faculty').snapshotChanges().subscribe(() => {
+      let uniRef = this.firestore.collection('University').doc(universityId).ref;
+      this.firestore.collection('Faculty').ref.where('university', '==', uniRef).get().then(fctDoc => {
+        osbFaculty.next(fctDoc.docs);
       });
     });
     return osbFaculty.asObservable();

@@ -10,6 +10,7 @@ import { Carrer } from 'src/app/model/Carrer';
 import { startWith, map } from 'rxjs/operators';
 import { ENTER } from '@angular/cdk/keycodes';
 import { DocumentReference, DocumentSnapshot, Action, QuerySnapshot } from '@angular/fire/firestore';
+import { Notifications } from 'src/app/components/util/notification';
 
 @Component({
   selector: 'app-edit-major',
@@ -20,7 +21,7 @@ export class EditMajorComponent implements OnInit {
   majorForm = new FormGroup({
     major_name: new FormControl(null, [Validators.required]),
     url: new FormControl(null, [Validators.required]),
-    entrance_detail: new FormControl(null),
+    entrance_detail: new FormControl(null, [Validators.required]),
     carrer: new FormControl(null),
   });
 
@@ -60,8 +61,6 @@ export class EditMajorComponent implements OnInit {
       major.carrer.forEach(result => {
         this.listCarrer_name.push(result.id);
       });
-
-      await this.carrerService.deleteMajorInCarrer(this.majorDoc.ref);
     });
     this.dialogRef.disableClose = true;
   }
@@ -121,34 +120,34 @@ export class EditMajorComponent implements OnInit {
   }
 
   async onSubmit() {
-    let major = new Major();
-    if (this.majorForm.valid && this.listCarrer_name.length !== 0) {
-      try {
-        major.major_name = this.majorForm.get('major_name').value;
-        major.url = this.majorForm.get('url').value;
-        major.entrance_detail = this.majorForm.get('entrance_detail').value;
+    try {
+      await this.carrerService.deleteMajorInCarrer(this.majorDoc.ref).then(async () => {
+        let major = this.majorDoc.data() as Major;
+        if (this.majorForm.valid && this.listCarrer_name.length !== 0) {
+          major.major_name = this.majorForm.get('major_name').value;
+          major.url = this.majorForm.get('url').value;
+          major.entrance_detail = this.majorForm.get('entrance_detail').value;
 
-        let listCarrerRef = new Array<DocumentReference>();
-        const setCarrer = new Set(this.listCarrer_name);
-        await setCarrer.forEach(async carrerName => {
-          const carrer = new Carrer();
-          carrer.carrer_name = carrerName;
-          carrer.major = carrer.major === undefined ? new Array<DocumentReference>() : carrer.major;
-          carrer.major.push(this.majorDoc.ref);
-          await this.carrerService.addCarrer(carrer).then(async carrerDocRef => {
-            await listCarrerRef.push(carrerDocRef);
-            this.majorService.getMajor(this.majorDoc.id).subscribe(async majorData => {
-              let major: Major = majorData.payload.data() as Major;
+          let listCarrerRef = new Array<DocumentReference>();
+          const setCarrer = new Set(this.listCarrer_name);
+          await setCarrer.forEach(async carrerName => {
+            const carrer = new Carrer();
+            carrer.carrer_name = carrerName;
+            carrer.major = carrer.major === undefined ? new Array<DocumentReference>() : carrer.major;
+            carrer.major.push(this.majorDoc.ref);
+            await this.carrerService.addCarrer(carrer).then(async carrerDocRef => {
+              await listCarrerRef.push(carrerDocRef);
+              major.carrer = new Array<DocumentReference>();
               major.carrer = await listCarrerRef;
-              this.majorService.updateMajor(majorData.payload.id, major);
+              this.majorService.updateMajor(this.majorDoc.id, major);
             });
           });
-        });
-      }
-      catch (error) {
-        console.log(error);
-      }
-      this.dialogRef.close();
+        }
+        new Notifications().showNotification('done', 'top', 'right', 'แก้ไขข้อมูลสาขาสำเร็จแล้ว', 'success', 'สำเร็จ !');
+        this.dialogRef.close();
+      });
+    } catch (error) {
+      new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'เพิ่มข้อมูลล้มเหลว !');
     }
   }
 

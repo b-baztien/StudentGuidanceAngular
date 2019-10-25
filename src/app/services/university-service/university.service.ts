@@ -2,6 +2,10 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { University } from 'src/app/model/University';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { Faculty } from 'src/app/model/Faculty';
+import { CarrerService } from '../carrer-service/carrer.service';
+import { MajorService } from '../major-service/major.service';
+import { Major } from 'src/app/model/Major';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +13,9 @@ import { AngularFireStorage } from '@angular/fire/storage';
 export class UniversityService {
   constructor(
     private firestore: AngularFirestore,
-    private afStorage: AngularFireStorage
+    private afStorage: AngularFireStorage,
+    private carrerService: CarrerService,
+    private majorService: MajorService,
   ) {
   }
 
@@ -52,7 +58,27 @@ export class UniversityService {
         }
         if (undefined !== university.faculty) {
           university.faculty.forEach(fct => {
-            this.firestore.collection('Faculty').doc(fct.id).delete();
+            this.firestore.collection('Faculty').doc(fct.id).snapshotChanges().subscribe(async facRef => {
+              let faculty = facRef.payload.data() as Faculty;
+              for (let i = 0; i < faculty.major.length; i++) {
+                await this.firestore.collection('Major').doc(faculty.major[i].id).snapshotChanges().subscribe(async mj => {
+                  console.log('major 1');
+                  console.log(mj.payload.data());
+                  let major = mj.payload.data() as Major;
+                  if (major.carrer !== undefined) {
+                    await this.carrerService.deleteMajorInCarrer(mj.payload.ref).then(async () => {
+                      await this.firestore.collection('Major').doc(faculty.major[i].id).delete();
+                    });
+                  }
+                });
+                if (i === faculty.major.length - 1) {
+                  this.firestore.collection('Faculty').doc(fct.id).delete();
+                }
+              }
+              if (faculty.major === undefined) {
+                this.firestore.collection('Faculty').doc(fct.id).delete();
+              }
+            });
           });
         }
         this.firestore.collection('University').doc(universityId).delete();

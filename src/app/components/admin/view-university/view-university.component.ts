@@ -74,8 +74,10 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
       }
       this.facultyService.getFacultyByUniversityId(university_id).subscribe(fct => {
         this.listFaculty = new Array<QueryDocumentSnapshot<unknown>>();
-        this.listFaculty = fct;
-        this.facultyLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(this.listFaculty);
+        fct.forEach(re => {
+          console.log(re.data());
+        })
+        this.facultyLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(fct);
         this.facultyLtb.paginator = this.paginator;
         this.showTable = this.facultyLtb.data.length === 0 ? false : true;
       })
@@ -96,7 +98,7 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
 
   openDeleteUniversityDialog() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '60%',
+      width: '40%',
       data: `คุณต้องการลบข้อมูล${this.university.university_name} ใช่ หรือ ไม่ ?`,
     });
 
@@ -111,7 +113,6 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
         new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'ลบข้อมูลล้มเหลว !');
       }
     });
-
   }
 
   openAddMajorDialog(faculty: QueryDocumentSnapshot<unknown>) {
@@ -124,25 +125,45 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe();
   }
 
-  openAddEditFacultyDialog(faculty?: Faculty): void {
+  openAddEditFacultyDialog(faculty?: QueryDocumentSnapshot<unknown>): void {
     const dialogRef = this.dialog.open(AddEditFacultyDialogComponent, {
       width: '50%',
-      data: faculty ? faculty : null,
+      data: faculty ? faculty.data() as Faculty : null,
     });
 
     dialogRef.afterClosed().subscribe(facultyRs => {
-      if (facultyRs.faculty !== null) {
-        if (facultyRs.mode === 'เพิ่ม') {
-          this.facultyService.addFaculty(this.university_id, facultyRs.faculty);
-        } else if (facultyRs.mode === 'แก้ไข') {
-          this.facultyService.updateFaculty(this.university_id, facultyRs.faculty);
+      try {
+        if (facultyRs !== null) {
+          if (facultyRs.mode === 'เพิ่ม') {
+            this.facultyService.addFaculty(faculty.id, facultyRs.faculty);
+            new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลคณะสำเร็จแล้ว', 'success', 'สำเร็จ !');
+          } else if (facultyRs.mode === 'แก้ไข') {
+            this.facultyService.updateFaculty(faculty.id, facultyRs.faculty);
+            new Notifications().showNotification('done', 'top', 'right', 'แก้ไขข้อมูลคณะสำเร็จแล้ว', 'success', 'สำเร็จ !');
+          }
         }
+      } catch (error) {
+        new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'จัดการข้อมูลล้มเหลว !');
       }
     });
   }
 
   openDeleteFacultyDialog(faculty: QueryDocumentSnapshot<unknown>) {
-    this.facultyService.deleteFaculty(faculty);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '40%',
+      data: `คุณต้องการลบข้อมูลคณะ${(faculty.data() as Faculty).faculty_name} ใช่ หรือ ไม่ ?`,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      try {
+        if (result) {
+          this.facultyService.deleteFaculty(faculty);
+          new Notifications().showNotification('done', 'top', 'right', 'ลบข้อมูลคณะสำเร็จแล้ว', 'success', 'สำเร็จ !');
+        }
+      } catch (error) {
+        new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'ลบข้อมูลล้มเหลว !');
+      }
+    });
   }
 
   openListMajorDialog(faculty: QueryDocumentSnapshot<unknown>): void {

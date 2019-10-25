@@ -6,6 +6,8 @@ import { Carrer } from 'src/app/model/Carrer';
 import { CarrerService } from 'src/app/services/carrer-service/carrer.service';
 import { Major } from 'src/app/model/Major';
 import { EditMajorComponent } from './dialog/edit-major/edit-major.component';
+import { Notifications } from 'src/app/components/util/notification';
+import { ConfirmDialogComponent } from 'src/app/components/util/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-list-major-dialog',
@@ -50,13 +52,26 @@ export class ListMajorAdminDialogComponent implements OnInit {
       data: this.majorService.getMajorById(majorId),
     });
 
-    dialogRef.afterClosed().subscribe(universityRs => {
-    });
+    dialogRef.afterClosed().subscribe();
   }
 
   onDelete(major: Major) {
-    this.majorService.getMajor(`${major.major_name}${major.faculty.id}`).subscribe(result => {
-      this.majorService.deleteMajor(result.payload);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '40%',
+      data: `คุณต้องการลบข้อมูลสาขา${major.major_name} ใช่ หรือ ไม่ ?`,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      try {
+        if (result) {
+          this.majorService.getMajorById(`${major.major_name}${major.faculty.id}`).subscribe(result => {
+            this.majorService.deleteMajor(result.payload);
+          });
+          new Notifications().showNotification('done', 'top', 'right', 'ลบข้อมูลสาขาสำเร็จแล้ว', 'success', 'สำเร็จ !');
+        }
+      } catch (error) {
+        new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'ลบข้อมูลล้มเหลว !');
+      }
     });
   }
 

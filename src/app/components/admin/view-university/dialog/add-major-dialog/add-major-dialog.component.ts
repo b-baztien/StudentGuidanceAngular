@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Carrer } from 'src/app/model/Carrer';
+import { Notifications } from 'src/app/components/util/notification';
 
 @Component({
   selector: 'app-add-major-dialog',
@@ -123,17 +124,19 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
             carrer.major.push(majorRef);
             await this.carrerService.addCarrer(carrer).then(async carrerDocRef => {
               await listCarrerRef.push(carrerDocRef);
-              this.majorService.getMajor(majorRef.id).subscribe(async majorData => {
+              this.majorService.getMajorById(majorRef.id).subscribe(async majorData => {
                 let major: Major = majorData.payload.data() as Major;
+                major.carrer = new Array<DocumentReference>();
                 major.carrer = await listCarrerRef;
                 this.majorService.updateMajor(majorData.payload.id, major);
               });
             });
           });
         });
+        new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลสาขาสำเร็จแล้ว', 'success', 'สำเร็จ !');
       }
       catch (error) {
-        console.log(error);
+        new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'เพิ่มข้อมูลล้มเหลว !');
       }
       this.dialogRef.close();
     }

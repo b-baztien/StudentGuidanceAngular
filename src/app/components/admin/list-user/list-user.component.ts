@@ -19,8 +19,6 @@ export class ListUserComponent implements OnInit, AfterViewInit {
   resultsLength = 0;
   isLoadingResults = true;
 
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-
   listUniObs;
 
   showTable: boolean = false;
@@ -40,7 +38,6 @@ export class ListUserComponent implements OnInit, AfterViewInit {
         }
       });
       this.userList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListUser);
-      this.userList.paginator = this.paginator;
       this.showTable = this.userList.data.length === 0 ? false : true;
     });
   }

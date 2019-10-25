@@ -2,11 +2,9 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { Faculty } from 'src/app/model/Faculty';
 import { Major } from 'src/app/model/Major';
-import { FacultyService } from '../faculty-service/faculty.service';
 import { Subject } from 'rxjs';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Carrer } from 'src/app/model/Carrer';
-import { CarrerService } from '../carrer-service/carrer.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,10 +18,6 @@ export class MajorService {
 
   getAllMajor() {
     return this.firestore.collection('Major').snapshotChanges();
-  }
-
-  getMajor(majorId: string) {
-    return this.firestore.collection('Major').doc(majorId).snapshotChanges();
   }
 
   getMajorById(majorId: string) {
@@ -55,27 +49,41 @@ export class MajorService {
   }
 
   async addMajor(facultyId: string, major: Major) {
-    major.faculty = this.firestore.collection('Faculty').doc(facultyId).ref;
-    return await this.firestore.collection('Major').doc(major.major_name + facultyId).ref.get().then(async result => {
-      if (!result.exists) {
-        return await this.firestore.collection('Major').doc(major.major_name + facultyId).set(Object.assign({}, major))
-          .then(async () => {
-            return await major.faculty.get().then(facultyRef => {
-              const faculty = facultyRef.data() as Faculty;
-              faculty.major = faculty.major === undefined ? new Array<DocumentReference>() : faculty.major;
-              faculty.major.push(this.firestore.collection('Major').doc(major.major_name + facultyId).ref);
-              this.firestore.collection('Faculty').doc(facultyId).set(Object.assign({}, faculty));
-              return this.firestore.collection('Major').doc(major.major_name + facultyId).ref
+    try {
+      major.faculty = this.firestore.collection('Faculty').doc(facultyId).ref;
+      return await this.firestore.collection('Major').doc(major.major_name + facultyId).ref.get().then(async result => {
+        if (!result.exists) {
+          return await this.firestore.collection('Major').doc(major.major_name + facultyId).set(Object.assign({}, major))
+            .then(async () => {
+              return await major.faculty.get().then(facultyRef => {
+                const faculty = facultyRef.data() as Faculty;
+                faculty.major = faculty.major === undefined ? new Array<DocumentReference>() : faculty.major;
+                faculty.major.push(this.firestore.collection('Major').doc(major.major_name + facultyId).ref);
+                this.firestore.collection('Faculty').doc(facultyId).set(Object.assign({}, faculty));
+                return this.firestore.collection('Major').doc(major.major_name + facultyId).ref
+              });
             });
-          });
+        } else {
+          throw new Error('มีสาขานี้อยู่ในระบบแล้ว');
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      if (error.message == 'มีสาขานี้อยู่ในระบบแล้ว') {
+        throw error;
       } else {
-        throw new Error('มีสาขานี้อยู่ในระบบแล้ว');
+        throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
       }
-    });
+    }
   }
 
   updateMajor(majorId: string, major: Major) {
-    return this.firestore.collection('Major').doc(majorId).set(Object.assign({}, major));
+    try {
+      return this.firestore.collection('Major').doc(majorId).set(Object.assign({}, major));
+    } catch (error) {
+      console.log(error);
+      throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
+    }
   }
 
   deleteMajor(major: QueryDocumentSnapshot<unknown>) {
