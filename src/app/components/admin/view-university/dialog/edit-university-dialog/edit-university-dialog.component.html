@@ -6,7 +6,7 @@
     <mat-icon class="hover-cursor" (click)="onNoClick()">close</mat-icon>
   </div>
 </div>
-<mat-vertical-stepper [linear]="true" #stepper>
+<mat-vertical-stepper [linear]="true" #stepper *ngIf="showData">
   <mat-step [stepControl]="universityDetailForm">
     <form [formGroup]="universityDetailForm">
       <ng-template matStepLabel>ข้อมูลรายละเอียดมหาวิทยาลัย</ng-template>
@@ -20,6 +20,38 @@
           </label>
           <input type="file" class="inputImage" id="logoImage" (change)="preview($event)" accept=".png,.jpg" />
         </div>
+        <br>
+        <div class="input-image-content">
+          <label class="label-input-image">รูปภาพมหาวิทยาลัย (เพิ่มได้สูงสุด 5 รูป)</label>
+          <label class="hoverable" for="albumImage">
+            <img class="input-image" [src]="albumUrl[0]">
+            <div class="hover-text">เลือกรูปภาพ..</div>
+            <div class="background"></div>
+          </label>
+          <label class="hoverable" for="albumImage" *ngIf="albumUrl[1] != 'assets/img/no-photo-available.png'">
+            <img class="input-image" [src]="albumUrl[1]">
+            <div class="hover-text">เลือกรูปภาพ..</div>
+            <div class="background"></div>
+          </label>
+          <label class="hoverable" for="albumImage" *ngIf="albumUrl[2] != 'assets/img/no-photo-available.png'">
+            <img class="input-image" [src]="albumUrl[2]">
+            <div class="hover-text">เลือกรูปภาพ..</div>
+            <div class="background"></div>
+          </label>
+          <label class="hoverable" for="albumImage" *ngIf="albumUrl[3] != 'assets/img/no-photo-available.png'">
+            <img class="input-image" [src]="albumUrl[3]">
+            <div class="hover-text">เลือกรูปภาพ..</div>
+            <div class="background"></div>
+          </label>
+          <label class="hoverable" for="albumImage" *ngIf="albumUrl[4] != 'assets/img/no-photo-available.png'">
+            <img class="input-image" [src]="albumUrl[4]">
+            <div class="hover-text">เลือกรูปภาพ..</div>
+            <div class="background"></div>
+          </label>
+          <input type="file" class="inputImage" multiple id="albumImage" (change)="previewAlbum($event)"
+            accept=".png,.jpg" />
+        </div>
+        <br>
         <mat-form-field>
           <input matInput placeholder="ชื่อมหาวิทยาลัย" required formControlName="university_name">
           <mat-error *ngIf="universityDetailForm.controls.university_name.hasError('required')">
@@ -28,6 +60,23 @@
         </mat-form-field>
         <mat-form-field>
           <textarea matInput placeholder="รายละเอียดมหาวิทยาลัย" formControlName="university_detail"></textarea>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-chip-list #chipList aria-label="Highlight">
+            <mat-chip *ngFor="let highlight of listHighlight" [removable]="removable"
+              (removed)="removeHighlight(highlight)">
+              {{highlight}}
+              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+            <input placeholder="จุดเด่นมหาวิทยาลัย" #highlightInput formControlName="highlight" [matAutocomplete]="auto"
+              [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="addHighlight($event)">
+          </mat-chip-list>
+          <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption (optionSelected)="selected($event)">
+            <mat-option *ngFor="let highlight of filteredHighlight | async" [value]="highlight">
+              {{highlight}}
+            </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
         <mat-form-field>
           <input matInput type="tel" placeholder="เบอร์โทรศัพท์" required formControlName="phone_no">

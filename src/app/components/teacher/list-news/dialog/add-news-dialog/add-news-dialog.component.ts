@@ -49,7 +49,6 @@ export class AddNewsDialogComponent implements OnInit {
     private afirestore: AngularFirestore,
     @Inject(MAT_DIALOG_DATA) public data: string,
   ) {
-
   }
 
   ngOnInit() {

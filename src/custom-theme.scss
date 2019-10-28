@@ -69,6 +69,12 @@ mat-icon.card-title {
   color: #999999;
 }
 
+mat-chip-list.card-title > div {
+  display: block;
+  margin-top: -15px;
+  margin-bottom: 15px;
+}
+
 .mat-step-footer {
   margin-top: 2vw;
 }

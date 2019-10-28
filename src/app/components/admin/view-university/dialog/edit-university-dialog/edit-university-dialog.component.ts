@@ -1,6 +1,6 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ElementRef, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatAutocomplete, MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
 import { University } from 'src/app/model/University';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -9,6 +9,8 @@ import { UniversityService } from 'src/app/services/university-service/universit
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Notifications } from 'src/app/components/util/notification';
+import { ENTER } from '@angular/cdk/keycodes';
+import { startWith, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit-university-dialog',
@@ -25,6 +27,7 @@ export class EditUniversityDialogComponent implements OnInit {
       Validators.required,
       Validators.pattern('^[0-9]*$')])),
     university_detail: new FormControl(this.data.university.university_detail),
+    highlight: new FormControl(null),
   });
 
   universityAddressForm = new FormGroup({
@@ -44,8 +47,31 @@ export class EditUniversityDialogComponent implements OnInit {
   listProvince;
 
   university: University;
+  universityId: string;
 
   imgURL: any = 'assets/img/no-photo-available.png';
+  albumUrl: any[] = [
+    'assets/img/no-photo-available.png',
+    'assets/img/no-photo-available.png',
+    'assets/img/no-photo-available.png',
+    'assets/img/no-photo-available.png',
+    'assets/img/no-photo-available.png',
+  ];
+
+  listHighlight: string[] = new Array<string>();
+  allHighlight: string[] = new Array<string>();
+  filteredHighlight: Observable<string[]>;
+
+  selectable = true;
+  addOnBlur = true;
+  removable = true;
+
+  separatorKeysCodes: number[] = [ENTER];
+
+  @ViewChild('highlightInput', { static: false }) highlightInput: ElementRef<HTMLInputElement>;
+  @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
+
+  showData = false;
 
   constructor(
     private http: HttpClient,
@@ -56,6 +82,7 @@ export class EditUniversityDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: { universityId: string, university: University },
   ) {
     this.university = data.university;
+    this.universityId = data.universityId;
   }
 
   getProvinceJSON(): Observable<any> {
@@ -72,20 +99,53 @@ export class EditUniversityDialogComponent implements OnInit {
       this.imgURL = url;
     });
 
+    if (this.university.albumImage) {
+      for (let i = 0; i < this.university.albumImage.length; i++) {
+        this.afStorage.storage.ref(this.university.albumImage[i]).getDownloadURL().then(url => {
+          this.albumUrl[i] = url;
+        });
+      }
+    }
+
+    if (this.university.highlight !== undefined) {
+      this.university.highlight.forEach(highlight => {
+        this.listHighlight.push(highlight);
+      });
+    }
+
+    let hlSet = new Set<string>();
+    this.universityService.getAllUniversity().subscribe(result => {
+      for (let i = 0; i < result.length; i++) {
+        let uni = result[i].payload.doc.data() as University;
+        if (uni.highlight != undefined) {
+          uni.highlight.forEach(hl => {
+            hlSet.add(hl);
+          });
+        }
+      };
+      this.allHighlight = Array.from(hlSet);
+      this.showData = true;
+    });
+
+    this.filteredHighlight = this.universityDetailForm.get('highlight').valueChanges.pipe(
+      startWith(null),
+      map((highlight: string | null) => highlight ? this._filter(highlight) : this.allHighlight.slice()));
+
     this.dialogRef.disableClose = true;
   }
 
-  async upload(event) {
+  async upload(event, filePath) {
     const metadata = {
       contentType: 'image/jpeg',
     };
 
     const fileName = this.afirestore.createId();
     if (event.files[0].type.split('/')[0] == 'image') {
-      await this.afStorage.upload(`university/${fileName}`, event.files[0], metadata).then(async result => {
-        this.university.image = await result.ref.fullPath;
+      return await this.afStorage.upload(`${filePath}/${fileName}`, event.files[0], metadata).then(async result => {
+        return await result.ref.fullPath;
       });
     }
+    return '';
   }
 
   preview(event) {
@@ -102,6 +162,20 @@ export class EditUniversityDialogComponent implements OnInit {
     }
   }
 
+  previewAlbum(event) {
+    for (let i = 0; i < 5; i++) {
+      if (event.target.files[i] !== undefined) {
+        let reader = new FileReader();
+        reader.readAsDataURL(event.target.files[i]);
+        reader.onload = (_event) => {
+          this.albumUrl[i] = reader.result;
+        }
+      } else {
+        this.albumUrl[i] = 'assets/img/no-photo-available.png';
+      }
+    }
+  }
+
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
@@ -112,7 +186,6 @@ export class EditUniversityDialogComponent implements OnInit {
   }
 
   async onSubmit() {
-    this.university = new University();
     try {
       if (this.universityDetailForm.valid) {
         this.university.university_name = this.universityDetailForm.get('university_name').value;
@@ -130,10 +203,32 @@ export class EditUniversityDialogComponent implements OnInit {
             this.university.zone = provinceRes.zone;
           }
         });
-        this.university.view = 0;
-        const imgFile: any = document.getElementById('logoImage');
-        if (imgFile.files[0] !== undefined) {
-          await this.upload(imgFile);
+        this.university.highlight = this.listHighlight;
+        let filePath = `university/${this.universityId}`;
+        let fileLogo: any = document.getElementById('logoImage');
+        if (fileLogo.files[0] !== undefined) {
+          if (this.university.image !== undefined) {
+            await this.afStorage.storage.ref(this.university.image).delete();
+          }
+          this.university.image = await this.upload(fileLogo, filePath).then(async result => {
+            return await result;
+          });
+        }
+        let fileAlbum: any = document.getElementById('albumImage');
+        this.university.albumImage = this.university.albumImage === undefined ? new Array<string>() : this.university.albumImage;
+        for (let i = 0; i < 5; i++) {
+          if (fileAlbum.files[i] !== undefined) {
+            if (this.university.albumImage[i] !== undefined) {
+              await this.afStorage.storage.ref(this.university.albumImage[i]).delete();
+              this.university.albumImage[i] = await this.upload(fileAlbum, filePath).then(result => {
+                return result;
+              });
+            } else {
+              this.university.albumImage.push(await this.upload(fileAlbum, filePath).then(result => {
+                return result;
+              }));
+            }
+          }
         }
         const universityId = await this.universityService.updateUniversity(this.data.universityId, this.university);
         new Notifications().showNotification('done', 'top', 'right', 'แก้ไขข้อมูลมหาวิทยาลัยสำเร็จแล้ว', 'success', 'สำเร็จ !');
@@ -142,5 +237,46 @@ export class EditUniversityDialogComponent implements OnInit {
     } catch (error) {
       new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'แก้ไขข้อมูลล้มเหลว !');
     }
+  }
+
+  addHighlight(event: MatChipInputEvent): void {
+    if (!this.matAutocomplete.isOpen) {
+      const input = event.input;
+      const value = event.value;
+
+      if ((value || '').trim()) {
+        this.listHighlight.push(value.trim());
+      }
+
+      if (input) {
+        input.value = '';
+      }
+
+      this.universityDetailForm.get('highlight').setValue(null);
+    }
+  }
+
+  clearHighlight(): void {
+    this.highlightInput.nativeElement.value = null;
+    this.universityDetailForm.get('highLight').setValue(null);
+  }
+
+  removeHighlight(highlight: string): void {
+    const index = this.listHighlight.indexOf(highlight);
+
+    if (index >= 0) {
+      this.listHighlight.splice(index, 1);
+    }
+  }
+
+  selected(event: MatAutocompleteSelectedEvent): void {
+    this.listHighlight.push(event.option.viewValue);
+    this.highlightInput.nativeElement.value = null;
+    this.universityDetailForm.get('highlight').setValue(null);
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.allHighlight.filter(highlight => highlight.toLowerCase().includes(filterValue));
   }
 }

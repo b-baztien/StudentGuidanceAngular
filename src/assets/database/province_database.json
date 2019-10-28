@@ -1,314 +1,310 @@
 [
     {
-        "province_name":"กระบี่",
-        "zone":"ใต้"
+        "province_name": "กระบี่",
+        "zone": "ใต้"
     },
     {
-        "province_name":"กรุงเทพมหานคร",
-        "zone":"กลาง"
+        "province_name": "กรุงเทพมหานคร",
+        "zone": "กลาง"
     },
     {
-        "province_name":"กาญจนบุรี",
-        "zone":"ตะวันตก"
+        "province_name": "กาญจนบุรี",
+        "zone": "ตะวันตก"
     },
     {
-        "province_name":"กาฬสินธุ์",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "กาฬสินธุ์",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"กำแพงเพชร",
-        "zone":"กลาง"
+        "province_name": "กำแพงเพชร",
+        "zone": "กลาง"
     },
     {
-        "province_name":"ขอนแก่น",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "ขอนแก่น",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"ขอนแก่น",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "จันทบุรี",
+        "zone": "ตะวันออก"
     },
     {
-        "province_name":"จันทบุรี",
-        "zone":"ตะวันออก"
+        "province_name": "ฉะเชิงเทรา",
+        "zone": "ตะวันออก"
     },
     {
-        "province_name":"ฉะเชิงเทรา",
-        "zone":"ตะวันออก"
+        "province_name": "ชลบุรี",
+        "zone": "ตะวันออก"
     },
     {
-        "province_name":"ชลบุรี",
-        "zone":"ตะวันออก"
+        "province_name": "ชัยนาท",
+        "zone": "กลาง"
     },
     {
-        "province_name":"ชัยนาท",
-        "zone":"กลาง"
+        "province_name": "ชัยภูมิ",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"ชัยภูมิ",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "ชุมพร",
+        "zone": "ใต้"
     },
     {
-        "province_name":"ชุมพร",
-        "zone":"ใต้"
+        "province_name": "ตรัง",
+        "zone": "ใต้"
     },
     {
-        "province_name":"ตรัง",
-        "zone":"ใต้"
+        "province_name": "ตราด",
+        "zone": "ตะวันออก"
     },
     {
-        "province_name":"ตราด",
-        "zone":"ตะวันออก"
+        "province_name": "ตาก",
+        "zone": "ตะวันตก"
     },
     {
-        "province_name":"ตาก",
-        "zone":"ตะวันตก"
+        "province_name": "นครนายก",
+        "zone": "กลาง"
     },
     {
-        "province_name":"นครนายก",
-        "zone":"กลาง"
+        "province_name": "นครปฐม",
+        "zone": "กลาง"
     },
     {
-        "province_name":"นครปฐม",
-        "zone":"กลาง"
+        "province_name": "นครพนม",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"นครพนม",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "นครราชสีมา",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"นครราชสีมา",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "นครศรีธรรมราช",
+        "zone": "ใต้"
     },
     {
-        "province_name":"นครศรีธรรมราช",
-        "zone":"ใต้"
+        "province_name": "นครสวรรค์",
+        "zone": "กลาง"
     },
     {
-        "province_name":"นครสวรรค์",
-        "zone":"กลาง"
+        "province_name": "นนทบุรี",
+        "zone": "กลาง"
     },
     {
-        "province_name":"นนทบุรี",
-        "zone":"กลาง"
+        "province_name": "นราธิวาส",
+        "zone": "ใต้"
     },
     {
-        "province_name":"นราธิวาส",
-        "zone":"ใต้"
+        "province_name": "น่าน",
+        "zone": "เหนือ"
     },
     {
-        "province_name":"น่าน",
-        "zone":"เหนือ"
+        "province_name": "บึงกาฬ",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"บึงกาฬ",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "บุรีรัมย์",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"บุรีรัมย์",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "ปทุมธานี",
+        "zone": "กลาง"
     },
     {
-        "province_name":"ปทุมธานี",
-        "zone":"กลาง"
+        "province_name": "ประจวบคีรีขันธ์",
+        "zone": "ตะวันตก"
     },
     {
-        "province_name":"ประจวบคีรีขันธ์",
-        "zone":"ตะวันตก"
+        "province_name": "ปราจีนบุรี",
+        "zone": "ตะวันออก"
     },
     {
-        "province_name":"ปราจีนบุรี",
-        "zone":"ตะวันออก"
+        "province_name": "ปัตตานี",
+        "zone": "ใต้"
     },
     {
-        "province_name":"ปัตตานี",
-        "zone":"ใต้"
+        "province_name": "พระนครศรีอยุธยา",
+        "zone": "กลาง"
     },
     {
-        "province_name":"พระนครศรีอยุธยา",
-        "zone":"กลาง"
+        "province_name": "พะเยา",
+        "zone": "เหนือ"
     },
     {
-        "province_name":"พะเยา",
-        "zone":"เหนือ"
+        "province_name": "พังงา",
+        "zone": "ใต้"
     },
     {
-        "province_name":"พังงา",
-        "zone":"ใต้"
+        "province_name": "พัทลุง",
+        "zone": "ใต้"
     },
     {
-        "province_name":"พัทลุง",
-        "zone":"ใต้"
+        "province_name": "พิจิตร",
+        "zone": "กลาง"
     },
     {
-        "province_name":"พิจิตร",
-        "zone":"กลาง"
+        "province_name": "พิษณุโลก",
+        "zone": "กลาง"
     },
     {
-        "province_name":"พิษณุโลก",
-        "zone":"กลาง"
+        "province_name": "ภูเก็ต",
+        "zone": "ใต้"
     },
     {
-        "province_name":"ภูเก็ต",
-        "zone":"ใต้"
+        "province_name": "มหาสารคาม",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"มหาสารคาม",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "มุกดาหาร",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"มุกดาหาร",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "ยะลา",
+        "zone": "ใต้"
     },
     {
-        "province_name":"ยะลา",
-        "zone":"ใต้"
+        "province_name": "ยโสธร",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"ยโสธร",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "ระนอง",
+        "zone": "ใต้"
     },
     {
-        "province_name":"ระนอง",
-        "zone":"ใต้"
+        "province_name": "ระยอง",
+        "zone": "ตะวันออก"
     },
     {
-        "province_name":"ระยอง",
-        "zone":"ตะวันออก"
+        "province_name": "ราชบุรี",
+        "zone": "ตะวันตก"
     },
     {
-        "province_name":"ราชบุรี",
-        "zone":"ตะวันตก"
+        "province_name": "ร้อยเอ็ด",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"ร้อยเอ็ด",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "ลพบุรี",
+        "zone": "กลาง"
     },
     {
-        "province_name":"ลพบุรี",
-        "zone":"กลาง"
+        "province_name": "ลำปาง",
+        "zone": "เหนือ"
     },
     {
-        "province_name":"ลำปาง",
-        "zone":"เหนือ"
+        "province_name": "ลำพูน",
+        "zone": "เหนือ"
     },
     {
-        "province_name":"ลำพูน",
-        "zone":"เหนือ"
+        "province_name": "ศรีสะเกษ",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"ศรีสะเกษ",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "สกลนคร",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"สกลนคร",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "สงขลา",
+        "zone": "ใต้"
     },
     {
-        "province_name":"สงขลา",
-        "zone":"ใต้"
+        "province_name": "สตูล",
+        "zone": "ใต้"
     },
     {
-        "province_name":"สตูล",
-        "zone":"ใต้"
+        "province_name": "สมุทรปราการ",
+        "zone": "กลาง"
     },
     {
-        "province_name":"สมุทรปราการ",
-        "zone":"กลาง"
+        "province_name": "สมุทรสงคราม",
+        "zone": "กลาง"
     },
     {
-        "province_name":"สมุทรสงคราม",
-        "zone":"กลาง"
+        "province_name": "สมุทรสาคร",
+        "zone": "กลาง"
     },
     {
-        "province_name":"สมุทรสาคร",
-        "zone":"กลาง"
+        "province_name": "สระบุรี",
+        "zone": "กลาง"
     },
     {
-        "province_name":"สระบุรี",
-        "zone":"กลาง"
+        "province_name": "สระแก้ว",
+        "zone": "ตะวันออก"
     },
     {
-        "province_name":"สระแก้ว",
-        "zone":"ตะวันออก"
+        "province_name": "สิงห์บุรี",
+        "zone": "กลาง"
     },
     {
-        "province_name":"สิงห์บุรี",
-        "zone":"กลาง"
+        "province_name": "สุพรรณบุรี",
+        "zone": "กลาง"
     },
     {
-        "province_name":"สุพรรณบุรี",
-        "zone":"กลาง"
+        "province_name": "สุราษฎร์ธานี",
+        "zone": "ใต้"
     },
     {
-        "province_name":"สุราษฎร์ธานี",
-        "zone":"ใต้"
+        "province_name": "สุรินทร์",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"สุรินทร์",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "สุโขทัย",
+        "zone": "กลาง"
     },
     {
-        "province_name":"สุโขทัย",
-        "zone":"กลาง"
+        "province_name": "หนองคาย",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"หนองคาย",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "หนองบัวลำภู",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"หนองบัวลำภู",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "อำนาจเจริญ",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"อำนาจเจริญ",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "อุดรธานี",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"อุดรธานี",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "อุตรดิตถ์",
+        "zone": "เหนือ"
     },
     {
-        "province_name":"อุตรดิตถ์",
-        "zone":"เหนือ"
+        "province_name": "อุทัยธานี",
+        "zone": "กลาง"
     },
     {
-        "province_name":"อุทัยธานี",
-        "zone":"กลาง"
+        "province_name": "อุบลราชธานี",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"อุบลราชธานี",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "อ่างทอง",
+        "zone": "กลาง"
     },
     {
-        "province_name":"อ่างทอง",
-        "zone":"กลาง"
+        "province_name": "เชียงราย",
+        "zone": "เหนือ"
     },
     {
-        "province_name":"เชียงราย",
-        "zone":"เหนือ"
+        "province_name": "เชียงใหม่",
+        "zone": "เหนือ"
     },
     {
-        "province_name":"เชียงใหม่",
-        "zone":"เหนือ"
+        "province_name": "เพชรบุรี",
+        "zone": "ตะวันตก"
     },
     {
-        "province_name":"เพชรบุรี",
-        "zone":"ตะวันตก"
+        "province_name": "เพชรบูรณ์",
+        "zone": "กลาง"
     },
     {
-        "province_name":"เพชรบูรณ์",
-        "zone":"กลาง"
+        "province_name": "เลย",
+        "zone": "ตะวันออกเฉียงเหนือ"
     },
     {
-        "province_name":"เลย",
-        "zone":"ตะวันออกเฉียงเหนือ"
+        "province_name": "แพร่",
+        "zone": "เหนือ"
     },
     {
-        "province_name":"แพร่",
-        "zone":"เหนือ"
-    },
-    {
-        "province_name":"แม่ฮ่องสอน",
-        "zone":"เหนือ"
+        "province_name": "แม่ฮ่องสอน",
+        "zone": "เหนือ"
     }
 ]

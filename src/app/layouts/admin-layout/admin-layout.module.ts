@@ -17,7 +17,8 @@ import {
   MatIconModule,
   MatStepperModule,
   MatAutocompleteModule,
-  MatRadioModule
+  MatRadioModule,
+  MatChipsModule
 } from '@angular/material';
 import { ListUniversityComponent } from 'src/app/components/admin/list-university/list-university.component';
 import { ComponentsModule } from 'src/app/components/navigation/components.module';
@@ -51,6 +52,7 @@ import { EditPasswordComponent } from 'src/app/components/admin/edit-password/ed
     MatStepperModule,
     MatAutocompleteModule,
     MatRadioModule,
+    MatChipsModule,
   ], exports: [ComponentsModule]
 })
 

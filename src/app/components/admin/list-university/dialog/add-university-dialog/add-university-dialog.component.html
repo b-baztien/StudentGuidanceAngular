@@ -1,103 +1,152 @@
 <div class="row">
-    <div class="col-sm-11">
-      <h1 mat-dialog-title>เพิ่มข้อมูลมหาวิทยาลัย</h1>
-    </div>
-    <div class="col-sm-1" class="hover-cursor">
-      <mat-icon class="hover-cursor" (click)="onNoClick()">close</mat-icon>
-    </div>
+  <div class="col-sm-11">
+    <h1 mat-dialog-title>เพิ่มข้อมูลมหาวิทยาลัย</h1>
   </div>
-  <mat-vertical-stepper [linear]="true" #stepper>
-    <mat-step [stepControl]="universityDetailForm">
-      <form [formGroup]="universityDetailForm">
-        <ng-template matStepLabel>ข้อมูลรายละเอียดมหาวิทยาลัย</ng-template>
-        <div mat-dialog-content>
-          <div class="input-image-content">
-            <label class="label-input-image">รูปภาพประจำมหาวิทยาลัย</label>
-            <label class="hoverable" for="logoImage">
-              <img class="input-image" [src]="imgURL">
-              <div class="hover-text">เลือกรูปภาพ..</div>
-              <div class="background"></div>
-            </label>
-            <input type="file" class="inputImage" id="logoImage" (change)="preview($event)" accept=".png,.jpg" />
-          </div>
-          <mat-form-field>
-            <input matInput placeholder="ชื่อมหาวิทยาลัย" required formControlName="university_name">
-            <mat-error *ngIf="universityDetailForm.controls.university_name.hasError('required')">
-              กรุณากรอกชื่อมหาวิทยาลัย
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <textarea matInput placeholder="รายละเอียดมหาวิทยาลัย" formControlName="university_detail"></textarea>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput type="tel" placeholder="เบอร์โทรศัพท์" required formControlName="phone_no">
-            <mat-error *ngIf="universityDetailForm.controls.phone_no.hasError('required')">
-              กรุณากรอกเบอร์โทรศัพท์
-            </mat-error>
-            <mat-error *ngIf="universityDetailForm.controls.phone_no.hasError('pattern')">
-              เบอร์โทรศัพท์ต้องเป็นตัวเลขเท่านั้น
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <input type="url" matInput placeholder="ที่อยู่เว็บไซต์" required formControlName="url">
-            <mat-error *ngIf="universityDetailForm.controls.url.hasError('required')">
-              กรุณากรอกที่อยู่เว็บไซต์
-            </mat-error>
-          </mat-form-field>
+  <div class="col-sm-1" class="hover-cursor">
+    <mat-icon class="hover-cursor" (click)="onNoClick()">close</mat-icon>
+  </div>
+</div>
+<mat-vertical-stepper [linear]="true" #stepper *ngIf="showData">
+  <mat-step [stepControl]="universityDetailForm">
+    <form [formGroup]="universityDetailForm">
+      <ng-template matStepLabel>ข้อมูลรายละเอียดมหาวิทยาลัย</ng-template>
+      <div mat-dialog-content>
+        <div class="input-image-content">
+          <label class="label-input-image">รูปภาพสัญลักษณ์มหาวิทยาลัย</label>
+          <label class="hoverable" for="logoImage">
+            <img class="input-image" [src]="imgURL">
+            <div class="hover-text">เลือกรูปภาพ..</div>
+            <div class="background"></div>
+          </label>
+          <input type="file" class="inputImage" id="logoImage" (change)="preview($event)" accept=".png,.jpg" />
         </div>
+        <br>
+        <div class="input-image-content">
+          <label class="label-input-image">รูปภาพมหาวิทยาลัย (เพิ่มได้สูงสุด 5 รูป)</label>
+          <label class="hoverable" for="albumImage">
+            <img class="input-image" [src]="albumUrl[0]">
+            <div class="hover-text">เลือกรูปภาพ..</div>
+            <div class="background"></div>
+          </label>
+          <label class="hoverable" for="albumImage" *ngIf="albumUrl[1] != 'assets/img/no-photo-available.png'">
+            <img class="input-image" [src]="albumUrl[1]">
+            <div class="hover-text">เลือกรูปภาพ..</div>
+            <div class="background"></div>
+          </label>
+          <label class="hoverable" for="albumImage" *ngIf="albumUrl[2] != 'assets/img/no-photo-available.png'">
+            <img class="input-image" [src]="albumUrl[2]">
+            <div class="hover-text">เลือกรูปภาพ..</div>
+            <div class="background"></div>
+          </label>
+          <label class="hoverable" for="albumImage" *ngIf="albumUrl[3] != 'assets/img/no-photo-available.png'">
+            <img class="input-image" [src]="albumUrl[3]">
+            <div class="hover-text">เลือกรูปภาพ..</div>
+            <div class="background"></div>
+          </label>
+          <label class="hoverable" for="albumImage" *ngIf="albumUrl[4] != 'assets/img/no-photo-available.png'">
+            <img class="input-image" [src]="albumUrl[4]">
+            <div class="hover-text">เลือกรูปภาพ..</div>
+            <div class="background"></div>
+          </label>
+          <input type="file" class="inputImage" multiple id="albumImage" (change)="previewAlbum($event)"
+            accept=".png,.jpg" />
+        </div>
+        <br>
+        <mat-form-field>
+          <input matInput placeholder="ชื่อมหาวิทยาลัย" required formControlName="university_name">
+          <mat-error *ngIf="universityDetailForm.controls.university_name.hasError('required')">
+            กรุณากรอกชื่อมหาวิทยาลัย
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <textarea matInput placeholder="รายละเอียดมหาวิทยาลัย" formControlName="university_detail"></textarea>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-chip-list #chipList aria-label="Highlight">
+            <mat-chip *ngFor="let highlight of listHighlight" [removable]="removable"
+              (removed)="removeHighlight(highlight)">
+              {{highlight}}
+              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+            <input placeholder="จุดเด่นมหาวิทยาลัย" #highlightInput formControlName="highlight" [matAutocomplete]="auto"
+              [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="addHighlight($event)">
+          </mat-chip-list>
+          <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption (optionSelected)="selected($event)">
+            <mat-option *ngFor="let highlight of filteredHighlight | async" [value]="highlight">
+              {{highlight}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="tel" placeholder="เบอร์โทรศัพท์" required formControlName="phone_no">
+          <mat-error *ngIf="universityDetailForm.controls.phone_no.hasError('required')">
+            กรุณากรอกเบอร์โทรศัพท์
+          </mat-error>
+          <mat-error *ngIf="universityDetailForm.controls.phone_no.hasError('pattern')">
+            เบอร์โทรศัพท์ต้องเป็นตัวเลขเท่านั้น
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input type="url" matInput placeholder="ที่อยู่เว็บไซต์" required formControlName="url">
+          <mat-error *ngIf="universityDetailForm.controls.url.hasError('required')">
+            กรุณากรอกที่อยู่เว็บไซต์
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="mat-step-footer">
+        <button mat-raised-button class="btn-success" matStepperNext>ถัดไป</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="universityAddressForm">
+    <ng-template matStepLabel>ข้อมูลที่อยู่ของมหาวิทยาลัย</ng-template>
+    <form [formGroup]="universityAddressForm">
+      <div mat-dialog-content>
+        <mat-form-field>
+          <input matInput placeholder="ที่อยู่มหาวิทยาลัย" required formControlName="address">
+          <mat-error *ngIf="universityAddressForm.controls.address.hasError('required')">
+            กรุณากรอกที่อยู่มหาวิทยาลัย
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="แขวง/ตำบล" required formControlName="tambon">
+          <mat-error *ngIf="universityAddressForm.controls.tambon.hasError('required')">
+            กรุณากรอกที่อยู่มหาวิทยาลัย
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="เขต/อำเภอ" required formControlName="amphur">
+          <mat-error *ngIf="universityAddressForm.controls.amphur.hasError('required')">
+            กรุณากรอกเขต/อำเภอ
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>เลือกจังหวัด</mat-label>
+          <mat-select formControlName="province" required>
+            <mat-option>เลือกจังหวัด</mat-option>
+            <mat-option *ngFor="let province of listProvince" [value]="province">
+              {{province.province_name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="universityAddressForm.controls.province.hasError('required')">
+            กรุณาเลือกจังหวัด
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="รหัสไปรษณีย์" required formControlName="zipcode" maxlength="5">
+          <mat-error *ngIf="universityAddressForm.controls.zipcode.hasError('required')">
+            กรุณากรอกรหัสไปรษณีย์
+          </mat-error>
+          <mat-error *ngIf="universityAddressForm.controls.zipcode.hasError('pattern')">
+            รหัสไปรษณีย์ต้องประกอบไปด้วยตัวเลขตัวเลขจำนวน 5 ตัว
+          </mat-error>
+        </mat-form-field>
         <div class="mat-step-footer">
-          <button mat-raised-button class="btn-success" matStepperNext>ถัดไป</button>
+          <button mat-raised-button class="btn-secondary button-margin-right" matStepperPrevious>ย้อนกลับ</button>
+          <button mat-raised-button class="btn-success" (click)="onSubmit()">เพิ่มข้อมูล</button>
         </div>
-      </form>
-    </mat-step>
-    <mat-step [stepControl]="universityAddressForm">
-      <ng-template matStepLabel>ข้อมูลที่อยู่ของมหาวิทยาลัย</ng-template>
-      <form [formGroup]="universityAddressForm">
-        <div mat-dialog-content>
-          <mat-form-field>
-            <input matInput placeholder="ที่อยู่มหาวิทยาลัย" required formControlName="address">
-            <mat-error *ngIf="universityAddressForm.controls.address.hasError('required')">
-              กรุณากรอกที่อยู่มหาวิทยาลัย
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput placeholder="แขวง/ตำบล" required formControlName="tambon">
-            <mat-error *ngIf="universityAddressForm.controls.tambon.hasError('required')">
-              กรุณากรอกที่อยู่มหาวิทยาลัย
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput placeholder="เขต/อำเภอ" required formControlName="amphur">
-            <mat-error *ngIf="universityAddressForm.controls.amphur.hasError('required')">
-              กรุณากรอกเขต/อำเภอ
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>เลือกจังหวัด</mat-label>
-            <mat-select formControlName="province" required>
-              <mat-option>เลือกจังหวัด</mat-option>
-              <mat-option *ngFor="let province of listProvince" [value]="province">
-                {{province.province_name}}
-              </mat-option>
-            </mat-select>
-            <mat-error *ngIf="universityAddressForm.controls.province.hasError('required')">
-              กรุณาเลือกจังหวัด
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput placeholder="รหัสไปรษณีย์" required formControlName="zipcode" maxlength="5">
-            <mat-error *ngIf="universityAddressForm.controls.zipcode.hasError('required')">
-              กรุณากรอกรหัสไปรษณีย์
-            </mat-error>
-            <mat-error *ngIf="universityAddressForm.controls.zipcode.hasError('pattern')">
-              รหัสไปรษณีย์ต้องประกอบไปด้วยตัวเลขตัวเลขจำนวน 5 ตัว
-            </mat-error>
-          </mat-form-field>
-          <div class="mat-step-footer">
-            <button mat-raised-button class="btn-secondary button-margin-right" matStepperPrevious>ย้อนกลับ</button>
-            <button mat-raised-button class="btn-success" (click)="onSubmit()">เพิ่มข้อมูล</button>
-          </div>
-        </div>
-      </form>
-    </mat-step>
-  </mat-vertical-stepper>
+      </div>
+    </form>
+  </mat-step>
+</mat-vertical-stepper>

@@ -22,9 +22,8 @@ export class UniversityService {
   ngOnInit() {
   }
 
-  async addUniversity(university: University) {
+  async addUniversity(universityId: string, university: University) {
     try {
-      const universityId = this.firestore.createId();
       return await this.firestore.collection('University').ref.where('university_name', '==', university.university_name)
         .get().then(universityRes => {
           if (universityRes.empty) {

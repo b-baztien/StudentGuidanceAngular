@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef, ErrorStateMatcher } from '@angular/material';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { MatDialogRef, ErrorStateMatcher, MatAutocomplete, MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 import { University } from 'src/app/model/University';
 import { UniversityService } from 'src/app/services/university-service/university.service';
@@ -8,6 +8,8 @@ import { Observable } from 'rxjs';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Notifications } from 'src/app/components/util/notification';
+import { startWith, map } from 'rxjs/operators';
+import { ENTER } from '@angular/cdk/keycodes';
 
 declare var $: any;
 
@@ -26,6 +28,7 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
       Validators.required,
       Validators.pattern('^[0-9]*$')])),
     university_detail: new FormControl(null),
+    highlight: new FormControl(null),
   });
 
   universityAddressForm = new FormGroup({
@@ -45,8 +48,31 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
   listProvince: Array<[]>;
 
   university: University;
+  universityId;
+
+  showData = false;
 
   imgURL: any = 'assets/img/no-photo-available.png';
+  albumUrl: any[] = [
+    'assets/img/no-photo-available.png',
+    'assets/img/no-photo-available.png',
+    'assets/img/no-photo-available.png',
+    'assets/img/no-photo-available.png',
+    'assets/img/no-photo-available.png',
+  ];
+
+  listHighlight: string[] = new Array<string>();
+  allHighlight: string[] = new Array<string>();
+  filteredHighlight: Observable<string[]>;
+
+  selectable = true;
+  addOnBlur = true;
+  removable = true;
+
+  separatorKeysCodes: number[] = [ENTER];
+
+  @ViewChild('highlightInput', { static: false }) highlightInput: ElementRef<HTMLInputElement>;
+  @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
 
   constructor(
     private http: HttpClient,
@@ -54,8 +80,7 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
     private universityService: UniversityService,
     private afStorage: AngularFireStorage,
     private afirestore: AngularFirestore,
-  ) {
-  }
+  ) { }
 
   getProvinceJSON(): Observable<any> {
     return this.http.get('./assets/database/province_database.json');
@@ -67,20 +92,39 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
       this.listProvince = data;
     });
 
+    this.universityService.getAllUniversity().subscribe(result => {
+      result.forEach(uniRef => {
+        let uni = uniRef.payload.doc.data() as University;
+        let hlSet = new Set<string>();
+        if (uni.highlight != undefined) {
+          uni.highlight.forEach(hl => {
+            hlSet.add(hl);
+            this.allHighlight = Array.from(hlSet);
+          })
+        }
+      });
+      this.showData = true;
+    });
+
+    this.filteredHighlight = this.universityDetailForm.get('highlight').valueChanges.pipe(
+      startWith(null),
+      map((highlight: string | null) => highlight ? this._filter(highlight) : this.allHighlight.slice()));
+
     this.dialogRef.disableClose = true;
   }
 
-  async upload(event) {
+  async upload(event, path: string) {
     const metadata = {
       contentType: 'image/jpeg',
     };
 
     const fileName = this.afirestore.createId();
     if (event.files[0].type.split('/')[0] == 'image') {
-      await this.afStorage.upload(`university/${fileName}`, event.files[0], metadata).then(async result => {
-        this.university.image = await result.ref.fullPath;
+      return await this.afStorage.upload(`${path}/${fileName}`, event.files[0], metadata).then(async result => {
+        return await result.ref.fullPath;
       });
     }
+    return '';
   }
 
   preview(event) {
@@ -95,6 +139,20 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
     }
   }
 
+  previewAlbum(event) {
+    for (let i = 0; i < 5; i++) {
+      if (event.target.files[i] !== undefined) {
+        let reader = new FileReader();
+        reader.readAsDataURL(event.target.files[i]);
+        reader.onload = (_event) => {
+          this.albumUrl[i] = reader.result;
+        }
+      } else {
+        this.albumUrl[i] = 'assets/img/no-photo-available.png';
+      }
+    }
+  }
+
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
@@ -106,6 +164,7 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
 
   async onSubmit() {
     this.university = new University();
+    this.universityId = this.afirestore.createId();
     try {
       if (this.universityDetailForm.valid) {
         this.university.university_name = this.universityDetailForm.get('university_name').value;
@@ -119,16 +178,72 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
         this.university.university_detail = this.universityDetailForm.get('university_detail').value;
         this.university.zone = this.universityAddressForm.get('province').value.zone;
         this.university.view = 0;
-        let files: any = document.getElementById('logoImage');
-        if (files.files[0] !== undefined) {
-          await this.upload(files);
+        if (this.listHighlight.length != 0) {
+          this.university.highlight = this.listHighlight;
         }
-        const universityId = await this.universityService.addUniversity(this.university);
+        let filePath = `university/${this.universityId}`;
+        let fileLogo: any = document.getElementById('logoImage');
+        if (fileLogo.files[0] !== undefined) {
+          this.university.image = await this.upload(fileLogo, filePath).then(result => {
+            return result;
+          });
+        }
+        let fileAlbum: any = document.getElementById('albumImage');
+        this.university.albumImage = new Array<string>();
+        for (let i = 0; i < 5; i++) {
+          if (fileAlbum.files[i] !== undefined) {
+            this.university.albumImage.push(await this.upload(fileAlbum, filePath).then(result => {
+              return result;
+            }));
+          }
+        }
+        this.universityId = await this.universityService.addUniversity(this.universityId, this.university);
         new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลมหาวิทยาลัยสำเร็จแล้ว', 'success', 'สำเร็จ !');
-        this.dialogRef.close(universityId);
+        this.dialogRef.close(this.universityId);
       }
     } catch (error) {
       new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'เพิ่มข้อมูลล้มเหลว !');
     }
+  }
+
+  addHighlight(event: MatChipInputEvent): void {
+    if (!this.matAutocomplete.isOpen) {
+      const input = event.input;
+      const value = event.value;
+
+      if ((value || '').trim()) {
+        this.listHighlight.push(value.trim());
+      }
+
+      if (input) {
+        input.value = '';
+      }
+
+      this.universityDetailForm.get('highlight').setValue(null);
+    }
+  }
+
+  clearHighlight(): void {
+    this.highlightInput.nativeElement.value = null;
+    this.universityDetailForm.get('highLight').setValue(null);
+  }
+
+  removeHighlight(highlight: string): void {
+    const index = this.listHighlight.indexOf(highlight);
+
+    if (index >= 0) {
+      this.listHighlight.splice(index, 1);
+    }
+  }
+
+  selected(event: MatAutocompleteSelectedEvent): void {
+    this.listHighlight.push(event.option.viewValue);
+    this.highlightInput.nativeElement.value = null;
+    this.universityDetailForm.get('highlight').setValue(null);
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.allHighlight.filter(highlight => highlight.toLowerCase().includes(filterValue));
   }
 }

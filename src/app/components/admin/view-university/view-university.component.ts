@@ -67,16 +67,11 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
   async getUniversity(university_id: string) {
     await this.universityService.getUniversity(university_id).subscribe(async universityRes => {
       this.university = universityRes.payload.data() as University;
-      if (this.university.image !== undefined) {
-        this.afStorage.storage.ref(this.university.image).getDownloadURL().then(url => {
-          this.universityImg = url;
-        });
-      }
+      this.university.image === undefined || this.university.image == '' ? null : this.afStorage.storage.ref(this.university.image).getDownloadURL().then(url => {
+        this.universityImg = url;
+      });
       this.facultyService.getFacultyByUniversityId(university_id).subscribe(fct => {
         this.listFaculty = new Array<QueryDocumentSnapshot<unknown>>();
-        fct.forEach(re => {
-          console.log(re.data());
-        })
         this.facultyLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(fct);
         this.facultyLtb.paginator = this.paginator;
         this.showTable = this.facultyLtb.data.length === 0 ? false : true;
@@ -116,7 +111,6 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
   }
 
   openAddMajorDialog(faculty: QueryDocumentSnapshot<unknown>) {
-    console.log(faculty);
     const dialogRef = this.dialog.open(AddMajorDialogComponent, {
       width: '50%',
       data: faculty.id,
@@ -135,7 +129,7 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
       try {
         if (facultyRs !== null) {
           if (facultyRs.mode === 'เพิ่ม') {
-            this.facultyService.addFaculty(faculty.id, facultyRs.faculty);
+            this.facultyService.addFaculty(this.university_id, facultyRs.faculty);
             new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลคณะสำเร็จแล้ว', 'success', 'สำเร็จ !');
           } else if (facultyRs.mode === 'แก้ไข') {
             this.facultyService.updateFaculty(faculty.id, facultyRs.faculty);
@@ -143,6 +137,7 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
           }
         }
       } catch (error) {
+        console.error(error);
         new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'จัดการข้อมูลล้มเหลว !');
       }
     });

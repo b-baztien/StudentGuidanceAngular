@@ -10,6 +10,11 @@
                     </div>
                     <div class="card-body">
                         <h4 class="card-title">{{university.university_name}}</h4>
+                        <mat-chip-list class="card-title" *ngIf="university.highlight !== undefined">
+                            <mat-chip color="primary" selected *ngFor="let highlight of university.highlight">
+                                {{highlight}}
+                            </mat-chip>
+                        </mat-chip-list>
                         <p class="card-description">
                             {{university.university_detail}}
                         </p>
@@ -28,7 +33,7 @@
                             </p>
                             <p class="card-description">
                                 <mat-icon matTooltip="ที่อยู่">home
-                                </mat-icon> {{university.address}} ตำบล{{university.tambon}} อำเภอ{{university.amphur}}
+                                </mat-icon> {{university.address}} {{university.tambon}} {{university.amphur}}
                                 จังหวัด{{university.province}} {{university.zipcode}}
                             </p>
                         </div>
@@ -111,8 +116,6 @@
                                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                             </table>
-                            <mat-paginator [length]="resultsLength" [pageSize]="5" showFirstLastButtons>
-                            </mat-paginator>
                         </div>
                         <div class="card-profile no-margin" *ngIf="!showTable">
                             <div class="card-body">

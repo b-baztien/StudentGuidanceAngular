@@ -45,9 +45,7 @@ export class EditMajorComponent implements OnInit {
     private majorService: MajorService,
     private carrerService: CarrerService,
     @Inject(MAT_DIALOG_DATA) public data: Observable<Action<DocumentSnapshot<unknown>>>,
-  ) {
-
-  }
+  ) { }
 
   async ngOnInit() {
     await this.data.subscribe(async result => {

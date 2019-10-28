@@ -7,6 +7,8 @@ export class University {
     university_detail: string;
     view: number;
     image: string;
+    albumImage: string[];
+    highlight: string[];
     address: string;
     tambon: string;
     amphur: string;

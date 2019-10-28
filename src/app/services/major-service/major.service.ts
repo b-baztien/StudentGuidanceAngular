@@ -5,6 +5,7 @@ import { Major } from 'src/app/model/Major';
 import { Subject } from 'rxjs';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Carrer } from 'src/app/model/Carrer';
+import { EntranceExamResultService } from '../entrance-exam-result-service/entrance-exam-result.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class MajorService {
 
   constructor(
     private firestore: AngularFirestore,
+    private entranceExamResultService: EntranceExamResultService,
   ) {
   }
 
@@ -88,6 +90,7 @@ export class MajorService {
 
   deleteMajor(major: QueryDocumentSnapshot<unknown>) {
     try {
+      this.entranceExamResultService.deleteMajorInExamResult(major.ref);
       this.firestore.collection('Carrer').ref.where('major', 'array-contains', major.ref).onSnapshot(result => {
         result.forEach(docsRs => {
           const carrer = docsRs.data() as Carrer;
