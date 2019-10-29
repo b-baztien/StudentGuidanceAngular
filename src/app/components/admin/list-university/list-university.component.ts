@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatDialog, MatPaginatorIntl } from '@angular/material';
 import { Router } from '@angular/router';
 import { UniversityService } from 'src/app/services/university-service/university.service';
 import { QueryDocumentSnapshot } from '@angular/fire/firestore';
@@ -18,6 +18,7 @@ export class ListUniversityComponent implements OnInit, OnDestroy, AfterViewInit
   resultsLength = 0;
   isLoadingResults = true;
 
+  paginatorInit = new MatPaginatorIntl;
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
   listUniObs;
@@ -30,10 +31,23 @@ export class ListUniversityComponent implements OnInit, OnDestroy, AfterViewInit
     private universityService: UniversityService
   ) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   async ngAfterViewInit(): Promise<void> {
+    //custom text paginator
+    this.paginatorInit.getRangeLabel = (page: number, pageSize: number, length: number) => {
+      if (length === 0 || pageSize === 0) {
+        return `0 / ${length}`;
+      }
+      length = Math.max(length, 0);
+      const startIndex = page * pageSize;
+      const endIndex = startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
+      return `${startIndex + 1} - ${endIndex} จากทั้งหมด ${length}`;
+    };
+    this.paginatorInit.changes.next();
+    this.paginator._intl = this.paginatorInit;
+
+    //add data to table datasource
     this.listUniObs = await this.universityService.getAllUniversity().subscribe(result => {
       let resultListUniversity = new Array<QueryDocumentSnapshot<Object>>();
       result.forEach(element => {

@@ -3,7 +3,7 @@ import { University } from 'src/app/model/University';
 import { UniversityService } from 'src/app/services/university-service/university.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Faculty } from 'src/app/model/Faculty';
-import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatDialog, MatPaginatorIntl } from '@angular/material';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { AddEditFacultyDialogComponent } from './dialog/add-edit-faculty-dialog/add-edit-faculty-dialog.component';
 import { FacultyService } from 'src/app/services/faculty-service/faculty.service';
@@ -42,7 +42,8 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
 
   facultyLtb: MatTableDataSource<QueryDocumentSnapshot<unknown>>;
   displayedColumns: string[] = ['faculty_name', 'url', 'major', 'manage'];
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  paginatorInit = new MatPaginatorIntl;
 
   constructor(
     private universityService: UniversityService,
@@ -70,14 +71,32 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
       this.university.image === undefined || this.university.image == '' ? null : this.afStorage.storage.ref(this.university.image).getDownloadURL().then(url => {
         this.universityImg = url;
       });
-      this.facultyService.getFacultyByUniversityId(university_id).subscribe(fct => {
+      await this.facultyService.getFacultyByUniversityId(university_id).subscribe(fct => {
         this.listFaculty = new Array<QueryDocumentSnapshot<unknown>>();
         this.facultyLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(fct);
         this.facultyLtb.paginator = this.paginator;
+
+        //custom text paginator
+        this.paginatorInit.getRangeLabel = (page: number, pageSize: number, length: number) => {
+          if (length === 0 || pageSize === 0) {
+            return `0 / ${length}`;
+          }
+          length = Math.max(length, 0);
+          const startIndex = page * pageSize;
+          const endIndex = startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
+          return `${startIndex + 1} - ${endIndex} จากทั้งหมด ${length}`;
+        };
+        this.paginatorInit.changes.next();
+        this.paginator._intl = this.paginatorInit;
+
         this.showTable = this.facultyLtb.data.length === 0 ? false : true;
-      })
+      });
       this.showContent = this.university === undefined ? false : true;
     });
+  }
+
+  applyFilter(filterValue: string) {
+    this.facultyLtb.filter = filterValue.trim().toLowerCase();
   }
 
   openEditUniversityDialog(): void {
