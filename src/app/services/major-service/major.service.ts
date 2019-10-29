@@ -52,8 +52,8 @@ export class MajorService {
 
   async addMajor(facultyId: string, major: Major) {
     try {
-      major.faculty = this.firestore.collection('Faculty').doc(facultyId).ref;
       return await this.firestore.collection('Major').doc(major.major_name + facultyId).ref.get().then(async result => {
+        major.faculty = await this.firestore.collection('Faculty').doc(facultyId).ref;
         if (!result.exists) {
           return await this.firestore.collection('Major').doc(major.major_name + facultyId).set(Object.assign({}, major))
             .then(async () => {
@@ -83,7 +83,6 @@ export class MajorService {
     try {
       return this.firestore.collection('Major').doc(majorId).set(Object.assign({}, major));
     } catch (error) {
-      console.log(error);
       throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
     }
   }
@@ -112,7 +111,7 @@ export class MajorService {
             }
           }
           this.firestore.collection('Major').doc(major.id).delete();
-        })
+        });
       });
     } catch (error) {
       console.log(error);

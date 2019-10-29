@@ -15,7 +15,6 @@ export class UniversityService {
     private firestore: AngularFirestore,
     private afStorage: AngularFireStorage,
     private carrerService: CarrerService,
-    private majorService: MajorService,
   ) {
   }
 
@@ -52,8 +51,8 @@ export class UniversityService {
     try {
       this.firestore.collection('University').doc(universityId).snapshotChanges().subscribe(result => {
         const university = result.payload.data() as University;
-        if (undefined !== university.image) {
-          this.afStorage.ref(university.image).delete();
+        if (undefined !== university.image || undefined !== university.albumImage) {
+          this.afStorage.ref(`university${universityId}`).delete();
         }
         if (undefined !== university.faculty) {
           university.faculty.forEach(fct => {

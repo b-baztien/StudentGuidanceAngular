@@ -4,11 +4,13 @@ import { ViewUniversityComponent } from 'src/app/components/admin/view-universit
 import { ListUserComponent } from 'src/app/components/admin/list-user/list-user.component';
 import { EditPasswordComponent } from 'src/app/components/admin/edit-password/edit-password.component';
 import { AdminGuard } from 'src/app/auth/admin.guard';
+import { ListCarrerComponent } from 'src/app/components/admin/list-carrer/list-carrer.component';
 
 export const AdminLayoutRoutes: Routes = [
     { path: '', redirectTo: 'list-university', pathMatch: 'full' },
     { path: 'list-university', component: ListUniversityComponent, canActivate: [AdminGuard] },
     { path: 'list-university/view-university', component: ViewUniversityComponent, canActivate: [AdminGuard] },
+    { path: 'list-carrer', component: ListCarrerComponent, canActivate: [AdminGuard] },
     { path: 'list-user', component: ListUserComponent, canActivate: [AdminGuard] },
     { path: 'edit-password', component: EditPasswordComponent, canActivate: [AdminGuard] },
 ];

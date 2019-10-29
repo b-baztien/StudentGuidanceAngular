@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentReference, QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { Carrer } from 'src/app/model/Carrer';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { Major } from 'src/app/model/Major';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +10,7 @@ import { Carrer } from 'src/app/model/Carrer';
 export class CarrerService {
   constructor(
     private firestore: AngularFirestore,
+    private afStorage: AngularFireStorage,
   ) {
   }
 
@@ -48,13 +51,42 @@ export class CarrerService {
         return this.firestore.collection('Carrer').doc(carrer.carrer_name).ref;
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
     }
   }
 
-  updateCarrer(carrerId: string, carrer: Carrer) {
-    this.firestore.collection('Carrer').doc(carrerId).set(Object.assign({}, carrer));
+  updateCarrer(carrer: Carrer) {
+    try {
+      this.firestore.collection('Carrer').doc(carrer.carrer_name).set(Object.assign({}, carrer));
+    } catch (error) {
+      console.error(error);
+      throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
+    }
+  }
+
+  deleteCarrer(carrerRef: QueryDocumentSnapshot<unknown>) {
+    try {
+      const carrer = carrerRef.data() as Carrer;
+      if (carrer.image !== undefined) {
+        this.afStorage.storage.ref(carrer.image).delete();
+      }
+      this.firestore.collection('Major').ref.where('carrer', 'array-contains', carrerRef.ref).onSnapshot(result => {
+        result.forEach(docsRs => {
+          const major = docsRs.data() as Major;
+          for (let i = 0; i < major.carrer.length; i++) {
+            if (major.carrer[i].id == carrerRef.id) {
+              major.carrer.splice(i, 1);
+              this.firestore.collection('Major').doc(docsRs.id).set(Object.assign({}, major));
+            }
+          }
+        });
+        this.firestore.collection('Carrer').doc(carrer.carrer_name).delete();
+      });
+    } catch (error) {
+      console.log(error);
+      throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
+    }
   }
 
   async deleteMajorInCarrer(major: DocumentReference) {

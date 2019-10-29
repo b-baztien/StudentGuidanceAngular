@@ -7,13 +7,13 @@ export class University {
     university_detail: string;
     view: number;
     image: string;
-    albumImage: string[];
-    highlight: string[];
+    albumImage: string[] = new Array<string>();
+    highlight: string[] = new Array<string>();
     address: string;
     tambon: string;
     amphur: string;
     province: string;
     zipcode: string;
     zone: string;
-    faculty: DocumentReference[];
+    faculty: DocumentReference[] = new Array<DocumentReference>();
 }
