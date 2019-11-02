@@ -5,6 +5,6 @@ export class Teacher {
     lastname: string;
     phone_no: string;
     email: string;
-    image: string;
+    image: string = '';
     school: DocumentReference;
 }

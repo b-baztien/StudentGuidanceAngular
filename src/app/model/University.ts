@@ -6,7 +6,7 @@ export class University {
     phone_no: string;
     university_detail: string;
     view: number;
-    image: string;
+    image: string = '';
     albumImage: string[] = new Array<string>();
     highlight: string[] = new Array<string>();
     address: string;

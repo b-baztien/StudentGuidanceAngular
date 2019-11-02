@@ -3,7 +3,7 @@ import { DocumentReference } from '@angular/fire/firestore';
 
 export class News {
     detail: string;
-    image: string;
+    image: string = '';
     topic: string;
     start_time: firestore.Timestamp;
     end_time: firestore.Timestamp;
