@@ -17,6 +17,7 @@ export const ADMINROUTES: RouteInfo[] = [
 
 export const TEACHERROUTES: RouteInfo[] = [
   { path: '/teacher/list-student', title: 'รายชื่อนักเรียนในโรงเรียน', icon: 'person', class: '' },
+  { path: '/teacher/list-entrance-exam-result', title: 'ข้อมูลการสอบติด', icon: 'account_box', class: '' },
   { path: '/teacher/list-news', title: 'ข่าวสาร', icon: 'library_books', class: '' },
   { path: '/teacher/list-university', title: 'รายชื่อมหาวิทยาลัย', icon: 'school', class: '' },
   { path: '/teacher/profile', title: 'แก้ไขข้อมูลส่วนตัว', icon: 'account_box', class: '' },

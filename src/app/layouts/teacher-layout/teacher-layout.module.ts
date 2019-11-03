@@ -27,6 +27,7 @@ import { ListStudentComponent } from 'src/app/components/teacher/list-student/li
 import { ListUniversityTeacherComponent } from 'src/app/components/teacher/list-university/list-university.component';
 import { ViewUniversityComponent } from 'src/app/components/teacher/view-university/view-university.component';
 import { ProfileComponent } from 'src/app/components/teacher/profile/profile.component';
+import { ListEntranceExamResultComponent } from 'src/app/components/teacher/list-entrance-exam-result/list-entrance-exam-result/list-entrance-exam-result.component';
 @NgModule({
   declarations: [
     ListNewsComponent,
@@ -34,6 +35,7 @@ import { ProfileComponent } from 'src/app/components/teacher/profile/profile.com
     ListUniversityTeacherComponent,
     ViewUniversityComponent,
     ProfileComponent,
+    ListEntranceExamResultComponent,
   ],
   imports: [
     CommonModule,
