@@ -10,6 +10,9 @@ import { Faculty } from 'src/app/model/Faculty';
 import { University } from 'src/app/model/University';
 import { ConfirmDialogComponent } from 'src/app/components/util/confirm-dialog/confirm-dialog.component';
 import { Notifications } from 'src/app/components/util/notification';
+import { TeacherService } from 'src/app/services/teacher-service/teacher.service';
+import { Login } from 'src/app/model/Login';
+import { Teacher } from 'src/app/model/Teacher';
 
 @Component({
   selector: 'app-list-entrance-exam-result',
@@ -21,6 +24,8 @@ export class ListEntranceExamResultComponent implements OnInit {
   mapUniData: Map<string, string> = new Map<string, string>();
 
   displayedColumns: string[] = ['entrance_exam_name', 'year', 'major', 'faculty', 'university', 'manage'];
+
+  teacher: Teacher;
 
   resultsLength = 0;
   isLoadingResults = true;
@@ -39,6 +44,7 @@ export class ListEntranceExamResultComponent implements OnInit {
     public dialog: MatDialog,
     private router: Router,
     private entranceExamResuleService: EntranceExamResultService,
+    private teacherService: TeacherService,
   ) { }
 
   ngOnInit() {
@@ -59,25 +65,31 @@ export class ListEntranceExamResultComponent implements OnInit {
     this.paginator._intl = this.paginatorInit;
 
     //add data to table datasource
+    let userData: Login = JSON.parse(localStorage.getItem('userData'));
+    this.teacher = await this.teacherService.getTeacherByUsername(userData.username).then(result => {
+      return result.data() as Teacher;
+    });
     this.listExamObs = await this.entranceExamResuleService.getAllExamResult().subscribe(async result => {
       this.showTable = false;
       let resultListExam = new Array<QueryDocumentSnapshot<Object>>();
       this.examResultList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListExam);
       for (let i = 0; i < result.length; i++) {
         let examResult = result[i].payload.doc.data() as EntranceExamResult;
-        await examResult.major.get().then(result => {
-          let major = result.data() as Major;
-          this.mapUniData.set(result.id, major.major_name);
-        });
-        await examResult.faculty.get().then(result => {
-          let faculty = result.data() as Faculty;
-          this.mapUniData.set(result.id, faculty.faculty_name);
-        });
-        await examResult.university.get().then(result => {
-          let university = result.data() as University;
-          this.mapUniData.set(result.id, university.university_name);
-        });
-        resultListExam.push(result[i].payload.doc);
+        if (this.teacher.school.id == examResult.school.id) {
+          await examResult.major.get().then(result => {
+            let major = result.data() as Major;
+            this.mapUniData.set(result.id, major.major_name);
+          });
+          await examResult.faculty.get().then(result => {
+            let faculty = result.data() as Faculty;
+            this.mapUniData.set(result.id, faculty.faculty_name);
+          });
+          await examResult.university.get().then(result => {
+            let university = result.data() as University;
+            this.mapUniData.set(result.id, university.university_name);
+          });
+          resultListExam.push(result[i].payload.doc);
+        }
         if (i == result.length - 1) {
           this.showTable = this.examResultList.data.length === 0 ? false : true;
         }
