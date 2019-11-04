@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatTableDataSource, MatDialog, MatPaginator } from '@angular/material';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
+import { MatTableDataSource, MatDialog, MatPaginator, MatPaginatorIntl } from '@angular/material';
 import { QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { UniversityService } from 'src/app/services/university-service/university.service';
 import { Router } from '@angular/router';
@@ -9,13 +9,14 @@ import { Router } from '@angular/router';
   templateUrl: './list-university.component.html',
   styleUrls: ['./list-university.component.css']
 })
-export class ListUniversityTeacherComponent implements OnInit, OnDestroy {
+export class ListUniversityTeacherComponent implements OnInit, AfterViewInit, OnDestroy {
   universityList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
   displayedColumns: string[] = ['university_name', 'phone_no', 'url', 'view', 'province', 'zone'];
 
   resultsLength = 0;
   isLoadingResults = true;
 
+  paginatorInit = new MatPaginatorIntl;
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
   listUniObs;
@@ -28,13 +29,28 @@ export class ListUniversityTeacherComponent implements OnInit, OnDestroy {
     private universityService: UniversityService
   ) { }
 
-  async ngOnInit() {
+  async ngOnInit() { }
+
+  async ngAfterViewInit() {
+    //custom text paginator
+    this.paginatorInit.getRangeLabel = (page: number, pageSize: number, length: number) => {
+      if (length === 0 || pageSize === 0) {
+        return `0 จากทั้งหมด ${length}`;
+      }
+      length = Math.max(length, 0);
+      const startIndex = page * pageSize;
+      const endIndex = startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
+      return `${startIndex + 1} - ${endIndex} จากทั้งหมด ${length}`;
+    };
+    this.paginatorInit.changes.next();
+    this.paginator._intl = this.paginatorInit;
+
     this.listUniObs = await this.universityService.getAllUniversity().subscribe(result => {
       let resultListUniversity = new Array<QueryDocumentSnapshot<Object>>();
+      this.universityList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListUniversity);
       result.forEach(element => {
         resultListUniversity.push(element.payload.doc);
       });
-      this.universityList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListUniversity);
       this.universityList.paginator = this.paginator;
       this.showTable = this.universityList.data.length === 0 ? false : true;
     });

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { University } from 'src/app/model/University';
-import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatDialog, MatPaginatorIntl } from '@angular/material';
 import { UniversityService } from 'src/app/services/university-service/university.service';
 import { FacultyService } from 'src/app/services/faculty-service/faculty.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -26,7 +26,9 @@ export class ViewUniversityComponent implements OnInit {
 
   facultyLtb: MatTableDataSource<QueryDocumentSnapshot<unknown>>;
   displayedColumns: string[] = ['faculty_name', 'url', 'major'];
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+
+  paginatorInit = new MatPaginatorIntl;
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
   constructor(
     private universityService: UniversityService,
@@ -45,6 +47,20 @@ export class ViewUniversityComponent implements OnInit {
   }
 
   async ngAfterViewInit() {
+
+    //custom text paginator
+    this.paginatorInit.getRangeLabel = (page: number, pageSize: number, length: number) => {
+      if (length === 0 || pageSize === 0) {
+        return `0 จากทั้งหมด ${length}`;
+      }
+      length = Math.max(length, 0);
+      const startIndex = page * pageSize;
+      const endIndex = startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
+      return `${startIndex + 1} - ${endIndex} จากทั้งหมด ${length}`;
+    };
+    this.paginatorInit.changes.next();
+    this.paginator._intl = this.paginatorInit;
+
     await this.getUniversity(this.university_id);
   }
 
@@ -68,12 +84,9 @@ export class ViewUniversityComponent implements OnInit {
   }
 
   openListMajorDialog(faculty: QueryDocumentSnapshot<unknown>): void {
-    const dialogRef = this.dialog.open(ListMajorTeacherDialogComponent, {
+    this.dialog.open(ListMajorTeacherDialogComponent, {
       width: '50%',
       data: faculty,
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
     });
   }
 }

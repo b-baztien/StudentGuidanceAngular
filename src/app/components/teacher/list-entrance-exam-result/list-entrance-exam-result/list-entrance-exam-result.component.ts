@@ -13,6 +13,12 @@ import { Notifications } from 'src/app/components/util/notification';
 import { TeacherService } from 'src/app/services/teacher-service/teacher.service';
 import { Login } from 'src/app/model/Login';
 import { Teacher } from 'src/app/model/Teacher';
+import { Student } from 'src/app/model/Student';
+import { UniversityService } from 'src/app/services/university-service/university.service';
+import { FacultyService } from 'src/app/services/faculty-service/faculty.service';
+import { MajorService } from 'src/app/services/major-service/major.service';
+import { AlumniService } from 'src/app/services/alumni-service/alumni.service';
+import { Alumni } from 'src/app/model/Alumni';
 
 @Component({
   selector: 'app-list-entrance-exam-result',
@@ -21,9 +27,13 @@ import { Teacher } from 'src/app/model/Teacher';
 })
 export class ListEntranceExamResultComponent implements OnInit {
   examResultList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
+  studyUniList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
+  juniorSchoolList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
   mapUniData: Map<string, string> = new Map<string, string>();
 
-  displayedColumns: string[] = ['entrance_exam_name', 'year', 'major', 'faculty', 'university', 'manage'];
+  displayedResultExamColumns: string[] = ['student', 'entrance_exam_name', 'year', 'major', 'faculty', 'university', 'manage'];
+  displayedStudyUniColumns: string[] = ['alumni_name', 'graduated_year', 'status', 'job', 'manage'];
+  displayedJuniorSchoolColumns: string[] = ['student_name', 'junior_school', 'manage'];
 
   teacher: Teacher;
 
@@ -33,9 +43,8 @@ export class ListEntranceExamResultComponent implements OnInit {
   paginatorInit = new MatPaginatorIntl;
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
-  listExamObs;
-
-  showTable: boolean = false;
+  showExamResultTable: boolean = false;
+  showStudyUniTable: boolean = false;
 
   examResultName = new FormControl();
   toppingList: string[] = ['Portfolio', 'รับตรงร่วมกัน (+กสพท)', 'การรับแบบแอดมิชชัน', 'การรับตรงอิสระ'];
@@ -45,6 +54,10 @@ export class ListEntranceExamResultComponent implements OnInit {
     private router: Router,
     private entranceExamResuleService: EntranceExamResultService,
     private teacherService: TeacherService,
+    private alumniService: AlumniService,
+    private universityService: UniversityService,
+    private facultyService: FacultyService,
+    private majorService: MajorService,
   ) { }
 
   ngOnInit() {
@@ -69,37 +82,77 @@ export class ListEntranceExamResultComponent implements OnInit {
     this.teacher = await this.teacherService.getTeacherByUsername(userData.username).then(result => {
       return result.data() as Teacher;
     });
-    this.listExamObs = await this.entranceExamResuleService.getAllExamResult().subscribe(async result => {
-      this.showTable = false;
+
+    //get university data
+    this.universityService.getAllUniversity().subscribe(result => {
+      result.forEach(universityRef => {
+        let university = universityRef.payload.doc.data() as University;
+        this.mapUniData.set(universityRef.payload.doc.id, university.university_name);
+      });
+    });
+
+    //get faculty data
+    this.facultyService.getAllFaculty().subscribe(result => {
+      result.forEach(facultyRef => {
+        let faculty = facultyRef.payload.doc.data() as Faculty;
+        this.mapUniData.set(facultyRef.payload.doc.id, faculty.faculty_name);
+      });
+    });
+
+    //get major data
+    this.majorService.getAllMajor().subscribe(result => {
+      result.forEach(majorRef => {
+        let major = majorRef.payload.doc.data() as Major;
+        this.mapUniData.set(majorRef.payload.doc.id, major.major_name);
+      });
+    });
+
+    //get exam result data
+    await this.entranceExamResuleService.getAllExamResult().subscribe(async result => {
+      this.showExamResultTable = false;
       let resultListExam = new Array<QueryDocumentSnapshot<Object>>();
       this.examResultList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListExam);
+
+      //Student Data
+      let resultListJunior = new Array<QueryDocumentSnapshot<Object>>();
+      this.juniorSchoolList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListJunior);
+
       for (let i = 0; i < result.length; i++) {
         let examResult = result[i].payload.doc.data() as EntranceExamResult;
         if (this.teacher.school.id == examResult.school.id) {
-          await examResult.major.get().then(result => {
-            let major = result.data() as Major;
-            this.mapUniData.set(result.id, major.major_name);
-          });
-          await examResult.faculty.get().then(result => {
-            let faculty = result.data() as Faculty;
-            this.mapUniData.set(result.id, faculty.faculty_name);
-          });
-          await examResult.university.get().then(result => {
-            let university = result.data() as University;
-            this.mapUniData.set(result.id, university.university_name);
+          await examResult.student.get().then(result => {
+            let student = result.data() as Student;
+            if (this.mapUniData.get(result.id) === undefined) {
+              resultListJunior.push(result);
+            }
+            this.mapUniData.set(result.id, `${student.firstname} ${student.lastname}`);
           });
           resultListExam.push(result[i].payload.doc);
         }
         if (i == result.length - 1) {
-          this.showTable = this.examResultList.data.length === 0 ? false : true;
+          this.showExamResultTable = this.examResultList.data.length === 0 ? false : true;
+        }
+      };
+      this.juniorSchoolList.paginator = this.paginator;
+      this.examResultList.paginator = this.paginator;
+    });
+
+    //get alumni data
+    this.alumniService.getAlumniBySchoolId(this.teacher.school.id).subscribe(async result => {
+      this.showStudyUniTable = false;
+      let resultListStudy = new Array<QueryDocumentSnapshot<Object>>();
+      this.studyUniList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListStudy);
+      for (let i = 0; i < result.length; i++) {
+        let studyResult = result[i].data() as Alumni;
+        if (this.teacher.school.id == studyResult.school.id) {
+          resultListStudy.push(result[i]);
+        }
+        if (i == result.length - 1) {
+          this.showStudyUniTable = this.examResultList.data.length === 0 ? false : true;
         }
       };
       this.examResultList.paginator = this.paginator;
     });
-  }
-
-  ngOnDestroy() {
-    this.listExamObs.unsubscribe();
   }
 
   openDeleteEntranceExamResuleDialog(entranceExamResule: QueryDocumentSnapshot<unknown>) {

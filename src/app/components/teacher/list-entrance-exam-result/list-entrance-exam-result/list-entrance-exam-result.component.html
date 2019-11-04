@@ -1,5 +1,6 @@
 <div class="main-content">
     <div class="container-fluid">
+        <!-- Entrance Exam Result Table -->
         <div class="row">
             <div class="col-lg-12 col-md-12">
                 <div class="card">
@@ -15,24 +16,29 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-profile" *ngIf="!showTable">
+                    <div class="card-profile" *ngIf="!showExamResultTable">
                         <div class="card-body">
                             <mat-icon class="card-title">highlight_off</mat-icon>
                             <h4 class="card-description">ไม่พบข้อมูลผลการสอบติด</h4>
                             <p class="card-description">
-                                ไม่พบข้อมูลผลการสอบติดในระบบ กรุณาเพิ่มข้อมูลผลการสอบติด
+                                ไม่พบข้อมูลผลการสอบติดในระบบ
                             </p>
                         </div>
                     </div>
                     <div class="card-body table-responsive">
-                        <div *ngIf="showTable">
+                        <div *ngIf="showExamResultTable">
                             <mat-form-field>
                                 <input matInput placeholder="ค้นหาผลการสอบติด ภายในระบบ..."
                                     (keyup)="applyFilter($event.target.value)">
                             </mat-form-field>
                             <table mat-table [dataSource]="examResultList" class="table table-hover">
+                                <ng-container matColumnDef="student">
+                                    <th mat-header-cell *matHeaderCellDef>ชื่อนักเรียน</th>
+                                    <td mat-cell *matCellDef="let resultExam">
+                                        {{mapUniData.get(resultExam.data().student.id)}}</td>
+                                </ng-container>
                                 <ng-container matColumnDef="entrance_exam_name">
-                                    <th mat-header-cell *matHeaderCellDef>ชื่อรอบการสอบติด</th>
+                                    <th mat-header-cell *matHeaderCellDef>รอบที่สอบติด</th>
                                     <td mat-cell *matCellDef="let resultExam"> {{resultExam.data().entrance_exam_name}}
                                     </td>
                                 </ng-container>
@@ -64,8 +70,8 @@
                                         </button>
                                     </td>
                                 </ng-container>
-                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                <tr mat-header-row *matHeaderRowDef="displayedResultExamColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedResultExamColumns;"></tr>
                             </table>
                             <div class="card-profile" *ngIf="examResultList.filteredData.length == 0">
                                 <div class="card-body">
@@ -73,6 +79,157 @@
                                     <h4 class="card-description">ไม่พบข้อมูลผลการสอบติดที่ค้นหา</h4>
                                     <p class="card-description">
                                         ไม่พบข้อมูลผลการสอบติดตามเงื่อนไขที่ค้นหา กรุณาค้นหาด้วยเงื่อนไขอื่น
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <mat-paginator [hidePageSize]="true" [showFirstLastButtons]="true" [pageSize]="10">
+                        </mat-paginator>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Study University Table -->
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-info">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4 class="card-title">รายชื่อการศึกษาต่อในมหาวิทยาลัย</h4>
+                                <p class="card-category">
+                                    นี่คือรายชื่อการศึกษาต่อในมหาวิทยาลัยทั้งหมดที่พบในระบบ คุณสามารถตรวจสอบ
+                                    หรือจัดการ
+                                    รานละเอียดต่างๆ ของการศึกษาต่อในมหาวิทยาลัยนั้นๆ ได้
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-profile" *ngIf="!showStudyUniTable">
+                        <div class="card-body">
+                            <mat-icon class="card-title">highlight_off</mat-icon>
+                            <h4 class="card-description">ไม่พบข้อมูลการศึกษาต่อในมหาวิทยาลัย</h4>
+                            <p class="card-description">
+                                ไม่พบข้อมูลการศึกษาต่อในมหาวิทยาลัยในระบบ
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-body table-responsive">
+                        <div *ngIf="showStudyUniTable">
+                            <mat-form-field>
+                                <input matInput placeholder="ค้นหาการศึกษาต่อในมหาวิทยาลัย ภายในระบบ..."
+                                    (keyup)="applyFilter($event.target.value)">
+                            </mat-form-field>
+                            <table mat-table [dataSource]="studyUniList" class="table table-hover">
+                                <ng-container matColumnDef="entrance_exam_name">
+                                    <th mat-header-cell *matHeaderCellDef>ชื่อศิษย์เก่า</th>
+                                    <td mat-cell *matCellDef="let alumni"> {{mapUniData.get(alumni.data().student.id)}}
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="graduated_year">
+                                    <th mat-header-cell *matHeaderCellDef>ปีที่สำเร็จการศึกษา</th>
+                                    <td mat-cell *matCellDef="let alumni">{{alumni.data().graduated_year}}</td>
+                                </ng-container>
+                                <ng-container matColumnDef="status">
+                                    <th mat-header-cell *matHeaderCellDef>สถานะการศึกษา</th>
+                                    <td mat-cell *matCellDef="let alumni">
+                                        {{alumni.data().status}}</td>
+                                </ng-container>
+                                <ng-container matColumnDef="job">
+                                    <th mat-header-cell *matHeaderCellDef>คณะที่ติด</th>
+                                    <td mat-cell *matCellDef="let alumni">
+                                        {{alumni.data().job}}</td>
+                                </ng-container>
+                                <ng-container matColumnDef="manage">
+                                    <th mat-header-cell *matHeaderCellDef>ลบข้อมูลการสอบติด</th>
+                                    <td mat-cell *matCellDef="let resultExam">
+                                        <button mat-raised-button matTooltip="ลบ" [matTooltipPosition]="'above'"
+                                            class="btn-danger" (click)="openDeleteEntranceExamResuleDialog(resultExam)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedStudyUniColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedStudyUniColumns;"></tr>
+                            </table>
+                            <div class="card-profile" *ngIf="studyUniList.filteredData.length == 0">
+                                <div class="card-body">
+                                    <mat-icon class="card-title">search</mat-icon>
+                                    <h4 class="card-description">ไม่พบข้อมูลการศึกษาต่อในมหาวิทยาลัยที่ค้นหา</h4>
+                                    <p class="card-description">
+                                        ไม่พบข้อมูลการศึกษาต่อในมหาวิทยาลัยตามเงื่อนไขที่ค้นหา
+                                        กรุณาค้นหาด้วยเงื่อนไขอื่น
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <mat-paginator [hidePageSize]="true" [showFirstLastButtons]="true" [pageSize]="10">
+                        </mat-paginator>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Junior School Table -->
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-danger">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4 class="card-title">รายชื่อโรงเรียนมัธยมต้นของนักเรียน</h4>
+                                <p class="card-category">
+                                    นี่คือรายชื่อโรงเรียนมัธยมต้นของนักเรียนทั้งหมดที่พบในระบบ คุณสามารถตรวจสอบ
+                                    หรือจัดการ
+                                    รานละเอียดต่างๆ ของโรงเรียนมัธยมต้นของนักเรียนนั้นๆ ได้
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-profile" *ngIf="!showExamResultTable">
+                        <div class="card-body">
+                            <mat-icon class="card-title">highlight_off</mat-icon>
+                            <h4 class="card-description">ไม่พบข้อมูลโรงเรียนมัธยมต้นของนักเรียน</h4>
+                            <p class="card-description">
+                                ไม่พบข้อมูลโรงเรียนมัธยมต้นของนักเรียนในระบบ
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-body table-responsive">
+                        <div *ngIf="showExamResultTable">
+                            <mat-form-field>
+                                <input matInput placeholder="ค้นหาโรงเรียนมัธยมต้นของนักเรียน ภายในระบบ..."
+                                    (keyup)="applyFilter($event.target.value)">
+                            </mat-form-field>
+                            <table mat-table [dataSource]="juniorSchoolList" class="table table-hover">
+                                <ng-container matColumnDef="student_name">
+                                    <th mat-header-cell *matHeaderCellDef>ชื่อนักเรียน</th>
+                                    <td mat-cell *matCellDef="let student">
+                                        {{mapUniData.get(student.id)}}
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="junior_school">
+                                    <th mat-header-cell *matHeaderCellDef>โรงเรียนมัธยมต้น</th>
+                                    <td mat-cell *matCellDef="let student">{{student.data().junior_school}}</td>
+                                </ng-container>
+                                <ng-container matColumnDef="manage">
+                                    <th mat-header-cell *matHeaderCellDef>ลบข้อมูลการสอบติด</th>
+                                    <td mat-cell *matCellDef="let resultExam">
+                                        <button mat-raised-button matTooltip="ลบ" [matTooltipPosition]="'above'"
+                                            class="btn-danger" (click)="openDeleteEntranceExamResuleDialog(resultExam)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedJuniorSchoolColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedJuniorSchoolColumns;"></tr>
+                            </table>
+                            <div class="card-profile" *ngIf="juniorSchoolList.filteredData.length == 0">
+                                <div class="card-body">
+                                    <mat-icon class="card-title">search</mat-icon>
+                                    <h4 class="card-description">ไม่พบข้อมูลโรงเรียนมัธยมต้นของนักเรียนที่ค้นหา</h4>
+                                    <p class="card-description">
+                                        ไม่พบข้อมูลโรงเรียนมัธยมต้นของนักเรียนตามเงื่อนไขที่ค้นหา
+                                        กรุณาค้นหาด้วยเงื่อนไขอื่น
                                     </p>
                                 </div>
                             </div>
