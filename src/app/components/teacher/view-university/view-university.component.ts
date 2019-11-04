@@ -35,7 +35,6 @@ export class ViewUniversityComponent implements OnInit {
     private facultyService: FacultyService,
     public dialog: MatDialog,
     private activeRoute: ActivatedRoute,
-    private router: Router,
     private afStorage: AngularFireStorage,
   ) { }
 
