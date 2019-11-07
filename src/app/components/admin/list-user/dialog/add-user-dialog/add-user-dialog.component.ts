@@ -13,6 +13,7 @@ import { startWith, map } from 'rxjs/operators';
 import { StudentService } from 'src/app/services/student-service/student.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { LoginService } from 'src/app/services/login-service/login.service';
 
 @Component({
   selector: 'app-add-user-dialog',
@@ -25,7 +26,6 @@ export class AddUserDialogComponent implements OnInit {
       Validators.required]),
     school: new FormControl(null, [
       Validators.required]),
-    requestData: new FormControl(false),
     username: new FormControl(null, [
       Validators.required]),
     password: new FormControl(null, [
@@ -45,7 +45,8 @@ export class AddUserDialogComponent implements OnInit {
       Validators.pattern('^[0-9]*$')])),
     email: new FormControl(null, Validators.compose([
       Validators.required,
-      Validators.pattern(`^[a-zA-Z0-9.!#$%&'*+/=?^_{|}~-]+@[A-Z0-9.-]+\.[A-Z]{2,}$`)])),
+      Validators.email
+    ])),
   });
 
   studentForm = new FormGroup({
@@ -85,6 +86,7 @@ export class AddUserDialogComponent implements OnInit {
   constructor(
     private http: HttpClient,
     public dialogRef: MatDialogRef<AddUserDialogComponent>,
+    private loginService: LoginService,
     private teacherService: TeacherService,
     private studentService: StudentService,
     private schoolService: SchoolService,
@@ -189,55 +191,45 @@ export class AddUserDialogComponent implements OnInit {
     if (this.userForm.valid) {
       this.login.username = this.userForm.get('username').value;
       this.login.password = this.userForm.get('password').value;
-      this.login.password = this.userForm.get('userType').value;
+      this.login.type = this.userForm.get('userType').value;
       this.school.school_name = this.userForm.get('school').value;
 
-      if (this.userForm.get('requestData').value) {
-        if (this.userForm.get('userType').value === 'teacher') {
-          this.teacher.school = await this.schoolService.addSchool(this.school).then(result => {
-            return result;
-          });
-          if (this.teacherForm.valid) {
-            this.teacher.firstname = this.teacherForm.get('firstname').value;
-            this.teacher.lastname = this.teacherForm.get('lastname').value;
-            this.teacher.phone_no = this.teacherForm.get('phone_no').value;
-            this.teacher.email = this.teacherForm.get('email').value;
-            let files: any = document.getElementById('logoImage');
-            if (files.files[0] !== undefined) {
-              await this.upload(files);
-            }
+      if (this.userForm.get('userType').value === 'teacher') {
+        this.teacher.school = await this.schoolService.addSchool(this.school).then(result => {
+          return result;
+        });
+        if (this.teacherForm.valid) {
+          this.teacher.firstname = this.teacherForm.get('firstname').value;
+          this.teacher.lastname = this.teacherForm.get('lastname').value;
+          this.teacher.phone_no = this.teacherForm.get('phone_no').value;
+          this.teacher.email = this.teacherForm.get('email').value;
+          let files: any = document.getElementById('inputImage');
+          if (files.files.length !== 0) {
+            await this.upload(files);
+          }
+          this.loginService.addUser(this.login).then(loginRef => {
+            this.teacher.login = loginRef;
             this.teacherService.addTeacher(this.login, this.teacher, this.userForm.get('isCreateId').value);
-            this.dialogRef.close();
-          }
-        } else if (this.userForm.get('userType').value === 'student') {
-          this.student.school = await this.schoolService.addSchool(this.school).then(result => {
-            return result;
           });
-          if (this.studentForm.valid) {
-            this.student.firstname = this.studentForm.get('firstname').value;
-            this.student.lastname = this.studentForm.get('lastname').value;
-            this.student.phone_no = this.studentForm.get('phone_no').value;
-            this.student.email = this.studentForm.get('email').value;
-            let files: any = document.getElementById('logoImage');
-            if (files.files[0] !== undefined) {
-              await this.upload(files);
-            }
-            this.studentService.addStudent(this.login, this.student, this.userForm.get('isCreateId').value);
-            this.dialogRef.close();
-          }
-        }
-      } else {
-        if (this.userForm.get('userType').value === 'teacher') {
-          this.teacher.school = await this.schoolService.addSchool(this.school).then(result => {
-            return result;
-          });
-          this.teacherService.addTeacher(this.login, this.teacher, this.userForm.get('isCreateId').value);
           this.dialogRef.close();
-        } else if (this.userForm.get('userType').value === 'student') {
-          this.student.school = await this.schoolService.addSchool(this.school).then(result => {
-            return result;
-          });
+        }
+      } else if (this.userForm.get('userType').value === 'student') {
+        this.student.school = await this.schoolService.addSchool(this.school).then(result => {
+          return result;
+        });
+        if (this.studentForm.valid) {
+          this.student.firstname = this.studentForm.get('firstname').value;
+          this.student.lastname = this.studentForm.get('lastname').value;
+          this.student.phone_no = this.studentForm.get('phone_no').value;
+          this.student.email = this.studentForm.get('email').value;
+          let files: any = document.getElementById('inputImage');
+          if (files.files.length !== 0) {
+            await this.upload(files);
+          }
+          this.loginService.addUser(this.login).then(loginRef => {
+            this.student.login = loginRef;
           this.studentService.addStudent(this.login, this.student, this.userForm.get('isCreateId').value);
+          });
           this.dialogRef.close();
         }
       }

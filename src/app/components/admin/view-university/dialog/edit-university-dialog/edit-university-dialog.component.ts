@@ -95,9 +95,11 @@ export class EditUniversityDialogComponent implements OnInit {
       this.listProvince = data;
     });
 
-    this.afStorage.storage.ref(this.university.image).getDownloadURL().then(url => {
-      this.imgURL = url;
-    });
+    if (this.university.image) {
+      this.afStorage.storage.ref(this.university.image).getDownloadURL().then(url => {
+        this.imgURL = url;
+      });
+    }
 
     if (this.university.albumImage) {
       for (let i = 0; i < this.university.albumImage.length; i++) {
@@ -134,14 +136,14 @@ export class EditUniversityDialogComponent implements OnInit {
     this.dialogRef.disableClose = true;
   }
 
-  async upload(event, filePath) {
+  async upload(file, filePath) {
     const metadata = {
       contentType: 'image/jpeg',
     };
 
     const fileName = this.afirestore.createId();
-    if (event.files[0].type.split('/')[0] == 'image') {
-      return await this.afStorage.upload(`${filePath}/${fileName}`, event.files[0], metadata).then(async result => {
+    if (file.type.split('/')[0] == 'image') {
+      return await this.afStorage.upload(`${filePath}/${fileName}`, file, metadata).then(async result => {
         return await result.ref.fullPath;
       });
     }
@@ -206,28 +208,26 @@ export class EditUniversityDialogComponent implements OnInit {
         this.university.highlight = this.listHighlight;
         let filePath = `university/${this.universityId}`;
         let fileLogo: any = document.getElementById('logoImage');
-        if (fileLogo.files[0] !== undefined) {
+        if (fileLogo.files.length != 0) {
           if (this.university.image !== undefined) {
             await this.afStorage.storage.ref(this.university.image).delete();
           }
-          this.university.image = await this.upload(fileLogo, filePath).then(async result => {
+          this.university.image = await this.upload(fileLogo.files[0], filePath).then(async result => {
             return await result;
           });
         }
         let fileAlbum: any = document.getElementById('albumImage');
         this.university.albumImage = this.university.albumImage === undefined ? new Array<string>() : this.university.albumImage;
-        for (let i = 0; i < 5; i++) {
-          if (fileAlbum.files[i] !== undefined) {
-            if (this.university.albumImage[i] !== undefined) {
-              await this.afStorage.storage.ref(this.university.albumImage[i]).delete();
-              this.university.albumImage[i] = await this.upload(fileAlbum, filePath).then(result => {
-                return result;
-              });
-            } else {
-              this.university.albumImage.push(await this.upload(fileAlbum, filePath).then(result => {
-                return result;
-              }));
-            }
+        for (let i = 0; i < fileAlbum.files.length; i++) {
+          if (this.university.albumImage[i] !== undefined) {
+            await this.afStorage.storage.ref(this.university.albumImage[i]).delete();
+            this.university.albumImage[i] = await this.upload(fileAlbum.files[i], filePath).then(result => {
+              return result;
+            });
+          } else {
+            this.university.albumImage.push(await this.upload(fileAlbum.files[i], filePath).then(result => {
+              return result;
+            }));
           }
         }
         const universityId = await this.universityService.updateUniversity(this.data.universityId, this.university);
@@ -235,6 +235,7 @@ export class EditUniversityDialogComponent implements OnInit {
         this.dialogRef.close(universityId);
       }
     } catch (error) {
+      console.error(error);
       new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'แก้ไขข้อมูลล้มเหลว !');
     }
   }

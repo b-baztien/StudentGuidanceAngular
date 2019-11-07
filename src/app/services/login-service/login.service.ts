@@ -31,6 +31,10 @@ export class LoginService {
     });
   }
 
+  addUser(user: Login) {
+    return this.firestore.collection('Login').add(Object.assign({}, user));
+  }
+
   removeUser(user: Login, login: DocumentReference) {
     if (user.type === 'teacher') {
       this.firestore.collection('Teacher').ref.where('login', '==', login).get().then(teacherRef => {

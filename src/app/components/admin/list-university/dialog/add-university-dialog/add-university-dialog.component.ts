@@ -11,8 +11,6 @@ import { Notifications } from 'src/app/components/util/notification';
 import { startWith, map } from 'rxjs/operators';
 import { ENTER } from '@angular/cdk/keycodes';
 
-declare var $: any;
-
 @Component({
   selector: 'app-add-university-dialog',
   templateUrl: './add-university-dialog.component.html',
@@ -113,14 +111,14 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
     this.dialogRef.disableClose = true;
   }
 
-  async upload(event, path: string) {
+  async upload(file, filePath) {
     const metadata = {
       contentType: 'image/jpeg',
     };
 
     const fileName = this.afirestore.createId();
-    if (event.files[0].type.split('/')[0] == 'image') {
-      return await this.afStorage.upload(`${path}/${fileName}`, event.files[0], metadata).then(async result => {
+    if (file.type.split('/')[0] == 'image') {
+      return await this.afStorage.upload(`${filePath}/${fileName}`, file, metadata).then(async result => {
         return await result.ref.fullPath;
       });
     }
@@ -183,19 +181,17 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
         }
         let filePath = `university/${this.universityId}`;
         let fileLogo: any = document.getElementById('logoImage');
-        if (fileLogo.files[0] !== undefined) {
-          this.university.image = await this.upload(fileLogo, filePath).then(result => {
+        if (fileLogo.files.length != 0) {
+          this.university.image = await this.upload(fileLogo.files[0], filePath).then(result => {
             return result;
           });
         }
         let fileAlbum: any = document.getElementById('albumImage');
         this.university.albumImage = new Array<string>();
-        for (let i = 0; i < 5; i++) {
-          if (fileAlbum.files[i] !== undefined) {
-            this.university.albumImage.push(await this.upload(fileAlbum, filePath).then(result => {
-              return result;
-            }));
-          }
+        for (let i = 0; i < fileAlbum.files.length; i++) {
+          this.university.albumImage.push(await this.upload(fileAlbum.files[i], filePath).then(result => {
+            return result;
+          }));
         }
         this.universityId = await this.universityService.addUniversity(this.universityId, this.university);
         new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลมหาวิทยาลัยสำเร็จแล้ว', 'success', 'สำเร็จ !');

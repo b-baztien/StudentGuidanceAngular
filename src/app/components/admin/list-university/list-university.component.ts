@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { UniversityService } from 'src/app/services/university-service/university.service';
 import { QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { AddUniversityDialogComponent } from './dialog/add-university-dialog/add-university-dialog.component';
-import { Notifications } from '../../util/notification';
 
 @Component({
   selector: 'app-list-university',

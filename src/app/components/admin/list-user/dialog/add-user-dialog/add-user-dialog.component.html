@@ -6,9 +6,10 @@
     <mat-icon class="hover-cursor" (click)="onNoClick()">close</mat-icon>
   </div>
 </div>
-<div class="container" *ngIf="loadData">
-  <div mat-dialog-content>
+<mat-vertical-stepper [linear]="true" #stepper *ngIf="loadData">
+  <mat-step [stepControl]="userForm">
     <form [formGroup]="userForm">
+      <ng-template matStepLabel>ข้อมูลรายละเอียดมหาวิทยาลัย</ng-template>
       <div align="center">
         <p>ประเภทผู้ใช้งาน</p>
         <mat-radio-group aria-label="เลือกประเภทผู้ใช้งาน" formControlName="userType">
@@ -56,14 +57,17 @@
             กรุณากรอกรหัสผ่านให้ตรงกัน
           </mat-error>
         </mat-form-field>
-        <p>
-          <mat-checkbox formControlName="requestData">เพิ่มข้อมูลส่วนตัว</mat-checkbox>
-        </p>
+      </div>
+      <div class="mat-step-footer">
+        <button mat-raised-button class="btn-success" matStepperNext>ถัดไป</button>
       </div>
     </form>
-    <div *ngIf="userForm.get('requestData').value">
-      <!-- teacher form -->
-      <form [formGroup]="teacherForm" *ngIf="userForm.get('userType').value === 'teacher'">
+  </mat-step>
+  <mat-step [stepControl]="teacherForm" *ngIf="userForm.get('userType').value === 'teacher'">
+    <ng-template matStepLabel>ข้อมูลส่วนตัวคุณครู</ng-template>
+    <!-- teacher form -->
+    <form [formGroup]="teacherForm" *ngIf="userForm.get('userType').value === 'teacher'">
+      <div mat-dialog-content>
         <div class="input-image-content">
           <label class="label-input-image">รูปภาพครู</label>
           <label class="hoverable" for="inputImage">
@@ -100,13 +104,22 @@
             กรุณากรอกอีเมล
           </mat-error>
           <mat-error *ngIf="teacherForm.controls.email.hasError('email')">
-              กรุณากรอกอีเมลให้ถูกต้อง
+            กรุณากรอกอีเมลให้ถูกต้อง
           </mat-error>
         </mat-form-field>
-      </form>
+        <div class="mat-step-footer">
+          <button mat-raised-button class="btn-secondary button-margin-right" matStepperPrevious>ย้อนกลับ</button>
+          <button mat-raised-button class="btn-success" (click)="onSubmit()">เพิ่มข้อมูล</button>
+        </div>
+      </div>
+    </form>
+  </mat-step>
 
-      <!-- student form -->
-      <form [formGroup]="studentForm" *ngIf="userForm.get('userType').value === 'student'">
+  <!-- student form -->
+  <mat-step [stepControl]="teacherForm" *ngIf="userForm.get('userType').value === 'student'">
+      <ng-template matStepLabel>ข้อมูลส่วนตัวนักเรียน</ng-template>
+    <form [formGroup]="studentForm" *ngIf="userForm.get('userType').value === 'student'">
+      <div mat-dialog-content>
         <div class="input-image-content">
           <label class="label-input-image">รูปภาพนักเรียน</label>
           <label class="hoverable" for="inputImage">
@@ -143,13 +156,11 @@
             กรุณากรอกที่อยู่เว็บไซต์
           </mat-error>
         </mat-form-field>
-      </form>
-    </div>
-  </div>
-  <mat-dialog-actions align="end">
-    <div style="margin-top: 1vw;">
-      <button mat-raised-button class="btn-secondary" (click)="onNoClick()">ยกเลิก</button>
-      <button mat-raised-button class="btn-success" (click)="onSubmit()">เพิ่มข้อมูล</button>
-    </div>
-  </mat-dialog-actions>
-</div>
+        <div class="mat-step-footer">
+          <button mat-raised-button class="btn-secondary button-margin-right" matStepperPrevious>ย้อนกลับ</button>
+          <button mat-raised-button class="btn-success" (click)="onSubmit()">เพิ่มข้อมูล</button>
+        </div>
+      </div>
+    </form>
+  </mat-step>
+</mat-vertical-stepper>

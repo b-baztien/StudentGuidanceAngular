@@ -7,4 +7,5 @@ export class Teacher {
     email: string;
     image: string = '';
     school: DocumentReference;
+    login: DocumentReference;
 }
