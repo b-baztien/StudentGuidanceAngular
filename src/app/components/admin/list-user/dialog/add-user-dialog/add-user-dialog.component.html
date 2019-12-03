@@ -10,54 +10,52 @@
   <mat-step [stepControl]="userForm">
     <form [formGroup]="userForm">
       <ng-template matStepLabel>ข้อมูลรายละเอียดมหาวิทยาลัย</ng-template>
-      <div align="center">
-        <p>ประเภทผู้ใช้งาน</p>
-        <mat-radio-group aria-label="เลือกประเภทผู้ใช้งาน" formControlName="userType">
-          <mat-radio-button class="button-margin-right" value="teacher" (click)="onCreateUsername()">คุณครู
-          </mat-radio-button>
-          <mat-radio-button value="student" (click)="onCreateUsername()">นักเรียน</mat-radio-button>
-        </mat-radio-group>
-        <mat-form-field>
-          <input matInput placeholder="โรงเรียน" required [matAutocomplete]="auto" formControlName="school">
-          <mat-error *ngIf="userForm.controls.school.hasError('required')">
-            กรุณากรอกโรงเรียน
-          </mat-error>
-          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-            <mat-option *ngFor="let school of filteredSchool | async" [value]="school">
-              {{school}}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-        <div class="row">
-          <div class="col-sm-9">
-            <mat-form-field>
-              <input matInput placeholder="ชื่อผู้ใช้" required formControlName="username">
-              <mat-error *ngIf="userForm.controls.username.hasError('required')">
-                กรุณากรอกชื่อผู้ใช้
-              </mat-error>
-            </mat-form-field>
-          </div>
-          <div class="col-sm-3">
-            <mat-checkbox formControlName="isCreateId" (change)="onCreateUsername()">สร้างชื่อผู้ใช้งานอัตโนมัติ
-            </mat-checkbox>
-          </div>
+      <p>ประเภทผู้ใช้งาน</p>
+      <mat-radio-group aria-label="เลือกประเภทผู้ใช้งาน" formControlName="userType">
+        <mat-radio-button class="button-margin-right" value="teacher" (click)="onCreateUsername()">คุณครู
+        </mat-radio-button>
+        <mat-radio-button value="student" (click)="onCreateUsername()">นักเรียน</mat-radio-button>
+      </mat-radio-group>
+      <mat-form-field>
+        <input matInput placeholder="โรงเรียน" required [matAutocomplete]="auto" formControlName="school">
+        <mat-error *ngIf="userForm.controls.school.hasError('required')">
+          กรุณากรอกโรงเรียน
+        </mat-error>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+          <mat-option *ngFor="let school of filteredSchool | async" [value]="school">
+            {{school}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <div class="row">
+        <div class="col-sm-9">
+          <mat-form-field>
+            <input matInput placeholder="ชื่อผู้ใช้" required formControlName="username">
+            <mat-error *ngIf="userForm.controls.username.hasError('required')">
+              กรุณากรอกชื่อผู้ใช้
+            </mat-error>
+          </mat-form-field>
         </div>
-        <mat-form-field>
-          <input matInput type="password" placeholder="รหัสผ่าน" required formControlName="password">
-          <mat-error *ngIf="userForm.controls.password.hasError('required')">
-            กรุณากรอกรหัสผ่าน
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field>
-          <input matInput type="password" placeholder="ยืนยันรหัสผ่าน" required formControlName="conPassword">
-          <mat-error *ngIf="userForm.controls.conPassword.hasError('required')">
-            กรุณากรอกยืนยันรหัสผ่าน
-          </mat-error>
-          <mat-error *ngIf="userForm.controls.password.value !== userForm.controls.conPassword.value">
-            กรุณากรอกรหัสผ่านให้ตรงกัน
-          </mat-error>
-        </mat-form-field>
+        <div class="col-sm-3">
+          <mat-checkbox formControlName="isCreateId" (change)="onCreateUsername()">สร้างชื่อผู้ใช้งานอัตโนมัติ
+          </mat-checkbox>
+        </div>
       </div>
+      <mat-form-field>
+        <input matInput type="password" placeholder="รหัสผ่าน" required formControlName="password">
+        <mat-error *ngIf="userForm.controls.password.hasError('required')">
+          กรุณากรอกรหัสผ่าน
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="password" placeholder="ยืนยันรหัสผ่าน" required formControlName="conPassword">
+        <mat-error *ngIf="userForm.controls.conPassword.hasError('required')">
+          กรุณากรอกยืนยันรหัสผ่าน
+        </mat-error>
+        <mat-error *ngIf="userForm.controls.password.value !== userForm.controls.conPassword.value">
+          กรุณากรอกรหัสผ่านให้ตรงกัน
+        </mat-error>
+      </mat-form-field>
       <div class="mat-step-footer">
         <button mat-raised-button class="btn-success" matStepperNext>ถัดไป</button>
       </div>
@@ -71,7 +69,7 @@
         <div class="input-image-content">
           <label class="label-input-image">รูปภาพครู</label>
           <label class="hoverable" for="inputImage">
-            <img class="input-image" [src]="imgURL">
+            <img class="input-image" alt="รูปภาพครู" [src]="imgURL">
             <div class="hover-text">เลือกรูปภาพ..</div>
             <div class="background"></div>
           </label>
@@ -87,6 +85,12 @@
           <input matInput placeholder="นามสกุล" required formControlName="lastname">
           <mat-error *ngIf="teacherForm.controls.lastname.hasError('required')">
             กรุณากรอกนามสกุล
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="ตำแหน่ง" required formControlName="firstname">
+          <mat-error *ngIf="teacherForm.controls.firstname.hasError('required')">
+            กรุณากรอกตำแหน่ง
           </mat-error>
         </mat-form-field>
         <mat-form-field>
@@ -117,13 +121,13 @@
 
   <!-- student form -->
   <mat-step [stepControl]="teacherForm" *ngIf="userForm.get('userType').value === 'student'">
-      <ng-template matStepLabel>ข้อมูลส่วนตัวนักเรียน</ng-template>
+    <ng-template matStepLabel>ข้อมูลส่วนตัวนักเรียน</ng-template>
     <form [formGroup]="studentForm" *ngIf="userForm.get('userType').value === 'student'">
       <div mat-dialog-content>
         <div class="input-image-content">
           <label class="label-input-image">รูปภาพนักเรียน</label>
           <label class="hoverable" for="inputImage">
-            <img class="input-image" [src]="imgURL">
+            <img class="input-image" alt="รูปภาพนักเรียน" [src]="imgURL">
             <div class="hover-text">เลือกรูปภาพ..</div>
             <div class="background"></div>
           </label>

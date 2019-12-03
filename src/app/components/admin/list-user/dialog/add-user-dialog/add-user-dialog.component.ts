@@ -40,6 +40,8 @@ export class AddUserDialogComponent implements OnInit {
       Validators.required]),
     lastname: new FormControl(null, [
       Validators.required]),
+    position: new FormControl(null, [
+      Validators.required]),
     phone_no: new FormControl(null, Validators.compose([
       Validators.required,
       Validators.pattern('^[0-9]*$')])),
@@ -114,18 +116,22 @@ export class AddUserDialogComponent implements OnInit {
       this.onCreateUsername();
     });
 
-    await this.schoolService.getAllSchool().subscribe(listSchoolRes => {
+    this.schoolService.getAllSchool().subscribe(listSchoolRes => {
       listSchoolRes.forEach(schoolRes => {
         const school = schoolRes.payload.doc.data() as School;
         this.listSchool.push(school.school_name);
-      }),
-        this.loadData = true;
-    }),
-      this.filteredSchool = this.userForm.get('school').valueChanges.pipe(
-        startWith(null),
-        map((school: string | null) => school ? this._filter(school) : this.listSchool.slice()));
+      });
+      this.loadData = true;
+    });
+    this.filteredSchool = this.userForm.get('school').valueChanges.pipe(
+      startWith(null),
+      map((school: string | null) => school ? this._filter(school) : this.listSchool.slice()));
 
     this.dialogRef.disableClose = true;
+  }
+
+  getAllSchool() {
+
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -142,11 +148,11 @@ export class AddUserDialogComponent implements OnInit {
     if (event.files[0].type.split('/')[0] == 'image') {
       if (this.userForm.get('userType').value === 'teacher') {
         await this.afStorage.upload(`teacher/${fileName}`, event.files[0], metadata).then(async result => {
-          this.teacher.image = await result.ref.fullPath;
+          this.teacher.image = result.ref.fullPath;
         });
       } else if (this.userForm.get('userType').value === 'student') {
         await this.afStorage.upload(`student/${fileName}`, event.files[0], metadata).then(async result => {
-          this.student.image = await result.ref.fullPath;
+          this.student.image = result.ref.fullPath;
         });
       }
     }
@@ -228,7 +234,7 @@ export class AddUserDialogComponent implements OnInit {
           }
           this.loginService.addUser(this.login).then(loginRef => {
             this.student.login = loginRef;
-          this.studentService.addStudent(this.login, this.student, this.userForm.get('isCreateId').value);
+            this.studentService.addStudent(this.login, this.student, this.userForm.get('isCreateId').value);
           });
           this.dialogRef.close();
         }
