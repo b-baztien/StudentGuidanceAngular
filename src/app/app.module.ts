@@ -37,6 +37,8 @@ import { ConfirmDialogComponent } from './components/util/confirm-dialog/confirm
 import { AddStudentDialogComponent } from './components/teacher/list-student/dialog/add-student-dialog/add-student-dialog.component';
 import { EditMajorComponent } from './components/admin/view-university/dialog/list-major-dialog/dialog/edit-major/edit-major.component';
 import { AddEditCarrerDialogComponent } from './components/admin/list-carrer/dialog/add-edit-carrer-dialog/add-edit-carrer-dialog.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+
 
 registerLocaleData(localeTh, 'th-TH', localeThExtra);
 @NgModule({
@@ -100,6 +102,7 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra);
     MatDatepickerModule,
     MatCheckboxModule,
     MatRadioModule,
+    MatProgressBarModule,
   ],
   providers: [LoginService, { provide: LOCALE_ID, useValue: 'th-TH' }],
   bootstrap: [AppComponent],
