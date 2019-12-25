@@ -47,7 +47,11 @@
         </mat-form-field>
     </div>
     <div mat-dialog-actions>
-        <button mat-raised-button class="btn-secondary" (click)="onNoClick()">ปิด</button>
-        <button mat-raised-button class="btn-success" (click)="onSubmit()">เพิ่มข้อมูล</button>
+        <button mat-raised-button class="btn-secondary" (click)="onNoClick()">
+            <mat-icon>close</mat-icon> ปิด
+        </button>
+        <button mat-raised-button class="btn-success" (click)="onSubmit()">
+            <mat-icon>add</mat-icon> เพิ่มข้อมูล
+        </button>
     </div>
 </form>

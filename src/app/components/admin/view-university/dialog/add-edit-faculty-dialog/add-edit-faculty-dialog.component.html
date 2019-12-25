@@ -2,9 +2,9 @@
   <h1 mat-dialog-title>{{mode}}ข้อมูลคณะ</h1>
   <div mat-dialog-content>
     <mat-form-field>
-        <input matInput placeholder="ชื่อคณะ" required formControlName="faculty_name" readonly *ngIf="mode === 'แก้ไข'">
-        <input matInput placeholder="ชื่อคณะ" required formControlName="faculty_name" *ngIf="mode === 'เพิ่ม'">
-        <mat-error *ngIf="facultyForm.controls.faculty_name.hasError('required')">
+      <input matInput placeholder="ชื่อคณะ" required formControlName="faculty_name" readonly *ngIf="mode === 'แก้ไข'">
+      <input matInput placeholder="ชื่อคณะ" required formControlName="faculty_name" *ngIf="mode === 'เพิ่ม'">
+      <mat-error *ngIf="facultyForm.controls.faculty_name.hasError('required')">
         กรุณากรอกชื่อคณะ
       </mat-error>
     </mat-form-field>
@@ -16,7 +16,11 @@
     </mat-form-field>
   </div>
   <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">ปิด</button>
-    <button mat-button (click)="onSubmit()">{{mode}}ข้อมูล</button>
+    <button mat-raised-button class="btn-secondary" (click)="onNoClick()">
+      <mat-icon>close</mat-icon> ปิด
+    </button>
+    <button mat-raised-button class="btn-success" (click)="onSubmit()">
+      <mat-icon>add</mat-icon> {{mode}}ข้อมูล
+    </button>
   </div>
 </form>

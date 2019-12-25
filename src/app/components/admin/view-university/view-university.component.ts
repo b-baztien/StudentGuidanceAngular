@@ -122,7 +122,7 @@ export class ViewUniversityComponent implements OnInit {
 
   openDeleteUniversityDialog() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '40%',
+      width: 'auto',
       data: `คุณต้องการลบข้อมูล${this.university.university_name} ใช่ หรือ ไม่ ?`,
     });
 
@@ -150,20 +150,19 @@ export class ViewUniversityComponent implements OnInit {
 
   openAddEditFacultyDialog(faculty?: QueryDocumentSnapshot<unknown>): void {
     const dialogRef = this.dialog.open(AddEditFacultyDialogComponent, {
-      width: '50%',
+      width: '90%',
       data: faculty ? faculty.data() as Faculty : null,
     });
 
     dialogRef.afterClosed().subscribe(facultyRs => {
       try {
-        if (facultyRs !== null) {
-          if (facultyRs.mode === 'เพิ่ม') {
-            this.facultyService.addFaculty(this.university_id, facultyRs.faculty);
-            new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลคณะสำเร็จแล้ว', 'success', 'สำเร็จ !');
-          } else if (facultyRs.mode === 'แก้ไข') {
-            this.facultyService.updateFaculty(faculty.id, facultyRs.faculty);
-            new Notifications().showNotification('done', 'top', 'right', 'แก้ไขข้อมูลคณะสำเร็จแล้ว', 'success', 'สำเร็จ !');
-          }
+        if (facultyRs === null || facultyRs === undefined) return;
+        if (facultyRs.mode === 'เพิ่ม') {
+          this.facultyService.addFaculty(this.university_id, facultyRs.faculty);
+          new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลคณะสำเร็จแล้ว', 'success', 'สำเร็จ !');
+        } else if (facultyRs.mode === 'แก้ไข') {
+          this.facultyService.updateFaculty(faculty.id, facultyRs.faculty);
+          new Notifications().showNotification('done', 'top', 'right', 'แก้ไขข้อมูลคณะสำเร็จแล้ว', 'success', 'สำเร็จ !');
         }
       } catch (error) {
         console.error(error);
