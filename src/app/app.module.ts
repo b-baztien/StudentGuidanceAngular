@@ -36,9 +36,8 @@ import { ListMajorTeacherDialogComponent } from './components/teacher/view-unive
 import { ConfirmDialogComponent } from './components/util/confirm-dialog/confirm-dialog.component';
 import { AddStudentDialogComponent } from './components/teacher/list-student/dialog/add-student-dialog/add-student-dialog.component';
 import { EditMajorComponent } from './components/admin/view-university/dialog/list-major-dialog/dialog/edit-major/edit-major.component';
-import { AddEditCarrerDialogComponent } from './components/admin/list-carrer/dialog/add-edit-carrer-dialog/add-edit-carrer-dialog.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-
+import { AddEditCareerDialogComponent } from './components/admin/list-career/dialog/add-edit-career-dialog/add-edit-career-dialog.component';
 
 registerLocaleData(localeTh, 'th-TH', localeThExtra);
 @NgModule({
@@ -59,7 +58,7 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra);
     ConfirmDialogComponent,
     AddStudentDialogComponent,
     EditMajorComponent,
-    AddEditCarrerDialogComponent,
+    AddEditCareerDialogComponent,
   ],
   entryComponents: [
     AddEditFacultyDialogComponent,
@@ -74,7 +73,7 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra);
     ConfirmDialogComponent,
     AddStudentDialogComponent,
     EditMajorComponent,
-    AddEditCarrerDialogComponent,
+    AddEditCareerDialogComponent,
   ],
   imports: [
     BrowserModule,

@@ -128,7 +128,7 @@ export class ProfileComponent implements OnInit {
         localStorage.setItem('userData', JSON.stringify(this.login));
       }
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
     }
   }
 }

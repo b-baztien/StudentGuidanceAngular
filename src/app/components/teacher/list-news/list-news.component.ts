@@ -44,7 +44,7 @@ export class ListNewsComponent implements OnInit, AfterViewInit {
   }
 
   async ngAfterViewInit() {
-    this.listNewsObs = await this.newsService.getAllNews().subscribe(() => {
+    this.listNewsObs = this.newsService.getAllNews().subscribe(() => {
       this.newsService.getAllNewsOrderByDate().then(result => {
         let resultListUniversity = new Array<QueryDocumentSnapshot<Object>>();
         result.forEach(element => {
@@ -89,7 +89,6 @@ export class ListNewsComponent implements OnInit, AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
     });
   }
 
@@ -102,7 +101,6 @@ export class ListNewsComponent implements OnInit, AfterViewInit {
     dialogRef.beforeClose().subscribe()
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
     });
   }
 

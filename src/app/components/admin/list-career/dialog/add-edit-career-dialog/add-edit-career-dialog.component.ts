@@ -1,23 +1,23 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
-import { Carrer } from 'src/app/model/Carrer';
+import { Career } from 'src/app/model/Career';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
-  selector: 'app-add-edit-carrer-dialog',
-  templateUrl: './add-edit-carrer-dialog.component.html',
-  styleUrls: ['./add-edit-carrer-dialog.component.css']
+  selector: 'app-add-edit-career-dialog',
+  templateUrl: './add-edit-career-dialog.component.html',
+  styleUrls: ['./add-edit-career-dialog.component.css']
 })
-export class AddEditCarrerDialogComponent implements OnInit {
-  carrerForm = new FormGroup({
-    carrer_name: new FormControl(null, [
+export class AddEditCareerDialogComponent implements OnInit {
+  careerForm = new FormGroup({
+    career_name: new FormControl(null, [
       Validators.required]),
     description: new FormControl(null),
   });
 
-  carrer: Carrer;
+  career: Career;
   mode: string;
 
   imgURL: any = 'assets/img/no-photo-available.png';
@@ -25,8 +25,8 @@ export class AddEditCarrerDialogComponent implements OnInit {
   showData = false;
 
   constructor(
-    public dialogRef: MatDialogRef<AddEditCarrerDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Carrer | null,
+    public dialogRef: MatDialogRef<AddEditCareerDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: Career | null,
     private afStorage: AngularFireStorage,
     private afirestore: AngularFirestore,
   ) {
@@ -35,19 +35,18 @@ export class AddEditCarrerDialogComponent implements OnInit {
 
   async ngOnInit() {
     if (this.mode == 'แก้ไข') {
-      this.carrer = this.data;
-      this.carrerForm.get('carrer_name').setValue(this.carrer.carrer_name);
-      if (this.carrer.description) {
-        this.carrerForm.get('description').setValue(this.carrer.description);
+      this.career = this.data;
+      this.careerForm.get('career_name').setValue(this.career.career_name);
+      if (this.career.description) {
+        this.careerForm.get('description').setValue(this.career.description);
       }
-      if (this.carrer.image) {
-        await this.afStorage.storage.ref(this.carrer.image).getDownloadURL().then(url => {
+      if (this.career.image) {
+        await this.afStorage.storage.ref(this.career.image).getDownloadURL().then(url => {
           this.imgURL = url;
         });
       }
     }
     this.showData = true;
-    this.dialogRef.disableClose = true;
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -63,7 +62,7 @@ export class AddEditCarrerDialogComponent implements OnInit {
     fileName = fileName ? fileName : this.afirestore.createId();
     if (event.files[0].type.split('/')[0] == 'image') {
       return await this.afStorage.upload(`${path}/${fileName}`, event.files[0], metadata).then(async result => {
-        return await result.ref.fullPath;
+        return result.ref.fullPath;
       });
     }
     return '';
@@ -86,19 +85,19 @@ export class AddEditCarrerDialogComponent implements OnInit {
   }
 
   async onSubmit() {
-    if (this.carrerForm.valid) {
-      this.carrer.carrer_name = this.carrerForm.get('carrer_name').value;
-      this.carrer.description = this.carrerForm.get('description').value;
+    if (this.careerForm.valid) {
+      this.career.career_name = this.careerForm.get('career_name').value;
+      this.career.description = this.careerForm.get('description').value;
 
-      let filePath = `carrer`;
+      let filePath = `career`;
       let fileLogo: any = document.getElementById('logoImage');
       if (fileLogo.files[0] !== undefined) {
-        this.carrer.image = await this.upload(fileLogo, filePath, this.carrer.carrer_name).then(result => {
+        this.career.image = await this.upload(fileLogo, filePath, this.career.career_name).then(result => {
           return result;
         });
       }
 
-      this.dialogRef.close({ carrer: this.carrer, mode: this.mode });
+      this.dialogRef.close({ career: this.career, mode: this.mode });
     }
   }
 }

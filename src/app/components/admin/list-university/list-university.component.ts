@@ -47,7 +47,7 @@ export class ListUniversityComponent implements OnInit, OnDestroy, AfterViewInit
     this.paginator._intl = this.paginatorInit;
 
     //add data to table datasource
-    this.listUniObs = await this.universityService.getAllUniversity().subscribe(result => {
+    this.listUniObs = this.universityService.getAllUniversity().subscribe(result => {
       let resultListUniversity = new Array<QueryDocumentSnapshot<Object>>();
       result.forEach(element => {
         resultListUniversity.push(element.payload.doc);
@@ -68,7 +68,8 @@ export class ListUniversityComponent implements OnInit, OnDestroy, AfterViewInit
 
   openAddUniversityDialog(): void {
     const dialogRef = this.dialog.open(AddUniversityDialogComponent, {
-      width: '70%',
+      width: '90%',
+      height: '90%',
     });
 
     dialogRef.afterClosed().subscribe(async universityId => {

@@ -107,8 +107,6 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
     this.filteredHighlight = this.universityDetailForm.get('highlight').valueChanges.pipe(
       startWith(null),
       map((highlight: string | null) => highlight ? this._filter(highlight) : this.allHighlight.slice()));
-
-    this.dialogRef.disableClose = true;
   }
 
   async upload(file, filePath) {
@@ -119,7 +117,7 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
     const fileName = this.afirestore.createId();
     if (file.type.split('/')[0] == 'image') {
       return await this.afStorage.upload(`${filePath}/${fileName}`, file, metadata).then(async result => {
-        return await result.ref.fullPath;
+        return result.ref.fullPath;
       });
     }
     return '';

@@ -62,7 +62,7 @@ export class EditNewsDialogComponent implements OnInit {
       this.afStorage.storage.ref(this.news.image).getDownloadURL().then(url => {
         this.imgURL = url;
       });
-      await this.universityService.getAllUniversity().subscribe(listUniRes => {
+      this.universityService.getAllUniversity().subscribe(listUniRes => {
         listUniRes.forEach(uniRes => {
           const university = uniRes.payload.doc.data() as University;
           this.allUniversity.push(university.university_name);
@@ -80,7 +80,6 @@ export class EditNewsDialogComponent implements OnInit {
     this.filteredUniversity = this.newsForm.get('university').valueChanges.pipe(
       startWith(null),
       map((university: string | null) => university ? this._filter(university) : this.allUniversity.slice()));
-    this.dialogRef.disableClose = true;
   }
 
   async ngAfterViewInit() {
@@ -113,8 +112,7 @@ export class EditNewsDialogComponent implements OnInit {
     const fileName = this.afirestore.createId();
     if (event.files[0].type.split('/')[0] == 'image') {
       await this.afStorage.upload(`news/${fileName}`, event.files[0], metadata).then(async result => {
-        this.news.image = await result.ref.fullPath;
-        console.log(result.ref.fullPath);
+        this.news.image = result.ref.fullPath;
       });
     }
   }
@@ -178,7 +176,7 @@ export class EditNewsDialogComponent implements OnInit {
         }
       }
       catch (error) {
-        console.log(error);
+        console.error(error);
       }
       this.dialogRef.close();
     }

@@ -24,7 +24,7 @@ export class EntranceExamResultService {
     try {
       await this.firestore.collection('EntranceExamResult').doc(id).delete();
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
     }
   }

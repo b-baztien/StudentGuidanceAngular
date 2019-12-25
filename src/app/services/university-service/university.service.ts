@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, Action, DocumentSnapshot, DocumentChangeAction } from '@angular/fire/firestore';
 import { University } from 'src/app/model/University';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { Faculty } from 'src/app/model/Faculty';
-import { CarrerService } from '../carrer-service/carrer.service';
-import { MajorService } from '../major-service/major.service';
+import { CareerService } from '../career-service/career.service';
 import { Major } from 'src/app/model/Major';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class UniversityService {
   constructor(
     private firestore: AngularFirestore,
     private afStorage: AngularFireStorage,
-    private carrerService: CarrerService,
+    private careerService: CareerService,
   ) {
   }
 
@@ -59,12 +59,12 @@ export class UniversityService {
             this.firestore.collection('Faculty').doc(fct.id).snapshotChanges().subscribe(async facRef => {
               let faculty = facRef.payload.data() as Faculty;
               for (let i = 0; i < faculty.major.length; i++) {
-                await this.firestore.collection('Major').doc(faculty.major[i].id).snapshotChanges().subscribe(async mj => {
+                this.firestore.collection('Major').doc(faculty.major[i].id).snapshotChanges().subscribe(async mj => {
                   console.log('major 1');
                   console.log(mj.payload.data());
                   let major = mj.payload.data() as Major;
-                  if (major.carrer !== undefined) {
-                    await this.carrerService.deleteMajorInCarrer(mj.payload.ref).then(async () => {
+                  if (major.career !== undefined) {
+                    await this.careerService.deleteMajorInCareer(mj.payload.ref).then(async () => {
                       await this.firestore.collection('Major').doc(faculty.major[i].id).delete();
                     });
                   }
@@ -87,11 +87,11 @@ export class UniversityService {
     }
   }
 
-  getAllUniversity() {
+  getAllUniversity(): Observable<DocumentChangeAction<unknown>[]> {
     return this.firestore.collection('University').snapshotChanges();
   }
 
-  getUniversity(university_id: string) {
+  getUniversity(university_id: string): Observable<Action<DocumentSnapshot<unknown>>> {
     return this.firestore.collection('University').doc(university_id).snapshotChanges();
   }
 

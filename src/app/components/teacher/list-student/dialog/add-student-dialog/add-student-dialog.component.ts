@@ -64,8 +64,6 @@ export class AddStudentDialogComponent implements OnInit {
       this.studentId = result;
       this.onCreateUsername();
     });
-
-    this.dialogRef.disableClose = true;
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -81,7 +79,7 @@ export class AddStudentDialogComponent implements OnInit {
     const fileName = this.afirestore.createId();
     if (event.files[0].type.split('/')[0] == 'image') {
       await this.afStorage.upload(`student/${fileName}`, event.files[0], metadata).then(async result => {
-        this.student.image = await result.ref.fullPath;
+        this.student.image = result.ref.fullPath;
       });
     }
   }

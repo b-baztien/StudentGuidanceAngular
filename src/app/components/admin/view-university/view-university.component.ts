@@ -9,7 +9,7 @@ import { AddEditFacultyDialogComponent } from './dialog/add-edit-faculty-dialog/
 import { FacultyService } from 'src/app/services/faculty-service/faculty.service';
 import { AddMajorDialogComponent } from './dialog/add-major-dialog/add-major-dialog.component';
 import { EditUniversityDialogComponent } from './dialog/edit-university-dialog/edit-university-dialog.component';
-import { QueryDocumentSnapshot } from '@angular/fire/firestore';
+import { QueryDocumentSnapshot, DocumentReference, DocumentData } from '@angular/fire/firestore';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { ListMajorAdminDialogComponent } from './dialog/list-major-dialog/list-major-dialog.component';
 import { ConfirmDialogComponent } from '../../util/confirm-dialog/confirm-dialog.component';
@@ -29,18 +29,16 @@ import { Notifications } from '../../util/notification';
     ]),
   ],
 })
-export class ViewUniversityComponent implements OnInit, AfterViewInit {
+export class ViewUniversityComponent implements OnInit {
   university: University;
-  listFaculty: Array<QueryDocumentSnapshot<unknown>>;
-
-  university_id: string;
+  university_id;
 
   universityImg: string = 'assets/img/no-photo-available.png';
 
   showContent: boolean = false;
   showTable: boolean = false;
 
-  facultyLtb: MatTableDataSource<QueryDocumentSnapshot<unknown>>;
+  facultyLtb: MatTableDataSource<DocumentData>;
   displayedColumns: string[] = ['faculty_name', 'url', 'major', 'manage'];
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   paginatorInit = new MatPaginatorIntl;
@@ -59,39 +57,50 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
     if (this.university_id === null) {
       window.location.replace('/admin');
     }
+    this.getUniversity(this.university_id);
+    this.getFaculty(this.university_id);
   }
 
-  async ngAfterViewInit() {
-    await this.getUniversity(this.university_id);
-  }
-
-  async getUniversity(university_id: string) {
-    await this.universityService.getUniversity(university_id).subscribe(async universityRes => {
+  private getUniversity(university_id: string) {
+    this.universityService.getUniversity(university_id).subscribe(async universityRes => {
       this.university = universityRes.payload.data() as University;
-      this.university.image === undefined || this.university.image == '' ? null : this.afStorage.storage.ref(this.university.image).getDownloadURL().then(url => {
+      if (this.university.image === undefined || this.university.image == '') return;
+
+      this.afStorage.storage.ref(this.university.image).getDownloadURL().then(url => {
         this.universityImg = url;
       });
-      await this.facultyService.getFacultyByUniversityId(university_id).subscribe(fct => {
-        this.listFaculty = new Array<QueryDocumentSnapshot<unknown>>();
-        this.facultyLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(fct);
-        this.facultyLtb.paginator = this.paginator;
 
-        //custom text paginator
-        this.paginatorInit.getRangeLabel = (page: number, pageSize: number, length: number) => {
-          if (length === 0 || pageSize === 0) {
-            return `0 จากทั้งหมด ${length}`;
-          }
-          length = Math.max(length, 0);
-          const startIndex = page * pageSize;
-          const endIndex = startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
-          return `${startIndex + 1} - ${endIndex} จากทั้งหมด ${length}`;
-        };
-        this.paginatorInit.changes.next();
-        this.paginator._intl = this.paginatorInit;
+      if (undefined === this.university) {
+        this.showContent = false;
+      } else {
+        this.showContent = true;
+      }
+    });
+  }
 
-        this.showTable = this.facultyLtb.data.length === 0 ? false : true;
-      });
-      this.showContent = this.university === undefined ? false : true;
+  private getFaculty(university_id: string) {
+    this.facultyService.getFacultyByUniversityId(university_id).subscribe(fct => {
+      this.facultyLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(fct.docs);
+      this.facultyLtb.paginator = this.paginator;
+
+      //custom text paginator
+      this.paginatorInit.getRangeLabel = (page: number, pageSize: number, length: number) => {
+        if (length === 0 || pageSize === 0) {
+          return `0 จากทั้งหมด ${length}`;
+        }
+        length = Math.max(length, 0);
+        const startIndex = page * pageSize;
+        const endIndex = startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
+        return `${startIndex + 1} - ${endIndex} จากทั้งหมด ${length}`;
+      };
+      this.paginatorInit.changes.next();
+      this.paginator._intl = this.paginatorInit;
+
+      if (this.facultyLtb.data.length === 0) {
+        this.showTable = false;
+      } else {
+        this.showTable = true;
+      }
     });
   }
 
@@ -101,7 +110,8 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
 
   openEditUniversityDialog(): void {
     const dialogRef = this.dialog.open(EditUniversityDialogComponent, {
-      width: '60%',
+      width: '90%',
+      height: '90%',
       data: { universityId: this.university_id, university: this.university },
     });
 
@@ -180,9 +190,9 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
     });
   }
 
-  openListMajorDialog(faculty: QueryDocumentSnapshot<unknown>): void {
+  async openListMajorDialog(faculty: DocumentReference) {
     const dialogRef = this.dialog.open(ListMajorAdminDialogComponent, {
-      width: '50%',
+      width: 'auto',
       data: faculty,
     });
 

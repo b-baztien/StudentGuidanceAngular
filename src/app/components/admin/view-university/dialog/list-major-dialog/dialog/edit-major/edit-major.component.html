@@ -1,9 +1,6 @@
 <div class="row">
-    <div class="col-sm-11">
+    <div class="col-sm-12">
         <h1 mat-dialog-title>แก้ไขข้อมูลสาขา</h1>
-    </div>
-    <div class="col-sm-1" class="hover-cursor">
-        <mat-icon class="hover-cursor" (click)="onNoClick()">close</mat-icon>
     </div>
 </div>
 <form [formGroup]="majorForm" *ngIf="loadData">
@@ -28,23 +25,23 @@
             </mat-error>
         </mat-form-field>
         <mat-form-field>
-            <mat-chip-list #chipList aria-label="Carrer">
-                <mat-chip *ngFor="let carrer_name of listCarrer_name" [removable]="removable"
-                    (removed)="removeCarrer(carrer_name)">
-                    {{carrer_name}}
+            <mat-chip-list #chipList aria-label="Career">
+                <mat-chip *ngFor="let career_name of listCareer_name" [removable]="removable"
+                    (removed)="removeCareer(career_name)">
+                    {{career_name}}
                     <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
                 </mat-chip>
-                <input placeholder="อาชีพเมื่อสำเร็จการศึกษา" #carrerInput formControlName="carrer"
+                <input placeholder="อาชีพเมื่อสำเร็จการศึกษา" #careerInput formControlName="career"
                     [matAutocomplete]="auto" [matChipInputFor]="chipList"
                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
-                    (matChipInputTokenEnd)="addCarrer($event)">
-                <mat-error *ngIf="listCarrer_name.length === 0 && majorForm.get('carrer').touched">
+                    (matChipInputTokenEnd)="addCareer($event)">
+                <mat-error *ngIf="listCareer_name.length === 0 && majorForm.get('career').touched">
                     กรุณากรอกอาชีพเมื่อสำเร็จการศึกษา
                 </mat-error>
             </mat-chip-list>
             <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-                <mat-option *ngFor="let carrer of filteredCarrer | async" [value]="carrer">
-                    {{carrer}}
+                <mat-option *ngFor="let career of filteredCareer | async" [value]="career">
+                    {{career}}
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>

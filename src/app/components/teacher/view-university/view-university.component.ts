@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { QueryDocumentSnapshot } from '@angular/fire/firestore';
+import { QueryDocumentSnapshot, QuerySnapshot, DocumentData, DocumentReference } from '@angular/fire/firestore';
 import { University } from 'src/app/model/University';
 import { MatTableDataSource, MatPaginator, MatDialog, MatPaginatorIntl } from '@angular/material';
 import { UniversityService } from 'src/app/services/university-service/university.service';
@@ -15,7 +15,6 @@ import { ListMajorTeacherDialogComponent } from './dialog/list-major-dialog/list
 })
 export class ViewUniversityComponent implements OnInit {
   university: University;
-  listFaculty: Array<QueryDocumentSnapshot<unknown>>;
 
   university_id: string;
 
@@ -24,7 +23,7 @@ export class ViewUniversityComponent implements OnInit {
   showContent: boolean = false;
   showTable: boolean = false;
 
-  facultyLtb: MatTableDataSource<QueryDocumentSnapshot<unknown>>;
+  facultyLtb: MatTableDataSource<DocumentData>;
   displayedColumns: string[] = ['faculty_name', 'url', 'major'];
 
   paginatorInit = new MatPaginatorIntl;
@@ -60,32 +59,34 @@ export class ViewUniversityComponent implements OnInit {
     this.paginatorInit.changes.next();
     this.paginator._intl = this.paginatorInit;
 
-    await this.getUniversity(this.university_id);
+    this.getUniversity(this.university_id);
+    this.getFaculty(this.university_id);
   }
 
-  async getUniversity(university_id: string) {
-    await this.universityService.getUniversity(university_id).subscribe(async universityRes => {
+  private getUniversity(university_id: string) {
+    this.universityService.getUniversity(university_id).subscribe(async universityRes => {
       this.university = universityRes.payload.data() as University;
       if (this.university.image !== undefined) {
         this.afStorage.storage.ref(this.university.image).getDownloadURL().then(url => {
           this.universityImg = url;
         });
       }
-      this.facultyService.getFacultyByUniversityId(university_id).subscribe(fct => {
-        this.listFaculty = new Array<QueryDocumentSnapshot<unknown>>();
-        this.listFaculty = fct;
-        this.facultyLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(this.listFaculty);
-        this.facultyLtb.paginator = this.paginator;
-        this.showTable = this.facultyLtb.data.length === 0 ? false : true;
-      })
-      this.showContent = this.university === undefined ? false : true;
     });
   }
 
-  openListMajorDialog(faculty: QueryDocumentSnapshot<unknown>): void {
+  private getFaculty(university_id: string) {
+    this.facultyService.getFacultyByUniversityId(university_id).subscribe(fct => {
+      this.facultyLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(fct.docs);
+      this.facultyLtb.paginator = this.paginator;
+      this.showTable = this.facultyLtb.data.length === 0 ? false : true;
+    })
+    this.showContent = this.university === undefined ? false : true;
+  }
+
+  async openListMajorDialog(faculty: DocumentReference): Promise<void> {
     this.dialog.open(ListMajorTeacherDialogComponent, {
       width: '50%',
-      data: faculty,
+      data: (await faculty.collection('Major').get()).docs,
     });
   }
 }

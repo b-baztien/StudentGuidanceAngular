@@ -1,9 +1,6 @@
 <div class="row">
-    <div class="col-sm-11">
+    <div class="col-sm-12">
         <h1 mat-dialog-title>ข้อมูลสาขาในสังกัดของคณะ</h1>
-    </div>
-    <div class="col-sm-1" class="hover-cursor">
-        <mat-icon class="hover-cursor" (click)="onNoClick()">close</mat-icon>
     </div>
 </div>
 <div *ngIf="showData">
@@ -27,8 +24,8 @@
             </mat-panel-description>
             <mat-panel-title>
                 <mat-chip-list >
-                    <mat-chip *ngFor="let carrer of major.carrer">
-                        {{carrer.id}}
+                    <mat-chip *ngFor="let career of major.career">
+                        {{career.id}}
                     </mat-chip>
                 </mat-chip-list>
             </mat-panel-title>

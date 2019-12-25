@@ -28,9 +28,7 @@ export class AddEditFacultyDialogComponent implements OnInit, ErrorStateMatcher 
     this.mode = this.data === null ? 'เพิ่ม' : 'แก้ไข';
   }
 
-  ngOnInit() {
-    this.dialogRef.disableClose = true;
-  }
+  ngOnInit() { }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;

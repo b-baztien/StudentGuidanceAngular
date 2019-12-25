@@ -77,7 +77,6 @@ export class ListUserComponent implements OnInit, AfterViewInit {
     dialogRef.beforeClose().subscribe()
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
     });
   }
 

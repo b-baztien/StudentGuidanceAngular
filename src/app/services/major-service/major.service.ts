@@ -4,7 +4,7 @@ import { Faculty } from 'src/app/model/Faculty';
 import { Major } from 'src/app/model/Major';
 import { Subject } from 'rxjs';
 import { DocumentReference } from '@angular/fire/firestore';
-import { Carrer } from 'src/app/model/Carrer';
+import { Career } from 'src/app/model/Career';
 import { EntranceExamResultService } from '../entrance-exam-result-service/entrance-exam-result.service';
 
 @Injectable({
@@ -26,34 +26,14 @@ export class MajorService {
     return this.firestore.collection('Major').doc(majorId).snapshotChanges();
   }
 
-  getMajorByFacultyId(facultyId: string) {
-    let osbMajor = new Subject<Array<QueryDocumentSnapshot<unknown>>>();
-    this.firestore.collection('Major').snapshotChanges().subscribe(mjDoc => {
-      let listMajor = new Array<QueryDocumentSnapshot<unknown>>();
-      mjDoc.forEach(mj => {
-        let major = mj.payload.doc;
-        let dupMajor = false;
-        if ((major.data() as Major).faculty.id == facultyId) {
-          for (let i = 0; i < listMajor.length; i++) {
-            if (listMajor[i].id == major.id) {
-              dupMajor = true;
-              listMajor.splice(i, 1, major);
-            }
-          }
-          if (!dupMajor) {
-            listMajor.push(major);
-          }
-        }
-        osbMajor.next(listMajor);
-      });
-    });
-    return osbMajor.asObservable();
+  getMajorByFacultyReference(facultyRef: DocumentReference) {
+    return this.firestore.collection(facultyRef.parent.path).doc(facultyRef.id).collection('Major').get();
   }
 
   async addMajor(facultyId: string, major: Major) {
     try {
       return await this.firestore.collection('Major').doc(major.major_name + facultyId).ref.get().then(async result => {
-        major.faculty = await this.firestore.collection('Faculty').doc(facultyId).ref;
+        major.faculty = this.firestore.collection('Faculty').doc(facultyId).ref;
         if (!result.exists) {
           return await this.firestore.collection('Major').doc(major.major_name + facultyId).set(Object.assign({}, major))
             .then(async () => {
@@ -90,13 +70,13 @@ export class MajorService {
   deleteMajor(major: QueryDocumentSnapshot<unknown>) {
     try {
       this.entranceExamResultService.deleteMajorInExamResult(major.ref);
-      this.firestore.collection('Carrer').ref.where('major', 'array-contains', major.ref).onSnapshot(result => {
+      this.firestore.collection('Career').ref.where('major', 'array-contains', major.ref).onSnapshot(result => {
         result.forEach(docsRs => {
-          const carrer = docsRs.data() as Carrer;
-          for (let i = 0; i < carrer.major.length; i++) {
-            if (carrer.major[i].id == major.id) {
-              carrer.major.splice(i, 1);
-              this.firestore.collection('Carrer').doc(docsRs.id).set(Object.assign({}, carrer));
+          const career = docsRs.data() as Career;
+          for (let i = 0; i < career.major.length; i++) {
+            if (career.major[i].id == major.id) {
+              career.major.splice(i, 1);
+              this.firestore.collection('Career').doc(docsRs.id).set(Object.assign({}, career));
             }
           }
         })

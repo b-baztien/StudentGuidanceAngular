@@ -51,21 +51,19 @@ export class AddNewsDialogComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
-    this.dialogRef.disableClose = true;
-  }
+  ngOnInit() { }
 
   async ngAfterViewInit() {
-    await this.universityService.getAllUniversity().subscribe(listUniRes => {
+    this.universityService.getAllUniversity().subscribe(listUniRes => {
       listUniRes.forEach(uniRes => {
         const university = uniRes.payload.doc.data() as University;
         this.allUniversity.push(university.university_name);
       });
       this.loadData = true;
-    }),
-      this.filteredUniversity = this.newsForm.get('university').valueChanges.pipe(
-        startWith(null),
-        map((university: string | null) => university ? this._filter(university) : this.allUniversity.slice()));
+    })
+    this.filteredUniversity = this.newsForm.get('university').valueChanges.pipe(
+      startWith(null),
+      map((university: string | null) => university ? this._filter(university) : this.allUniversity.slice()));
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -91,12 +89,9 @@ export class AddNewsDialogComponent implements OnInit {
     };
 
     const fileName = this.afirestore.createId();
-    console.log(fileName);
-    console.log(event.files[0].name);
     if (event.files[0].type.split('/')[0] == 'image') {
       await this.afStorage.upload(`news/${fileName}`, event.files[0], metadata).then(async result => {
         this.news.image = await result.ref.fullPath;
-        console.log(result.ref.fullPath);
       });
     }
   }
@@ -157,7 +152,7 @@ export class AddNewsDialogComponent implements OnInit {
         }
       }
       catch (error) {
-        console.log(error);
+        console.error(error);
       }
       this.dialogRef.close();
     }

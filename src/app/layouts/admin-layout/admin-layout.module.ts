@@ -26,12 +26,12 @@ import { ViewUniversityComponent } from 'src/app/components/admin/view-universit
 import { ListUserComponent } from 'src/app/components/admin/list-user/list-user.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { EditPasswordComponent } from 'src/app/components/admin/edit-password/edit-password.component';
-import { ListCarrerComponent } from 'src/app/components/admin/list-carrer/list-carrer.component';
+import { ListCareerComponent } from 'src/app/components/admin/list-career/list-career.component';
 @NgModule({
   declarations: [
     ListUniversityComponent,
     ViewUniversityComponent,
-    ListCarrerComponent,
+    ListCareerComponent,
     ListUserComponent,
     EditPasswordComponent,
   ],

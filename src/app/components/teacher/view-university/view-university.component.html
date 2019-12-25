@@ -5,7 +5,7 @@
                 <div class="card card-profile">
                     <div class="card-avatar">
                         <a href="{{university.url}}" target="_blank">
-                            <img class="img" src="{{universityImg}}" />
+                            <img alt="{{university.university_name}}" class="img" src="{{universityImg}}" />
                         </a>
                     </div>
                     <div class="card-body">
@@ -84,7 +84,7 @@
                                             <div class="button-row">
                                                 <button mat-raised-button matTooltip="ตรวจสอบข้อมูลรายการสาขา"
                                                     [matTooltipPosition]="'above'" class="btn-info"
-                                                    (click)="openListMajorDialog(faculty)">
+                                                    (click)="openListMajorDialog(faculty.ref)">
                                                     <mat-icon>search</mat-icon>
                                                 </button>
                                             </div>

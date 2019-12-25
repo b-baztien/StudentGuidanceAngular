@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ListCarrerComponent } from './list-carrer.component';
+import { ListCareerComponent } from './list-career.component';
 
-describe('ListCarrerComponent', () => {
-  let component: ListCarrerComponent;
-  let fixture: ComponentFixture<ListCarrerComponent>;
+describe('ListCareerComponent', () => {
+  let component: ListCareerComponent;
+  let fixture: ComponentFixture<ListCareerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ListCarrerComponent ]
+      declarations: [ ListCareerComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ListCarrerComponent);
+    fixture = TestBed.createComponent(ListCareerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

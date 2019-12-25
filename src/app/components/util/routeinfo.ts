@@ -9,7 +9,7 @@ declare interface RouteInfo {
 
 export const ADMINROUTES: RouteInfo[] = [
   { path: '/admin/list-university', title: 'มหาวิทยาลัย', icon: 'school', class: '' },
-  { path: '/admin/list-carrer', title: 'รายการอาชีพ', icon: 'build', class: '' },
+  { path: '/admin/list-career', title: 'รายการอาชีพ', icon: 'build', class: '' },
   { path: '/admin/list-user', title: 'รายการผู้ใช้', icon: 'person', class: '' },
   { path: '/admin/edit-password', title: 'แก้ไขรหัสผ่าน', icon: 'edit', class: '' },
   { path: '/logout', title: 'ออกจากระบบ', icon: 'exit_to_app', class: 'active-pro' },

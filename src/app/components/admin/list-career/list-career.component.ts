@@ -2,21 +2,20 @@ import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource, MatPaginatorIntl, MatPaginator, MatDialog } from '@angular/material';
 import { QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
-import { CarrerService } from 'src/app/services/carrer-service/carrer.service';
-import { AddUniversityDialogComponent } from '../list-university/dialog/add-university-dialog/add-university-dialog.component';
-import { AddEditCarrerDialogComponent } from './dialog/add-edit-carrer-dialog/add-edit-carrer-dialog.component';
+import { AddEditCareerDialogComponent } from './dialog/add-edit-career-dialog/add-edit-career-dialog.component';
 import { Notifications } from '../../util/notification';
-import { Carrer } from 'src/app/model/Carrer';
+import { Career } from 'src/app/model/Career';
 import { ConfirmDialogComponent } from '../../util/confirm-dialog/confirm-dialog.component';
+import { CareerService } from 'src/app/services/career-service/career.service';
 
 @Component({
-  selector: 'app-list-carrer',
-  templateUrl: './list-carrer.component.html',
-  styleUrls: ['./list-carrer.component.css']
+  selector: 'app-list-career',
+  templateUrl: './list-career.component.html',
+  styleUrls: ['./list-career.component.css']
 })
-export class ListCarrerComponent implements OnInit, AfterViewInit {
-  carrerList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
-  displayedColumns: string[] = ['carrer_name', 'manage'];
+export class ListCareerComponent implements OnInit, AfterViewInit {
+  careerList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
+  displayedColumns: string[] = ['career_name', 'manage'];
 
   resultsLength = 0;
   isLoadingResults = true;
@@ -29,7 +28,7 @@ export class ListCarrerComponent implements OnInit, AfterViewInit {
   constructor(
     public dialog: MatDialog,
     private router: Router,
-    private carrerService: CarrerService
+    private careerService: CareerService
   ) { }
 
   ngOnInit() { }
@@ -49,36 +48,35 @@ export class ListCarrerComponent implements OnInit, AfterViewInit {
     this.paginator._intl = this.paginatorInit;
 
     //add data to table datasource
-    await this.carrerService.getAllCarrer().subscribe(result => {
-      let resultListCarrer = new Array<QueryDocumentSnapshot<Object>>();
-      console.log(this.carrerList);
+    this.careerService.getAllCareer().subscribe(result => {
+      let resultListCareer = new Array<QueryDocumentSnapshot<Object>>();
       result.forEach(element => {
-        resultListCarrer.push(element.payload.doc);
+        resultListCareer.push(element.payload.doc);
       });
-      this.carrerList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListCarrer);
-      this.carrerList.paginator = this.paginator;
-      this.showTable = this.carrerList.data.length === 0 ? false : true;
+      this.careerList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListCareer);
+      this.careerList.paginator = this.paginator;
+      this.showTable = this.careerList.data.length === 0 ? false : true;
     });
   }
 
   applyFilter(filterValue: string) {
-    this.carrerList.filter = filterValue.trim().toLowerCase();
+    this.careerList.filter = filterValue.trim().toLowerCase();
   }
 
-  openAddEditCarrerDialog(carrer?: QueryDocumentSnapshot<unknown>): void {
-    const dialogRef = this.dialog.open(AddEditCarrerDialogComponent, {
+  openAddEditCareerDialog(career?: QueryDocumentSnapshot<unknown>): void {
+    const dialogRef = this.dialog.open(AddEditCareerDialogComponent, {
       width: '50%',
-      data: carrer ? carrer.data() as Carrer : null,
+      data: career ? career.data() as Career : null,
     });
 
-    dialogRef.afterClosed().subscribe(carrerRs => {
+    dialogRef.afterClosed().subscribe(careerRs => {
       try {
-        if (carrerRs !== null) {
-          if (carrerRs.mode === 'เพิ่ม') {
-            this.carrerService.addCarrer(carrerRs.carrer);
+        if (careerRs !== null) {
+          if (careerRs.mode === 'เพิ่ม') {
+            this.careerService.addCareer(careerRs.career);
             new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลคณะสำเร็จแล้ว', 'success', 'สำเร็จ !');
-          } else if (carrerRs.mode === 'แก้ไข') {
-            this.carrerService.updateCarrer(carrerRs.carrer);
+          } else if (careerRs.mode === 'แก้ไข') {
+            this.careerService.updateCareer(careerRs.career);
             new Notifications().showNotification('done', 'top', 'right', 'แก้ไขข้อมูลคณะสำเร็จแล้ว', 'success', 'สำเร็จ !');
           }
         }
@@ -89,16 +87,16 @@ export class ListCarrerComponent implements OnInit, AfterViewInit {
     });
   }
 
-  openDeleteCarrerDialog(carrer: QueryDocumentSnapshot<unknown>) {
+  openDeleteCareerDialog(career: QueryDocumentSnapshot<unknown>) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '40%',
-      data: `คุณต้องการลบข้อมูลอาชีพ${(carrer.data() as Carrer).carrer_name} ใช่ หรือ ไม่ ?`,
+      data: `คุณต้องการลบข้อมูลอาชีพ${(career.data() as Career).career_name} ใช่ หรือ ไม่ ?`,
     });
 
     dialogRef.afterClosed().subscribe(result => {
       try {
         if (result) {
-          this.carrerService.deleteCarrer(carrer);
+          this.careerService.deleteCareer(career);
           new Notifications().showNotification('done', 'top', 'right', 'ลบข้อมูลคณะสำเร็จแล้ว', 'success', 'สำเร็จ !');
         }
       } catch (error) {

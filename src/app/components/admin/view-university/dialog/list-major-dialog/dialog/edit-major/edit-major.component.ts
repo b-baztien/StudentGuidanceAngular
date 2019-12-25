@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
 import { MatAutocomplete, MatDialogRef, MAT_DIALOG_DATA, MatChipInputEvent, MatAutocompleteSelectedEvent } from '@angular/material';
 import { AddMajorDialogComponent } from '../../../add-major-dialog/add-major-dialog.component';
 import { MajorService } from 'src/app/services/major-service/major.service';
-import { CarrerService } from 'src/app/services/carrer-service/carrer.service';
-import { Carrer } from 'src/app/model/Carrer';
+import { CareerService } from 'src/app/services/career-service/career.service';
+import { Career } from 'src/app/model/Career';
 import { startWith, map } from 'rxjs/operators';
 import { ENTER } from '@angular/cdk/keycodes';
 import { DocumentReference, DocumentSnapshot, Action, QuerySnapshot } from '@angular/fire/firestore';
@@ -22,13 +22,13 @@ export class EditMajorComponent implements OnInit {
     major_name: new FormControl(null, [Validators.required]),
     url: new FormControl(null, [Validators.required]),
     entrance_detail: new FormControl(null, [Validators.required]),
-    carrer: new FormControl(null),
+    career: new FormControl(null),
   });
 
   majorDoc: DocumentSnapshot<unknown>;
-  listCarrer_name: string[] = new Array<string>();
-  allCarrer: string[] = new Array<string>();
-  filteredCarrer: Observable<string[]>;
+  listCareer_name: string[] = new Array<string>();
+  allCareer: string[] = new Array<string>();
+  filteredCareer: Observable<string[]>;
 
   loadData = false;
 
@@ -37,18 +37,18 @@ export class EditMajorComponent implements OnInit {
   removable = true;
   separatorKeysCodes: number[] = [ENTER];
 
-  @ViewChild('carrerInput', { static: false }) carrerInput: ElementRef<HTMLInputElement>;
+  @ViewChild('careerInput', { static: false }) careerInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
 
   constructor(
     public dialogRef: MatDialogRef<AddMajorDialogComponent>,
     private majorService: MajorService,
-    private carrerService: CarrerService,
+    private careerService: CareerService,
     @Inject(MAT_DIALOG_DATA) public data: Observable<Action<DocumentSnapshot<unknown>>>,
   ) { }
 
-  async ngOnInit() {
-    await this.data.subscribe(async result => {
+  ngOnInit() {
+    this.data.subscribe(async result => {
       this.majorDoc = result.payload;
 
       let major = this.majorDoc.data() as Major;
@@ -56,24 +56,23 @@ export class EditMajorComponent implements OnInit {
       this.majorForm.get('entrance_detail').setValue(major.entrance_detail);
       this.majorForm.get('url').setValue(major.url);
 
-      major.carrer.forEach(result => {
-        this.listCarrer_name.push(result.id);
+      major.career.forEach(result => {
+        this.listCareer_name.push(result.id);
       });
     });
-    this.dialogRef.disableClose = true;
   }
 
-  async ngAfterViewInit() {
-    await this.carrerService.getAllCarrer().subscribe(listCarrerRes => {
-      listCarrerRes.forEach(carrerRes => {
-        const carrer = carrerRes.payload.doc.data() as Carrer;
-        this.allCarrer.push(carrer.carrer_name);
-      }),
+  ngAfterViewInit() {
+    this.careerService.getAllCareer().subscribe(listCareerRes => {
+      listCareerRes.forEach(careerRes => {
+        const career = careerRes.payload.doc.data() as Career;
+        this.allCareer.push(career.career_name);
+      })
         this.loadData = true;
-    }),
-      this.filteredCarrer = this.majorForm.get('carrer').valueChanges.pipe(
+    })
+      this.filteredCareer = this.majorForm.get('career').valueChanges.pipe(
         startWith(null),
-        map((carrer: string | null) => carrer ? this._filter(carrer) : this.allCarrer.slice()));
+        map((career: string | null) => career ? this._filter(career) : this.allCareer.slice()));
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -86,57 +85,57 @@ export class EditMajorComponent implements OnInit {
   }
 
 
-  addCarrer(event: MatChipInputEvent): void {
+  addCareer(event: MatChipInputEvent): void {
     if (!this.matAutocomplete.isOpen) {
       const input = event.input;
       const value = event.value;
 
       if ((value || '').trim()) {
-        this.listCarrer_name.push(value.trim());
+        this.listCareer_name.push(value.trim());
       }
 
       if (input) {
         input.value = '';
       }
 
-      this.majorForm.get('carrer').setValue(null);
+      this.majorForm.get('career').setValue(null);
     }
   }
 
-  removeCarrer(carrer: string): void {
-    const index = this.listCarrer_name.indexOf(carrer);
+  removeCareer(career: string): void {
+    const index = this.listCareer_name.indexOf(career);
 
     if (index >= 0) {
-      this.listCarrer_name.splice(index, 1);
+      this.listCareer_name.splice(index, 1);
     }
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.listCarrer_name.push(event.option.viewValue);
-    this.carrerInput.nativeElement.value = '';
-    this.majorForm.get('carrer').setValue(null);
+    this.listCareer_name.push(event.option.viewValue);
+    this.careerInput.nativeElement.value = '';
+    this.majorForm.get('career').setValue(null);
   }
 
   async onSubmit() {
     try {
-      await this.carrerService.deleteMajorInCarrer(this.majorDoc.ref).then(async () => {
+      await this.careerService.deleteMajorInCareer(this.majorDoc.ref).then(async () => {
         let major = this.majorDoc.data() as Major;
-        if (this.majorForm.valid && this.listCarrer_name.length !== 0) {
+        if (this.majorForm.valid && this.listCareer_name.length !== 0) {
           major.major_name = this.majorForm.get('major_name').value;
           major.url = this.majorForm.get('url').value;
           major.entrance_detail = this.majorForm.get('entrance_detail').value;
 
-          let listCarrerRef = new Array<DocumentReference>();
-          const setCarrer = new Set(this.listCarrer_name);
-          await setCarrer.forEach(async carrerName => {
-            const carrer = new Carrer();
-            carrer.carrer_name = carrerName;
-            carrer.major = carrer.major === undefined ? new Array<DocumentReference>() : carrer.major;
-            carrer.major.push(this.majorDoc.ref);
-            await this.carrerService.addCarrer(carrer).then(async carrerDocRef => {
-              await listCarrerRef.push(carrerDocRef);
-              major.carrer = new Array<DocumentReference>();
-              major.carrer = await listCarrerRef;
+          let listCareerRef = new Array<DocumentReference>();
+          const setCareer = new Set(this.listCareer_name);
+          setCareer.forEach(async careerName => {
+            const career = new Career();
+            career.career_name = careerName;
+            career.major = career.major === undefined ? new Array<DocumentReference>() : career.major;
+            career.major.push(this.majorDoc.ref);
+            await this.careerService.addCareer(career).then(async careerDocRef => {
+              listCareerRef.push(careerDocRef);
+              major.career = new Array<DocumentReference>();
+              major.career = listCareerRef;
               this.majorService.updateMajor(this.majorDoc.id, major);
             });
           });
@@ -151,6 +150,6 @@ export class EditMajorComponent implements OnInit {
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.allCarrer.filter(carrer => carrer.toLowerCase().includes(filterValue));
+    return this.allCareer.filter(career => career.toLowerCase().includes(filterValue));
   }
 }

@@ -14,6 +14,6 @@ export class Student {
     school: DocumentReference;
     login: DocumentReference;
     entrance_exam_result: DocumentReference[];
-    favorite_carrer: DocumentReference[];
+    favorite_career: DocumentReference[];
     favorite_university: DocumentReference[];
 }

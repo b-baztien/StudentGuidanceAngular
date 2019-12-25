@@ -126,8 +126,6 @@ export class AddUserDialogComponent implements OnInit {
     this.filteredSchool = this.userForm.get('school').valueChanges.pipe(
       startWith(null),
       map((school: string | null) => school ? this._filter(school) : this.listSchool.slice()));
-
-    this.dialogRef.disableClose = true;
   }
 
   getAllSchool() {

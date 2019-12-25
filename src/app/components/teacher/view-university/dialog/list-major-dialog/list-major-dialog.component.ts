@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Major } from 'src/app/model/Major';
-import { QueryDocumentSnapshot } from '@angular/fire/firestore';
-import { CarrerService } from 'src/app/services/carrer-service/carrer.service';
+import { QueryDocumentSnapshot, DocumentReference, DocumentData } from '@angular/fire/firestore';
+import { CareerService } from 'src/app/services/career-service/career.service';
 import { MajorService } from 'src/app/services/major-service/major.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
@@ -12,34 +12,27 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 })
 export class ListMajorTeacherDialogComponent implements OnInit {
   displayedColumns: string[] = ['major_name', 'url'];
-  listMajor = new Array<Major>();
-  listCarrer = new Array<QueryDocumentSnapshot<unknown>>();
-  haveCarrer = false;
+  listMajor = new Array<DocumentData>();
+  listCareer = new Array<QueryDocumentSnapshot<unknown>>();
+  haveCareer = false;
   showData = false;
 
   constructor(
-    private carrerService: CarrerService,
-    private majorService: MajorService,
+    private careerService: CareerService,
     public dialogRef: MatDialogRef<ListMajorTeacherDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: QueryDocumentSnapshot<unknown>) {
+    @Inject(MAT_DIALOG_DATA) public data: DocumentData[]) {
   }
 
   async ngOnInit() {
-    this.majorService.getMajorByFacultyId(this.data.id).subscribe(listMajorDoc => {
-      this.listMajor = new Array<Major>();
-      listMajorDoc.forEach(major => {
-        this.listMajor.push(major.data() as Major);
-      })
-      if (this.listMajor === undefined || this.listMajor.length === 0) {
-        this.showData = false;
-      } else {
-        this.showData = true;
-      }
-    });
+    this.listMajor = this.data;
   }
 
   ngAfterViewInit() {
-
+    if (this.listMajor === undefined || this.listMajor.length === 0) {
+      this.showData = false;
+    } else {
+      this.showData = true;
+    }
   }
 
   onNoClick(): void {
