@@ -91,7 +91,7 @@ export class AddNewsDialogComponent implements OnInit {
     const fileName = this.afirestore.createId();
     if (event.files[0].type.split('/')[0] == 'image') {
       await this.afStorage.upload(`news/${fileName}`, event.files[0], metadata).then(async result => {
-        this.news.image = await result.ref.fullPath;
+        this.news.image = result.ref.fullPath;
       });
     }
   }

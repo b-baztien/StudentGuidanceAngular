@@ -108,7 +108,7 @@ export class ListEntranceExamResultComponent implements OnInit {
     });
 
     //get exam result data
-    await this.entranceExamResuleService.getAllExamResult().subscribe(async result => {
+    this.entranceExamResuleService.getAllExamResult().subscribe(async result => {
       this.showExamResultTable = false;
       let resultListExam = new Array<QueryDocumentSnapshot<Object>>();
       this.examResultList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListExam);
@@ -130,9 +130,13 @@ export class ListEntranceExamResultComponent implements OnInit {
           resultListExam.push(result[i].payload.doc);
         }
         if (i == result.length - 1) {
-          this.showExamResultTable = this.examResultList.data.length === 0 ? false : true;
+          if (this.examResultList.data.length === 0) {
+            this.showExamResultTable = false;
+          } else {
+            this.showExamResultTable = true;
+          }
         }
-      };
+      }
       this.juniorSchoolList.paginator = this.paginator;
       this.examResultList.paginator = this.paginator;
     });
@@ -148,9 +152,13 @@ export class ListEntranceExamResultComponent implements OnInit {
           resultListStudy.push(result[i]);
         }
         if (i == result.length - 1) {
-          this.showStudyUniTable = this.examResultList.data.length === 0 ? false : true;
+          if (this.examResultList.data.length === 0) {
+            this.showStudyUniTable = false;
+          } else {
+            this.showStudyUniTable = true;
+          }
         }
-      };
+      }
       this.examResultList.paginator = this.paginator;
     });
   }

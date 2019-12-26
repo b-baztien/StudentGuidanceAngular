@@ -56,11 +56,11 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
         const career = careerRes.data() as Career;
         this.allCareer.push(career.career_name);
       })
-        this.loadData = true;
+      this.loadData = true;
     })
-      this.filteredCareer = this.majorForm.get('career').valueChanges.pipe(
-        startWith(null),
-        map((career: string | null) => career ? this._filter(career) : this.allCareer.slice()));
+    this.filteredCareer = this.majorForm.get('career').valueChanges.pipe(
+      startWith(null),
+      map((career: string | null) => career ? this._filter(career) : this.allCareer.slice()));
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -124,7 +124,6 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
               listCareerRef.push(careerDocRef);
               this.majorService.getMajorById(majorRef.id).subscribe(async majorData => {
                 let major: Major = majorData.payload.data() as Major;
-                major.career = new Array<DocumentReference>();
                 major.career = listCareerRef;
                 this.majorService.updateMajor(majorData.payload.id, major);
               });

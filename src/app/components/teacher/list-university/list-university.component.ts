@@ -52,7 +52,11 @@ export class ListUniversityTeacherComponent implements OnInit, AfterViewInit, On
         resultListUniversity.push(element);
       });
       this.universityList.paginator = this.paginator;
-      this.showTable = this.universityList.data.length === 0 ? false : true;
+      if (this.universityList.data.length === 0) {
+        this.showTable = false;
+      } else {
+        this.showTable = true;
+      }
     });
   }
 

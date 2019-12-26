@@ -134,7 +134,6 @@ export class EditMajorComponent implements OnInit {
             career.major.push(this.majorDoc.ref);
             await this.careerService.addCareer(career).then(async careerDocRef => {
               listCareerRef.push(careerDocRef);
-              major.career = new Array<DocumentReference>();
               major.career = listCareerRef;
               this.majorService.updateMajor(this.majorDoc.id, major);
             });
