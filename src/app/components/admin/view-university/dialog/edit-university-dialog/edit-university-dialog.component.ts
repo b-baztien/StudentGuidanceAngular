@@ -115,17 +115,17 @@ export class EditUniversityDialogComponent implements OnInit {
       });
     }
 
-    let hlSet = new Set<string>();
+    let highlightSet = new Set<string>();
     this.universityService.getAllUniversity().subscribe(result => {
-      for (let i = 0; i < result.docs.length; i++) {
-        let uni = result[i].payload.doc.data() as University;
-        if (uni.highlight != undefined) {
-          uni.highlight.forEach(hl => {
-            hlSet.add(hl);
-          });
-        }
-      }
-      this.allHighlight = Array.from(hlSet);
+      const universitys = result.docs.map(doc => doc.data() as University);
+      universitys.filter(uni => uni.highlight !== undefined).forEach(uni => {
+        uni.highlight.forEach(hl => {
+          highlightSet.add(hl);
+        });
+      });
+
+      this.allHighlight = Array.from(highlightSet);
+
       this.showData = true;
     });
 

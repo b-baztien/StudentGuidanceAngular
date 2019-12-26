@@ -91,8 +91,8 @@ export class UniversityService {
     return this.firestore.collection('University').get();
   }
 
-  getUniversity(university_id: string): Observable<Action<DocumentSnapshot<unknown>>> {
-    return this.firestore.collection('University').doc(university_id).snapshotChanges();
+  getUniversity(university_id: string) {
+    return this.firestore.collection('University').doc(university_id).get();
   }
 
   async getUniversityByUniversityName(university_name: string) {
