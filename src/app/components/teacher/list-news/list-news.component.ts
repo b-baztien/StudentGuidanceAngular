@@ -74,7 +74,11 @@ export class ListNewsComponent implements OnInit, AfterViewInit {
           resultListUniversity.push(element);
         });
         this.newsList = resultListUniversity;
-        this.showContent = this.newsList.length === 0 ? false : true;
+        if (this.newsList.length === 0) {
+          this.showContent = false;
+        } else {
+          this.showContent = true;
+        }
       });
     });
   }
