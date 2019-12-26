@@ -38,6 +38,7 @@ import { AddStudentDialogComponent } from './components/teacher/list-student/dia
 import { EditMajorComponent } from './components/admin/view-university/dialog/list-major-dialog/dialog/edit-major/edit-major.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AddEditCareerDialogComponent } from './components/admin/list-career/dialog/add-edit-career-dialog/add-edit-career-dialog.component';
+import { TeacherLayoutComponent } from './layouts/teacher-layout/teacher-layout.component';
 
 registerLocaleData(localeTh, 'th-TH', localeThExtra);
 @NgModule({
@@ -45,6 +46,7 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra);
     AppComponent,
     UserLayoutComponent,
     AdminLayoutComponent,
+    TeacherLayoutComponent,
     AddEditFacultyDialogComponent,
     AddUniversityDialogComponent,
     AddMajorDialogComponent,

@@ -68,18 +68,18 @@
                                     <input matInput placeholder="ค้นหาคณะใน {{university.university_name}}..."
                                         (keyup)="applyFilter($event.target.value)">
                                 </mat-form-field>
-                                <table mat-table [dataSource]="facultyLtb" class="table table-hover">
+                                <table aria-describedby="facultyLtb" mat-table [dataSource]="facultyLtb" class="table table-hover">
                                     <ng-container matColumnDef="faculty_name">
-                                        <th mat-header-cell *matHeaderCellDef>ชื่อคณะ</th>
+                                        <th id="faculty_name" mat-header-cell *matHeaderCellDef>ชื่อคณะ</th>
                                         <td mat-cell *matCellDef="let faculty"> {{faculty.data().faculty_name}} </td>
                                     </ng-container>
                                     <ng-container matColumnDef="url">
-                                        <th mat-header-cell *matHeaderCellDef>เว็บไซต์</th>
+                                        <th id="url" mat-header-cell *matHeaderCellDef>เว็บไซต์</th>
                                         <td mat-cell *matCellDef="let faculty"> <a href="{{faculty.data().url}}"
                                                 target="_blank">{{faculty.data().url}}</a> </td>
                                     </ng-container>
                                     <ng-container matColumnDef="major">
-                                        <th mat-header-cell *matHeaderCellDef>สาขาภายในคณะ</th>
+                                        <th id="major" mat-header-cell *matHeaderCellDef>สาขาภายในคณะ</th>
                                         <td mat-cell *matCellDef="let faculty">
                                             <div class="button-row">
                                                 <button mat-raised-button matTooltip="ตรวจสอบข้อมูลรายการสาขา"

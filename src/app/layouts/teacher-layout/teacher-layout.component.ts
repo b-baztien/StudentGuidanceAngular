@@ -41,8 +41,6 @@ export class TeacherLayoutComponent implements OnInit {
                     window.scrollTo(0, 0);
             }
         });
-        if (window.matchMedia(`(min-width: 960px)`).matches) {
-        }
 
         const window_width = $(window).width();
         let $sidebar = $('.sidebar');
@@ -130,8 +128,8 @@ export class TeacherLayoutComponent implements OnInit {
 
     runOnRouteChange(): void {
         if (window.matchMedia(`(min-width: 960px)`).matches) {
-            const elemMainPanel = <HTMLElement>document.querySelector('.main-panel');
-            const ps = new PerfectScrollbar(elemMainPanel);
+            const elemMainPanel = document.querySelector('.main-panel');
+            const ps = new PerfectScrollbar(<HTMLElement>elemMainPanel);
             ps.update();
         }
     }

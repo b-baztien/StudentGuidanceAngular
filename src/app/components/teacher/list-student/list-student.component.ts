@@ -58,12 +58,20 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
         this.studentService.getStudentBySchoolId(schoolRef.payload.id).subscribe(listStdRef => {
           this.studentList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(listStdRef);
           this.studentList.paginator = this.paginator;
-          this.showStudentTable = this.studentList.data.length === 0 ? false : true;
+          if (this.studentList.data.length === 0) {
+            this.showStudentTable = false;
+          } else {
+            this.showStudentTable = true;
+          }
         });
         this.alumniService.getAlumniBySchoolId(schoolRef.payload.id).subscribe(listAlnRef => {
           this.alumniList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(listAlnRef);
           this.alumniList.paginator = this.paginator;
-          this.showAlumniTable = this.alumniList.data.length === 0 ? false : true;
+          if (this.alumniList.data.length === 0) {
+            this.showAlumniTable = false;
+          } else {
+            this.showAlumniTable = true;
+          }
         });
       });
     });
@@ -80,7 +88,7 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
   openAddStudentDialog(): void {
   }
 
-  onStudentClick() {
+  onStudentClick(id: string) {
   }
 
   onChangeStudentStatus(student?: QueryDocumentSnapshot<unknown>) {

@@ -74,6 +74,10 @@ export class ViewUniversityComponent implements OnInit {
     });
   }
 
+  applyFilter(filterValue: string) {
+    this.facultyLtb.filter = filterValue.trim().toLowerCase();
+  }
+
   private getFaculty(university_id: string) {
     this.facultyService.getFacultyByUniversityId(university_id).subscribe(fct => {
       this.facultyLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(fct.docs);
