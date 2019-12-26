@@ -78,9 +78,17 @@ export class ViewUniversityComponent implements OnInit {
     this.facultyService.getFacultyByUniversityId(university_id).subscribe(fct => {
       this.facultyLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(fct.docs);
       this.facultyLtb.paginator = this.paginator;
-      this.showTable = this.facultyLtb.data.length === 0 ? false : true;
+      if (this.facultyLtb.data.length === 0) {
+        this.showTable = false;
+      } else {
+        this.showTable = true;
+      }
     })
-    this.showContent = this.university === undefined ? false : true;
+    if (this.university === undefined) {
+      this.showContent = false;
+    } else {
+      this.showContent = true;
+    }
   }
 
   async openListMajorDialog(faculty: DocumentReference): Promise<void> {
