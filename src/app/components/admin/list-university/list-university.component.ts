@@ -2,8 +2,10 @@ import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular
 import { MatTableDataSource, MatPaginator, MatDialog, MatPaginatorIntl } from '@angular/material';
 import { Router } from '@angular/router';
 import { UniversityService } from 'src/app/services/university-service/university.service';
-import { QueryDocumentSnapshot } from '@angular/fire/firestore';
+import { QueryDocumentSnapshot, DocumentData } from '@angular/fire/firestore';
 import { AddUniversityDialogComponent } from './dialog/add-university-dialog/add-university-dialog.component';
+import { University } from 'src/app/model/University';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-list-university',
@@ -11,7 +13,7 @@ import { AddUniversityDialogComponent } from './dialog/add-university-dialog/add
   styleUrls: ['./list-university.component.css']
 })
 export class ListUniversityComponent implements OnInit, OnDestroy, AfterViewInit {
-  universityList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
+  universityList: MatTableDataSource<QueryDocumentSnapshot<DocumentData>>;
   displayedColumns: string[] = ['university_name', 'phone_no', 'url', 'view', 'province', 'zone'];
 
   resultsLength = 0;
@@ -20,7 +22,7 @@ export class ListUniversityComponent implements OnInit, OnDestroy, AfterViewInit
   paginatorInit = new MatPaginatorIntl;
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
-  listUniObs;
+  uniSub: Subscription;
 
   showTable: boolean = false;
 
@@ -30,9 +32,21 @@ export class ListUniversityComponent implements OnInit, OnDestroy, AfterViewInit
     private universityService: UniversityService
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    //add data to table datasource
+    this.uniSub = this.universityService.getAllUniversity().subscribe(docs => {
+      this.universityList = new MatTableDataSource<QueryDocumentSnapshot<DocumentData>>(docs.docs);
+      this.universityList.paginator = this.paginator;
 
-  async ngAfterViewInit(): Promise<void> {
+      if (this.universityList.data.length === 0) {
+        this.showTable = false;
+      } else {
+        this.showTable = true;
+      }
+    });
+  }
+
+  ngAfterViewInit() {
     //custom text paginator
     this.paginatorInit.getRangeLabel = (page: number, pageSize: number, length: number) => {
       if (length === 0 || pageSize === 0) {
@@ -45,21 +59,10 @@ export class ListUniversityComponent implements OnInit, OnDestroy, AfterViewInit
     };
     this.paginatorInit.changes.next();
     this.paginator._intl = this.paginatorInit;
-
-    //add data to table datasource
-    this.listUniObs = this.universityService.getAllUniversity().subscribe(result => {
-      let resultListUniversity = new Array<QueryDocumentSnapshot<Object>>();
-      result.forEach(element => {
-        resultListUniversity.push(element.payload.doc);
-      });
-      this.universityList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListUniversity);
-      this.universityList.paginator = this.paginator;
-      this.showTable = this.universityList.data.length === 0 ? false : true;
-    });
   }
 
   ngOnDestroy() {
-    this.listUniObs.unsubscribe();
+    this.uniSub.unsubscribe();
   }
 
   applyFilter(filterValue: string) {

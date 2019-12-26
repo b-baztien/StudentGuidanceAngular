@@ -1,6 +1,9 @@
 <form [formGroup]="facultyForm">
-  <h1 mat-dialog-title>{{mode}}ข้อมูลคณะ</h1>
-  <div mat-dialog-content>
+  <h1 mat-dialog-title color="primary">
+    <mat-icon *ngIf="mode === 'เพิ่ม'">add</mat-icon>
+    <mat-icon *ngIf="mode === 'แก้ไข'">edit</mat-icon> {{mode}}ข้อมูลคณะ
+  </h1>
+  <mat-dialog-content>
     <mat-form-field>
       <input matInput placeholder="ชื่อคณะ" required formControlName="faculty_name" readonly *ngIf="mode === 'แก้ไข'">
       <input matInput placeholder="ชื่อคณะ" required formControlName="faculty_name" *ngIf="mode === 'เพิ่ม'">
@@ -14,13 +17,16 @@
         กรุณากรอกที่อยู่เว็บไซต์
       </mat-error>
     </mat-form-field>
-  </div>
-  <div mat-dialog-actions>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
     <button mat-raised-button class="btn-secondary" (click)="onNoClick()">
       <mat-icon>close</mat-icon> ปิด
     </button>
-    <button mat-raised-button class="btn-success" (click)="onSubmit()">
+    <button *ngIf="mode === 'เพิ่ม'" mat-raised-button class="btn-success" (click)="onSubmit()">
       <mat-icon>add</mat-icon> {{mode}}ข้อมูล
     </button>
-  </div>
+    <button *ngIf="mode === 'แก้ไข'" mat-raised-button class="btn-warning" (click)="onSubmit()">
+      <mat-icon>add</mat-icon> {{mode}}ข้อมูล
+    </button>
+  </mat-dialog-actions>
 </form>

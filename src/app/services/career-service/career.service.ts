@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentReference, QueryDocumentSnapshot } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentReference, QueryDocumentSnapshot, QuerySnapshot, DocumentData } from '@angular/fire/firestore';
 import { Career } from 'src/app/model/Career';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { Major } from 'src/app/model/Major';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,8 @@ export class CareerService {
   ) {
   }
 
-  getAllCareer() {
-    return this.firestore.collection('Career').snapshotChanges();
+  getAllCareer(): Observable<QuerySnapshot<DocumentData>> {
+    return this.firestore.collection('Career').get();
   }
 
   getCareer(careerId: string) {

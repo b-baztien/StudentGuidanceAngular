@@ -117,7 +117,7 @@ export class EditUniversityDialogComponent implements OnInit {
 
     let hlSet = new Set<string>();
     this.universityService.getAllUniversity().subscribe(result => {
-      for (let i = 0; i < result.length; i++) {
+      for (let i = 0; i < result.docs.length; i++) {
         let uni = result[i].payload.doc.data() as University;
         if (uni.highlight != undefined) {
           uni.highlight.forEach(hl => {

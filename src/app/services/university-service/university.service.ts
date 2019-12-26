@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, Action, DocumentSnapshot, DocumentChangeAction } from '@angular/fire/firestore';
+import { AngularFirestore, Action, DocumentSnapshot, DocumentChangeAction, DocumentData } from '@angular/fire/firestore';
 import { University } from 'src/app/model/University';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { Faculty } from 'src/app/model/Faculty';
@@ -87,8 +87,8 @@ export class UniversityService {
     }
   }
 
-  getAllUniversity(): Observable<DocumentChangeAction<unknown>[]> {
-    return this.firestore.collection('University').snapshotChanges();
+  getAllUniversity() {
+    return this.firestore.collection('University').get();
   }
 
   getUniversity(university_id: string): Observable<Action<DocumentSnapshot<unknown>>> {

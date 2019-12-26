@@ -53,7 +53,7 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.careerService.getAllCareer().subscribe(listCareerRes => {
       listCareerRes.forEach(careerRes => {
-        const career = careerRes.payload.doc.data() as Career;
+        const career = careerRes.data() as Career;
         this.allCareer.push(career.career_name);
       })
         this.loadData = true;

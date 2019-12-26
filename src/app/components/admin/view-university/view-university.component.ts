@@ -141,7 +141,7 @@ export class ViewUniversityComponent implements OnInit {
 
   openAddMajorDialog(faculty: QueryDocumentSnapshot<unknown>) {
     const dialogRef = this.dialog.open(AddMajorDialogComponent, {
-      width: '50%',
+      width: '90%',
       data: faculty.id,
     });
 
@@ -173,7 +173,7 @@ export class ViewUniversityComponent implements OnInit {
 
   openDeleteFacultyDialog(faculty: QueryDocumentSnapshot<unknown>) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '40%',
+      width: 'auto',
       data: `คุณต้องการลบข้อมูลคณะ${(faculty.data() as Faculty).faculty_name} ใช่ หรือ ไม่ ?`,
     });
 
@@ -189,9 +189,10 @@ export class ViewUniversityComponent implements OnInit {
     });
   }
 
-  async openListMajorDialog(faculty: DocumentReference) {
+  openListMajorDialog(faculty: DocumentReference) {
     const dialogRef = this.dialog.open(ListMajorAdminDialogComponent, {
       width: 'auto',
+      maxHeight: '90%',
       data: faculty,
     });
 

@@ -1,10 +1,12 @@
 <div class="row">
     <div class="col-sm-12">
-        <h1 mat-dialog-title>เพิ่มข้อมูลสาขา</h1>
+        <h1 mat-dialog-title>
+            <mat-icon>edit</mat-icon> เพิ่มข้อมูลสาขา
+        </h1>
     </div>
 </div>
 <form [formGroup]="majorForm" *ngIf="loadData">
-    <div mat-dialog-content>
+    <mat-dialog-content>
         <mat-form-field>
             <input matInput placeholder="ชื่อสาขา" required formControlName="major_name">
             <mat-error *ngIf="majorForm.controls.major_name.hasError('required')">
@@ -45,13 +47,13 @@
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>
-    </div>
-    <div mat-dialog-actions>
+    </mat-dialog-content>
+    <mat-dialog-actions  align="end">
         <button mat-raised-button class="btn-secondary" (click)="onNoClick()">
             <mat-icon>close</mat-icon> ปิด
         </button>
         <button mat-raised-button class="btn-success" (click)="onSubmit()">
             <mat-icon>add</mat-icon> เพิ่มข้อมูล
         </button>
-    </div>
+    </mat-dialog-actions>
 </form>

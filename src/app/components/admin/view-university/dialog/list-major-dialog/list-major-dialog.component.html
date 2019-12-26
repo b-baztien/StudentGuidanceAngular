@@ -7,7 +7,7 @@
     <mat-accordion>
         <mat-expansion-panel *ngFor="let major of listMajor">
             <mat-expansion-panel-header>
-                <mat-panel-title [color]="primary">
+                <mat-panel-title color="primary">
                     <h4>
                         <mat-icon>school</mat-icon> {{major.major_name}}
                     </h4>
@@ -38,17 +38,17 @@
                     -
                 </p>
                 <mat-chip-list>
-                    <mat-chip *ngFor="let career of major.career">
+                    <mat-chip color="primary" selected *ngFor="let career of major.career">
                         {{career.id}}
                     </mat-chip>
                 </mat-chip-list>
             </mat-panel-title>
             <mat-action-row>
-                <button mat-raised-button color="primary"
+                <button mat-raised-button class="btn-warning"
                     (click)="openEditMajorDialog(major.major_name + major.faculty.id)">
                     <mat-icon>edit</mat-icon> แก้ไขข้อมูลสาขา
                 </button>
-                <button mat-raised-button color="warn" (click)="onDelete(major)">
+                <button mat-raised-button class="btn-danger" (click)="onDelete(major)">
                     <mat-icon>delete</mat-icon> ลบข้อมูลสาขา
                 </button>
             </mat-action-row>

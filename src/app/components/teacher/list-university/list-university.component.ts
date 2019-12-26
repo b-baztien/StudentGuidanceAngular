@@ -45,11 +45,11 @@ export class ListUniversityTeacherComponent implements OnInit, AfterViewInit, On
     this.paginatorInit.changes.next();
     this.paginator._intl = this.paginatorInit;
 
-    this.listUniObs = await this.universityService.getAllUniversity().subscribe(result => {
+    this.listUniObs = this.universityService.getAllUniversity().subscribe(result => {
       let resultListUniversity = new Array<QueryDocumentSnapshot<Object>>();
       this.universityList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListUniversity);
       result.forEach(element => {
-        resultListUniversity.push(element.payload.doc);
+        resultListUniversity.push(element);
       });
       this.universityList.paginator = this.paginator;
       this.showTable = this.universityList.data.length === 0 ? false : true;
