@@ -60,7 +60,7 @@ export class ListNewsComponent implements OnInit, AfterViewInit {
           if (news.university !== undefined) {
             news.university.forEach(uniRef => {
               this.universityService.getUniversity(uniRef.id).subscribe(result => {
-                let uni = result.payload.data() as University;
+                let uni = result.data() as University;
                 listUniName.push(uni.university_name);
                 if (listUniName.length === news.university.length) {
                   this.mapUniversity.set(element.id, listUniName);

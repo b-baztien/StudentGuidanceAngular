@@ -65,7 +65,7 @@ export class ViewUniversityComponent implements OnInit {
 
   private getUniversity(university_id: string) {
     this.universityService.getUniversity(university_id).subscribe(async universityRes => {
-      this.university = universityRes.payload.data() as University;
+      this.university = universityRes.data() as University;
       if (this.university.image !== undefined) {
         this.afStorage.storage.ref(this.university.image).getDownloadURL().then(url => {
           this.universityImg = url;
