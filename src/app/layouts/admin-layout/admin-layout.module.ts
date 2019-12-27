@@ -18,7 +18,8 @@ import {
   MatStepperModule,
   MatAutocompleteModule,
   MatRadioModule,
-  MatChipsModule
+  MatChipsModule,
+  MatSortModule
 } from '@angular/material';
 import { ListUniversityComponent } from 'src/app/components/admin/list-university/list-university.component';
 import { ComponentsModule } from 'src/app/components/navigation/components.module';
@@ -55,6 +56,7 @@ import { ListCareerComponent } from 'src/app/components/admin/list-career/list-c
     MatAutocompleteModule,
     MatRadioModule,
     MatChipsModule,
+    MatSortModule
   ], exports: [ComponentsModule]
 })
 

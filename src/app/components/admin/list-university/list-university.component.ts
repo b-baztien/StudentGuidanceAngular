@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatDialog, MatPaginatorIntl } from '@angular/material';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, AfterViewChecked } from '@angular/core';
+import { MatTableDataSource, MatPaginator, MatDialog, MatPaginatorIntl, MatSort } from '@angular/material';
 import { Router } from '@angular/router';
 import { UniversityService } from 'src/app/services/university-service/university.service';
 import { QueryDocumentSnapshot, DocumentData } from '@angular/fire/firestore';
@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './list-university.component.html',
   styleUrls: ['./list-university.component.css']
 })
-export class ListUniversityComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ListUniversityComponent implements OnInit, OnDestroy {
   universityList: MatTableDataSource<QueryDocumentSnapshot<DocumentData>>;
   displayedColumns: string[] = ['university_name', 'phone_no', 'url', 'view', 'province', 'zone'];
 
@@ -36,29 +36,26 @@ export class ListUniversityComponent implements OnInit, OnDestroy, AfterViewInit
     //add data to table datasource
     this.uniSub = this.universityService.getAllUniversity().subscribe(docs => {
       this.universityList = new MatTableDataSource<QueryDocumentSnapshot<DocumentData>>(docs.map(uni => uni.payload.doc));
-      this.universityList.paginator = this.paginator;
-
       if (this.universityList.data.length === 0) {
         this.showTable = false;
       } else {
         this.showTable = true;
       }
-    });
-  }
 
-  ngAfterViewInit() {
-    //custom text paginator
-    this.paginatorInit.getRangeLabel = (page: number, pageSize: number, length: number) => {
-      if (length === 0 || pageSize === 0) {
-        return `0 จากทั้งหมด ${length}`;
-      }
-      length = Math.max(length, 0);
-      const startIndex = page * pageSize;
-      const endIndex = startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
-      return `${startIndex + 1} - ${endIndex} จากทั้งหมด ${length}`;
-    };
-    this.paginatorInit.changes.next();
-    this.paginator._intl = this.paginatorInit;
+      this.universityList.paginator = this.paginator;
+      //custom text paginator
+      this.paginatorInit.getRangeLabel = (page: number, pageSize: number, length: number) => {
+        if (length === 0 || pageSize === 0) {
+          return `0 จากทั้งหมด ${length}`;
+        }
+        length = Math.max(length, 0);
+        const startIndex = page * pageSize;
+        const endIndex = startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
+        return `${startIndex + 1} - ${endIndex} จากทั้งหมด ${length}`;
+      };
+      this.paginatorInit.changes.next();
+      this.paginator._intl = this.paginatorInit;
+    });
   }
 
   ngOnDestroy() {

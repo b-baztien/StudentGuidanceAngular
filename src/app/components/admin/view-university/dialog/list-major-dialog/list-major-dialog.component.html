@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-12">
-        <h1 mat-dialog-title>ข้อมูลสาขาในสังกัดของคณะ</h1>
+        <h1 mat-dialog-title>ข้อมูลสาขาในคณะ</h1>
     </div>
 </div>
 <div *ngIf="showData">
@@ -57,7 +57,8 @@
 </div>
 <div class="card-profile no-margin" *ngIf="!showData">
     <div class="card-body">
-        <h4 class="card-title">ไม่พบข้อมูลสาขา</h4>
+        <mat-icon class="card-title">block</mat-icon>
+        <h4 class="card-description">ไม่พบข้อมูลสาขา</h4>
         <p class="card-description">
             ไม่พบข้อมูลสาขาภายในคณะ กรุณาเพิ่มข้อมูลคณะก่อนดำเนินการอีกครั้ง
         </p>

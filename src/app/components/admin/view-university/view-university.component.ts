@@ -176,10 +176,10 @@ export class ViewUniversityComponent implements OnInit {
       data: `คุณต้องการลบข้อมูลคณะ${(faculty.data() as Faculty).faculty_name} ใช่ หรือ ไม่ ?`,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(async result => {
       try {
         if (result) {
-          this.facultyService.deleteFaculty(faculty);
+          await this.facultyService.deleteFaculty(faculty);
           new Notifications().showNotification('done', 'top', 'right', 'ลบข้อมูลคณะสำเร็จแล้ว', 'success', 'สำเร็จ !');
         }
       } catch (error) {

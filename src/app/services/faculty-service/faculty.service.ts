@@ -64,23 +64,8 @@ export class FacultyService {
 
   async deleteFaculty(faculty: QueryDocumentSnapshot<unknown>) {
     try {
-      this.firestore.collection('Major').ref.where('faculty', '==', faculty.ref).onSnapshot(result => {
-        result.forEach(docsRs => {
-          this.majorService.deleteMajor(docsRs);
-        });
-      })
-      this.firestore.collection('University').ref.where('faculty', 'array-contains', faculty.ref).onSnapshot(result => {
-        result.forEach(docsRs => {
-          const university = docsRs.data() as University;
-          // for (let i = 0; i < university.faculty.length; i++) {
-          //   if (university.faculty[i].id == faculty.id) {
-          //     university.faculty.splice(i, 1);
-          //     this.universityService.updateUniversity(docsRs.id, university);
-          //   }
-          // }
-        })
-        this.firestore.collection('Faculty').doc(faculty.id).delete();
-      })
+      const firestoreCol = this.firestore.collection(faculty.ref.parent.path).doc(faculty.ref.id);
+      await firestoreCol.delete();
     } catch (error) {
       console.log(error);
       throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
