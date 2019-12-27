@@ -64,7 +64,7 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       try {
         if (result) {
-          this.majorService.getMajorById(`${major.major_name}${major.faculty.id}`).subscribe(result => {
+          this.majorService.getMajorById(`${major.major_name}`).subscribe(result => {
             this.majorService.deleteMajor(result.payload);
           });
           new Notifications().showNotification('done', 'top', 'right', 'ลบข้อมูลสาขาสำเร็จแล้ว', 'success', 'สำเร็จ !');

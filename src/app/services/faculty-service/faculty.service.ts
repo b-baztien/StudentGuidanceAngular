@@ -25,23 +25,11 @@ export class FacultyService {
   }
 
   addFaculty(universityId: string, faculty: Faculty) {
+    const firestoreCol = this.firestore.collection('University').doc(universityId).collection('Faculty');
     try {
-      faculty.university = this.firestore.collection('University').doc(universityId).ref;
-      this.firestore.collection('Faculty').doc(faculty.faculty_name + universityId).get().subscribe(result => {
-        if (!result.exists) {
-          this.firestore.collection('Faculty').doc(faculty.faculty_name + universityId).set(Object.assign({}, faculty))
-            .then(() => {
-              faculty.university.get().then(universityRef => {
-                const university = universityRef.data() as University;
-                university.faculty = university.faculty === undefined ? new Array<DocumentReference>() : university.faculty;
-                university.faculty.push(this.firestore.collection('Faculty').doc(faculty.faculty_name + universityId).ref);
-                this.universityService.updateUniversity(universityId, university);
-              });
-            });
-        } else {
-          throw new Error('มีคณะนี้อยู่ในระบบแล้ว');
-        }
-      });
+      if (firestoreCol.ref.where('faculty_name', '==', faculty.faculty_name).isEqual)
+        throw new Error('มีคณะนี้อยู่ในระบบแล้ว');
+      firestoreCol.add(faculty);
     } catch (error) {
       console.error(error);
       if (error.message == 'มีคณะนี้อยู่ในระบบแล้ว') {
@@ -50,7 +38,6 @@ export class FacultyService {
         throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
       }
     }
-
   }
 
   updateFaculty(facultyId: string, faculty: Faculty) {
@@ -84,12 +71,12 @@ export class FacultyService {
       this.firestore.collection('University').ref.where('faculty', 'array-contains', faculty.ref).onSnapshot(result => {
         result.forEach(docsRs => {
           const university = docsRs.data() as University;
-          for (let i = 0; i < university.faculty.length; i++) {
-            if (university.faculty[i].id == faculty.id) {
-              university.faculty.splice(i, 1);
-              this.universityService.updateUniversity(docsRs.id, university);
-            }
-          }
+          // for (let i = 0; i < university.faculty.length; i++) {
+          //   if (university.faculty[i].id == faculty.id) {
+          //     university.faculty.splice(i, 1);
+          //     this.universityService.updateUniversity(docsRs.id, university);
+          //   }
+          // }
         })
         this.firestore.collection('Faculty').doc(faculty.id).delete();
       })

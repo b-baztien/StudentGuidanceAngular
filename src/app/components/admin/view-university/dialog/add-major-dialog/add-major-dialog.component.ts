@@ -119,14 +119,14 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
             const career = new Career();
             career.career_name = careerName;
             career.major = career.major === undefined ? new Array<DocumentReference>() : career.major;
-            career.major.push(majorRef);
+            // career.major.push(majorRef);
             await this.careerService.addCareer(career).then(async careerDocRef => {
               listCareerRef.push(careerDocRef);
-              this.majorService.getMajorById(majorRef.id).subscribe(async majorData => {
-                let major: Major = majorData.payload.data() as Major;
-                major.career = listCareerRef;
-                this.majorService.updateMajor(majorData.payload.id, major);
-              });
+              // this.majorService.getMajorById(majorRef.id).subscribe(async majorData => {
+              //   let major: Major = majorData.payload.data() as Major;
+              //   major.career = listCareerRef;
+              //   this.majorService.updateMajor(majorData.payload.id, major);
+              // });
             });
           });
         });

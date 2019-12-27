@@ -17,7 +17,7 @@ export class TeacherService {
   async getTeacherByUsername(username: string) {
     let login: DocumentReference = this.firestore.collection('Login').doc(username).ref;
     return await this.firestore.collection('Teacher').ref.where('login', '==', login).get().then(async result => {
-      return await result.docs[0];
+      return result.docs[0];
     });
   }
 

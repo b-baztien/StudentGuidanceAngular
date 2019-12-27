@@ -10,7 +10,8 @@ export class AdminGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    let userData: Login = JSON.parse(localStorage.getItem('userData'))
+    let userData: Login = JSON.parse(localStorage.getItem('userData'));
+    console.log(userData);
     if (userData && userData.type) {
       if (userData.type === 'admin') {
         return true

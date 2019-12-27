@@ -41,10 +41,9 @@ export class AddEditFacultyDialogComponent implements OnInit, ErrorStateMatcher 
 
   async onSubmit() {
     this.faculty = this.data === null ? new Faculty() : this.data;
-    if (this.facultyForm.valid) {
-      this.faculty.faculty_name = this.facultyForm.get('faculty_name').value;
-      this.faculty.url = this.facultyForm.get('url').value;
-      this.dialogRef.close({faculty: this.faculty, mode: this.mode});
-    }
+    if (this.facultyForm.invalid) return;
+    this.faculty.faculty_name = this.facultyForm.get('faculty_name').value;
+    this.faculty.url = this.facultyForm.get('url').value;
+    this.dialogRef.close({ faculty: this.faculty, mode: this.mode });
   }
 }

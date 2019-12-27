@@ -83,17 +83,18 @@ export class AddNewsDialogComponent implements OnInit {
     }
   }
 
-  async upload(event) {
+  async upload(file, filePath) {
     const metadata = {
       contentType: 'image/jpeg',
     };
 
     const fileName = this.afirestore.createId();
-    if (event.files[0].type.split('/')[0] == 'image') {
-      await this.afStorage.upload(`news/${fileName}`, event.files[0], metadata).then(async result => {
-        this.news.image = result.ref.fullPath;
+    if (file.type.split('/')[0] == 'image') {
+      return await this.afStorage.upload(`${filePath}/${fileName}`, file, metadata).then(async result => {
+        return result.ref.fullPath;
       });
     }
+    return '';
   }
 
   onNoClick(): void {
@@ -130,7 +131,10 @@ export class AddNewsDialogComponent implements OnInit {
         this.news.start_time = this.newsForm.get('start_time').value;
         this.news.end_time = this.newsForm.get('end_time').value;
 
-        await this.upload(document.getElementById('newsImage'));
+        const file: any = document.getElementById('newsImage');
+        if (file.files.length != 0) {
+          await this.upload(file, 'news');
+        }
 
         const setUniversity = new Set(this.listUniversity_name);
         let listUniversityRef = new Array<DocumentReference>();

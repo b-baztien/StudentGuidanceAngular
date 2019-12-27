@@ -15,5 +15,4 @@ export class University {
     province: string;
     zipcode: string;
     zone: string;
-    faculty: DocumentReference[] = new Array<DocumentReference>();
 }

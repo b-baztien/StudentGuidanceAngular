@@ -162,39 +162,38 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
     this.university = new University();
     this.universityId = this.afirestore.createId();
     try {
-      if (this.universityDetailForm.valid) {
-        this.university.university_name = this.universityDetailForm.get('university_name').value;
-        this.university.address = this.universityAddressForm.get('address').value;
-        this.university.tambon = this.universityAddressForm.get('tambon').value;
-        this.university.amphur = this.universityAddressForm.get('amphur').value;
-        this.university.province = this.universityAddressForm.get('province').value.province_name;
-        this.university.zipcode = this.universityAddressForm.get('zipcode').value;
-        this.university.url = this.universityDetailForm.get('url').value;
-        this.university.phone_no = this.universityDetailForm.get('phone_no').value;
-        this.university.university_detail = this.universityDetailForm.get('university_detail').value;
-        this.university.zone = this.universityAddressForm.get('province').value.zone;
-        this.university.view = 0;
-        if (this.listHighlight.length != 0) {
-          this.university.highlight = this.listHighlight;
-        }
-        let filePath = `university/${this.universityId}`;
-        let fileLogo: any = document.getElementById('logoImage');
-        if (fileLogo.files.length != 0) {
-          this.university.image = await this.upload(fileLogo.files[0], filePath).then(result => {
-            return result;
-          });
-        }
-        let fileAlbum: any = document.getElementById('albumImage');
-        this.university.albumImage = new Array<string>();
-        for (let i = 0; i < fileAlbum.files.length; i++) {
-          this.university.albumImage.push(await this.upload(fileAlbum.files[i], filePath).then(result => {
-            return result;
-          }));
-        }
-        this.universityId = await this.universityService.addUniversity(this.universityId, this.university);
-        new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลมหาวิทยาลัยสำเร็จแล้ว', 'success', 'สำเร็จ !');
-        this.dialogRef.close(this.universityId);
+      if (!this.universityDetailForm.valid) return;
+      this.university.university_name = this.universityDetailForm.get('university_name').value;
+      this.university.address = this.universityAddressForm.get('address').value;
+      this.university.tambon = this.universityAddressForm.get('tambon').value;
+      this.university.amphur = this.universityAddressForm.get('amphur').value;
+      this.university.province = this.universityAddressForm.get('province').value.province_name;
+      this.university.zipcode = this.universityAddressForm.get('zipcode').value;
+      this.university.url = this.universityDetailForm.get('url').value;
+      this.university.phone_no = this.universityDetailForm.get('phone_no').value;
+      this.university.university_detail = this.universityDetailForm.get('university_detail').value;
+      this.university.zone = this.universityAddressForm.get('province').value.zone;
+      this.university.view = 0;
+      if (this.listHighlight.length != 0) {
+        this.university.highlight = this.listHighlight;
       }
+      let filePath = `university/${this.universityId}`;
+      let fileLogo: any = document.getElementById('logoImage');
+      if (fileLogo.files.length != 0) {
+        this.university.image = await this.upload(fileLogo.files[0], filePath).then(result => {
+          return result;
+        });
+      }
+      let fileAlbum: any = document.getElementById('albumImage');
+      this.university.albumImage = new Array<string>();
+      for (let i = 0; i < fileAlbum.files.length; i++) {
+        this.university.albumImage.push(await this.upload(fileAlbum.files[i], filePath).then(result => {
+          return result;
+        }));
+      }
+      this.universityId = await this.universityService.addUniversity(this.universityId, this.university);
+      new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลมหาวิทยาลัยสำเร็จแล้ว', 'success', 'สำเร็จ !');
+      this.dialogRef.close(this.universityId);
     } catch (error) {
       new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'เพิ่มข้อมูลล้มเหลว !');
     }

@@ -137,23 +137,18 @@ export class AddUserDialogComponent implements OnInit {
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 
-  async upload(event) {
+  async upload(file, filePath) {
     const metadata = {
       contentType: 'image/jpeg',
     };
 
     const fileName = this.afirestore.createId();
-    if (event.files[0].type.split('/')[0] == 'image') {
-      if (this.userForm.get('userType').value === 'teacher') {
-        await this.afStorage.upload(`teacher/${fileName}`, event.files[0], metadata).then(async result => {
-          this.teacher.image = result.ref.fullPath;
-        });
-      } else if (this.userForm.get('userType').value === 'student') {
-        await this.afStorage.upload(`student/${fileName}`, event.files[0], metadata).then(async result => {
-          this.student.image = result.ref.fullPath;
-        });
-      }
+    if (file.type.split('/')[0] == 'image') {
+      return await this.afStorage.upload(`${filePath}/${fileName}`, file, metadata).then(async result => {
+        return result.ref.fullPath;
+      });
     }
+    return '';
   }
 
   preview(event) {
@@ -209,7 +204,7 @@ export class AddUserDialogComponent implements OnInit {
           this.teacher.email = this.teacherForm.get('email').value;
           let files: any = document.getElementById('inputImage');
           if (files.files.length !== 0) {
-            await this.upload(files);
+            await this.upload(files, 'teacher');
           }
           this.loginService.addUser(this.login).then(loginRef => {
             this.teacher.login = loginRef;
@@ -228,7 +223,7 @@ export class AddUserDialogComponent implements OnInit {
           this.student.email = this.studentForm.get('email').value;
           let files: any = document.getElementById('inputImage');
           if (files.files.length !== 0) {
-            await this.upload(files);
+            await this.upload(files, 'student');
           }
           this.loginService.addUser(this.login).then(loginRef => {
             this.student.login = loginRef;

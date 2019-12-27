@@ -33,21 +33,21 @@ export class MajorService {
   async addMajor(facultyId: string, major: Major) {
     try {
       return await this.firestore.collection('Major').doc(major.major_name + facultyId).ref.get().then(async result => {
-        major.faculty = this.firestore.collection('Faculty').doc(facultyId).ref;
-        if (!result.exists) {
-          return await this.firestore.collection('Major').doc(major.major_name + facultyId).set(Object.assign({}, major))
-            .then(async () => {
-              return await major.faculty.get().then(facultyRef => {
-                const faculty = facultyRef.data() as Faculty;
-                faculty.major = faculty.major === undefined ? new Array<DocumentReference>() : faculty.major;
-                faculty.major.push(this.firestore.collection('Major').doc(major.major_name + facultyId).ref);
-                this.firestore.collection('Faculty').doc(facultyId).set(Object.assign({}, faculty));
-                return this.firestore.collection('Major').doc(major.major_name + facultyId).ref
-              });
-            });
-        } else {
-          throw new Error('มีสาขานี้อยู่ในระบบแล้ว');
-        }
+        // major.faculty = this.firestore.collection('Faculty').doc(facultyId).ref;
+        // if (!result.exists) {
+        //   return await this.firestore.collection('Major').doc(major.major_name + facultyId).set(Object.assign({}, major))
+        //     .then(async () => {
+        //       return await major.faculty.get().then(facultyRef => {
+        //         const faculty = facultyRef.data() as Faculty;
+        //         faculty.major = faculty.major === undefined ? new Array<DocumentReference>() : faculty.major;
+        //         faculty.major.push(this.firestore.collection('Major').doc(major.major_name + facultyId).ref);
+        //         this.firestore.collection('Faculty').doc(facultyId).set(Object.assign({}, faculty));
+        //         return this.firestore.collection('Major').doc(major.major_name + facultyId).ref
+        //       });
+        //     });
+        // } else {
+        //   throw new Error('มีสาขานี้อยู่ในระบบแล้ว');
+        // }
       });
     } catch (error) {
       console.log(error);
@@ -84,12 +84,12 @@ export class MajorService {
       this.firestore.collection('Faculty').ref.where('major', 'array-contains', major.ref).onSnapshot(result => {
         result.forEach(docsRs => {
           const faculty = docsRs.data() as Faculty;
-          for (let i = 0; i < faculty.major.length; i++) {
-            if (faculty.major[i].id == major.id) {
-              faculty.major.splice(i, 1);
-              this.firestore.collection('Faculty').doc(docsRs.id).set(Object.assign({}, faculty));
-            }
-          }
+          // for (let i = 0; i < faculty.major.length; i++) {
+          //   if (faculty.major[i].id == major.id) {
+          //     faculty.major.splice(i, 1);
+          //     this.firestore.collection('Faculty').doc(docsRs.id).set(Object.assign({}, faculty));
+          //   }
+          // }
           this.firestore.collection('Major').doc(major.id).delete();
         });
       });

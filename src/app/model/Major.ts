@@ -6,5 +6,4 @@ export class Major
     career: DocumentReference[] = new Array<DocumentReference>();
     url: string;
     entrance_detail: string;
-    faculty: DocumentReference;
 }

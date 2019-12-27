@@ -54,14 +54,14 @@ export class AddEditCareerDialogComponent implements OnInit {
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 
-  async upload(event, path: string, fileName?: string) {
+  async upload(file, filePath) {
     const metadata = {
       contentType: 'image/jpeg',
     };
 
-    fileName = fileName ? fileName : this.afirestore.createId();
-    if (event.files[0].type.split('/')[0] == 'image') {
-      return await this.afStorage.upload(`${path}/${fileName}`, event.files[0], metadata).then(async result => {
+    const fileName = this.afirestore.createId();
+    if (file.type.split('/')[0] == 'image') {
+      return await this.afStorage.upload(`${filePath}/${fileName}`, file, metadata).then(async result => {
         return result.ref.fullPath;
       });
     }
@@ -92,7 +92,7 @@ export class AddEditCareerDialogComponent implements OnInit {
       let filePath = `career`;
       let fileLogo: any = document.getElementById('logoImage');
       if (fileLogo.files[0] !== undefined) {
-        this.career.image = await this.upload(fileLogo, filePath, this.career.career_name).then(result => {
+        this.career.image = await this.upload(fileLogo, filePath).then(result => {
           return result;
         });
       }

@@ -2,7 +2,6 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 import { Login } from 'src/app/model/Login';
 import { Student } from 'src/app/model/Student';
-import { School } from 'src/app/model/School';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { StudentService } from 'src/app/services/student-service/student.service';
 import { DocumentReference, AngularFirestore } from '@angular/fire/firestore';
