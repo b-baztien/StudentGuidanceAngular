@@ -27,7 +27,7 @@ export class MajorService {
   }
 
   getMajorByFacultyReference(facultyRef: DocumentReference) {
-    return this.firestore.collection(facultyRef.parent.path).doc(facultyRef.id).collection('Major').get();
+    return this.firestore.collection(facultyRef.parent.path).doc(facultyRef.id).collection('Major').snapshotChanges();
   }
 
   async addMajor(facultyId: string, major: Major) {

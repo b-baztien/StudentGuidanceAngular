@@ -37,7 +37,7 @@ export class ListCareerComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     //add data to table datasource
     this.careerSub = this.careerService.getAllCareer().subscribe(result => {
-      this.careerList = new MatTableDataSource<QueryDocumentSnapshot<DocumentData>>(result.docs);
+      this.careerList = new MatTableDataSource<QueryDocumentSnapshot<DocumentData>>(result.map(career => career.payload.doc));
       this.careerList.paginator = this.paginator;
 
       if (this.careerList.data.length === 0) {

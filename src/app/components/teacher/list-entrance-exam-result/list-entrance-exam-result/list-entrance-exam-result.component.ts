@@ -86,8 +86,8 @@ export class ListEntranceExamResultComponent implements OnInit {
     //get university data
     this.universityService.getAllUniversity().subscribe(result => {
       result.forEach(universityRef => {
-        let university = universityRef.data() as University;
-        this.mapUniData.set(universityRef.id, university.university_name);
+        let university = universityRef.payload.doc.data() as University;
+        this.mapUniData.set(universityRef.payload.doc.id, university.university_name);
       });
     });
 

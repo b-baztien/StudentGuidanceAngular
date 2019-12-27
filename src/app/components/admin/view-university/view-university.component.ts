@@ -63,7 +63,7 @@ export class ViewUniversityComponent implements OnInit {
 
   private getUniversity(university_id: string) {
     this.universityService.getUniversity(university_id).subscribe(async universityRes => {
-      this.university = universityRes.data() as University;
+      this.university = universityRes.payload.data() as University;
       if (this.university.image === undefined || this.university.image == '') return;
 
       this.afStorage.storage.ref(this.university.image).getDownloadURL().then(url => {
@@ -80,7 +80,7 @@ export class ViewUniversityComponent implements OnInit {
 
   private getFaculty(university_id: string) {
     this.facultyService.getFacultyByUniversityId(university_id).subscribe(fct => {
-      this.facultyLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(fct.docs);
+      this.facultyLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(fct.map(payload => payload.payload.doc));
       this.facultyLtb.paginator = this.paginator;
 
       //custom text paginator
@@ -154,18 +154,17 @@ export class ViewUniversityComponent implements OnInit {
       data: faculty ? faculty.data() as Faculty : null,
     });
 
-    dialogRef.afterClosed().subscribe(facultyRs => {
+    dialogRef.afterClosed().subscribe(async facultyRs => {
       try {
         if (facultyRs === null || facultyRs === undefined) return;
         if (facultyRs.mode === 'เพิ่ม') {
-          this.facultyService.addFaculty(this.university_id, facultyRs.faculty);
+          await this.facultyService.addFaculty(this.university_id, facultyRs.faculty);
           new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลคณะสำเร็จแล้ว', 'success', 'สำเร็จ !');
         } else if (facultyRs.mode === 'แก้ไข') {
           this.facultyService.updateFaculty(faculty.id, facultyRs.faculty);
           new Notifications().showNotification('done', 'top', 'right', 'แก้ไขข้อมูลคณะสำเร็จแล้ว', 'success', 'สำเร็จ !');
         }
       } catch (error) {
-        console.error(error);
         new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'จัดการข้อมูลล้มเหลว !');
       }
     });

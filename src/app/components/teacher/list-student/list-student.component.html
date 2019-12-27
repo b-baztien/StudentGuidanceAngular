@@ -32,7 +32,7 @@
                         </mat-form-field>
                         <table aria-describedby="studentList" mat-table [dataSource]="studentList" class="table table-hover">
                             <ng-container matColumnDef="select">
-                                <th id="select" mat-header-cell *matHeaderCellDef>
+                                <th id="select" mat-sort-header mat-header-cell *matHeaderCellDef>
                                     <mat-checkbox (change)="$event ? masterToggle() : null"
                                         [checked]="selection.hasValue() && isAllSelected()"
                                         [indeterminate]="selection.hasValue() && !isAllSelected()"
@@ -47,29 +47,29 @@
                                 </td>
                             </ng-container>
                             <ng-container matColumnDef="fullname">
-                                <th id="fullname" mat-header-cell *matHeaderCellDef>ชื่อ - นามสกุล</th>
+                                <th id="fullname" mat-sort-header mat-header-cell *matHeaderCellDef>ชื่อ - นามสกุล</th>
                                 <td mat-cell *matCellDef="let student"> {{student.data().firstname}}
                                     {{student.data().lastname}} </td>
                             </ng-container>
                             <ng-container matColumnDef="email">
-                                <th id="email" mat-header-cell *matHeaderCellDef>อีเมล์</th>
+                                <th id="email" mat-sort-header mat-header-cell *matHeaderCellDef>อีเมล์</th>
                                 <td mat-cell *matCellDef="let student">{{student.data().email}}</td>
                             </ng-container>
                             <ng-container matColumnDef="phone_no">
-                                <th id="phone_no" mat-header-cell *matHeaderCellDef>หมายเลขโทรศัพท์</th>
+                                <th id="phone_no" mat-sort-header mat-header-cell *matHeaderCellDef>หมายเลขโทรศัพท์</th>
                                 <td mat-cell *matCellDef="let student"> {{student.data().phone_no | phone: 'TH'}}
                                 </td>
                             </ng-container>
                             <ng-container matColumnDef="gender">
-                                <th id="gender" mat-header-cell *matHeaderCellDef>เพศ</th>
+                                <th id="gender" mat-sort-header mat-header-cell *matHeaderCellDef>เพศ</th>
                                 <td mat-cell *matCellDef="let student"> {{student.data().gender}} </td>
                             </ng-container>
                             <ng-container matColumnDef="entry_year">
-                                <th id="entry_year" mat-header-cell *matHeaderCellDef>ปีที่เข้ารับการศึกษา</th>
+                                <th id="entry_year" mat-sort-header mat-header-cell *matHeaderCellDef>ปีที่เข้ารับการศึกษา</th>
                                 <td mat-cell *matCellDef="let student"> {{student.data().entry_year}} </td>
                             </ng-container>
                             <ng-container matColumnDef="manage">
-                                <th id="manage" mat-header-cell *matHeaderCellDef>จัดการสถานะนักเรียน
+                                <th id="manage" mat-sort-header mat-header-cell *matHeaderCellDef>จัดการสถานะนักเรียน
                                 </th>
                                 <td mat-cell *matCellDef="let student">
                                     <button mat-raised-button class=" btn-info" *ngIf="!selection.hasValue()"
@@ -126,25 +126,25 @@
                         </mat-form-field>
                         <table aria-describedby="alumniList" mat-table [dataSource]="alumniList" class="table table-hover">
                             <ng-container matColumnDef="fullname">
-                                <th id="fullname" mat-header-cell *matHeaderCellDef>ชื่อ - นามสกุล</th>
+                                <th id="fullname" mat-sort-header mat-header-cell *matHeaderCellDef>ชื่อ - นามสกุล</th>
                                 <td mat-cell *matCellDef="let student"> {{student.data().firstname}}
                                     {{student.data().lastname}} </td>
                             </ng-container>
                             <ng-container matColumnDef="email">
-                                <th id="email" mat-header-cell *matHeaderCellDef>อีเมล์</th>
+                                <th id="email" mat-sort-header mat-header-cell *matHeaderCellDef>อีเมล์</th>
                                 <td mat-cell *matCellDef="let student">{{student.data().email}}</td>
                             </ng-container>
                             <ng-container matColumnDef="phone_no">
-                                <th id="phone_no" mat-header-cell *matHeaderCellDef>หมายเลขโทรศัพท์</th>
+                                <th id="phone_no" mat-sort-header mat-header-cell *matHeaderCellDef>หมายเลขโทรศัพท์</th>
                                 <td mat-cell *matCellDef="let student"> {{student.data().phone_no | phone: 'TH'}}
                                 </td>
                             </ng-container>
                             <ng-container matColumnDef="gender">
-                                <th id="gender" mat-header-cell *matHeaderCellDef>เพศ</th>
+                                <th id="gender" mat-sort-header mat-header-cell *matHeaderCellDef>เพศ</th>
                                 <td mat-cell *matCellDef="let student"> {{student.data().gender}} </td>
                             </ng-container>
                             <ng-container matColumnDef="entry_year">
-                                <th id="entry_year" mat-header-cell *matHeaderCellDef>ปีที่เข้ารับการศึกษา</th>
+                                <th id="entry_year" mat-sort-header mat-header-cell *matHeaderCellDef>ปีที่เข้ารับการศึกษา</th>
                                 <td mat-cell *matCellDef="let student"> {{student.data().entry_year}} </td>
                             </ng-container>
                             <tr mat-header-row *matHeaderRowDef="displayedAlumniColumns"></tr>

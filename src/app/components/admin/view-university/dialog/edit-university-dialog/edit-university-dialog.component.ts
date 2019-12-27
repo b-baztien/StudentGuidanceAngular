@@ -117,7 +117,7 @@ export class EditUniversityDialogComponent implements OnInit {
 
     let highlightSet = new Set<string>();
     this.universityService.getAllUniversity().subscribe(result => {
-      const universitys = result.docs.map(doc => doc.data() as University);
+      const universitys = result.map(doc => doc.payload.doc.data() as University);
       universitys.filter(uni => uni.highlight !== undefined).forEach(uni => {
         uni.highlight.forEach(hl => {
           highlightSet.add(hl);

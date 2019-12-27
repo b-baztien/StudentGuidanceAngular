@@ -35,7 +35,7 @@ export class ListUniversityComponent implements OnInit, OnDestroy, AfterViewInit
   ngOnInit() {
     //add data to table datasource
     this.uniSub = this.universityService.getAllUniversity().subscribe(docs => {
-      this.universityList = new MatTableDataSource<QueryDocumentSnapshot<DocumentData>>(docs.docs);
+      this.universityList = new MatTableDataSource<QueryDocumentSnapshot<DocumentData>>(docs.map(uni => uni.payload.doc));
       this.universityList.paginator = this.paginator;
 
       if (this.universityList.data.length === 0) {

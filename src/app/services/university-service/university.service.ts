@@ -22,19 +22,20 @@ export class UniversityService {
   }
 
   async addUniversity(universityId: string, university: University) {
+    const firestoreCol = this.firestore.collection('University');
     try {
-      return await this.firestore.collection('University').ref.where('university_name', '==', university.university_name)
-        .get().then(universityRes => {
-          if (universityRes.empty) {
-            this.firestore.collection('University').doc(universityId).set(Object.assign({}, university));
-            return universityId;
-          } else {
-            throw new Error('มีข้อมูลมหาวิทยาลัยนี้อยู่ในระบบแล้ว');
-          }
-        })
+      if (!(await firestoreCol.ref.where('university_name', '==', university.university_name).get()).empty) {
+        throw new Error('มีข้อมูลมหาวิทยาลัยนี้อยู่ในระบบแล้ว');
+      }
+      await firestoreCol.doc(universityId).set(Object.assign({}, university));
+      return universityId;
     } catch (error) {
       console.error(error);
-      throw new Error('เกิดข้อมผิดพลาดในการเพิ่มข้อมูล กรุณาลองใหม่อีกครั้งภายหลัง');
+      if (error.message === 'มีข้อมูลมหาวิทยาลัยนี้อยู่ในระบบแล้ว') {
+        throw error;
+      } else {
+        throw new Error('เกิดข้อมผิดพลาดในการเพิ่มข้อมูล กรุณาลองใหม่อีกครั้งภายหลัง');
+      }
     }
   }
 
@@ -88,11 +89,11 @@ export class UniversityService {
   }
 
   getAllUniversity() {
-    return this.firestore.collection('University').get();
+    return this.firestore.collection('University').snapshotChanges();
   }
 
   getUniversity(university_id: string) {
-    return this.firestore.collection('University').doc(university_id).get();
+    return this.firestore.collection('University').doc(university_id).snapshotChanges();
   }
 
   async getUniversityByUniversityName(university_name: string) {

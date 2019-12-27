@@ -33,7 +33,7 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.majorSub = this.majorService.getMajorByFacultyReference(this.data).subscribe(majorDocs => {
-      this.listMajor = majorDocs.docs.map(doc => doc.data() as Major);
+      this.listMajor = majorDocs.map(doc => doc.payload.doc.data() as Major);
       if (this.listMajor === undefined || this.listMajor.length === 0) {
         this.showData = false;
       } else {

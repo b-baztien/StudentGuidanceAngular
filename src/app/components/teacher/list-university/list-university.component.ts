@@ -49,7 +49,7 @@ export class ListUniversityTeacherComponent implements OnInit, AfterViewInit, On
       let resultListUniversity = new Array<QueryDocumentSnapshot<Object>>();
       this.universityList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListUniversity);
       result.forEach(element => {
-        resultListUniversity.push(element);
+        resultListUniversity.push(element.payload.doc);
       });
       this.universityList.paginator = this.paginator;
       if (this.universityList.data.length === 0) {

@@ -65,7 +65,7 @@ export class ViewUniversityComponent implements OnInit {
 
   private getUniversity(university_id: string) {
     this.universityService.getUniversity(university_id).subscribe(async universityRes => {
-      this.university = universityRes.data() as University;
+      this.university = universityRes.payload.data() as University;
       if (this.university.image !== undefined) {
         this.afStorage.storage.ref(this.university.image).getDownloadURL().then(url => {
           this.universityImg = url;
@@ -80,7 +80,7 @@ export class ViewUniversityComponent implements OnInit {
 
   private getFaculty(university_id: string) {
     this.facultyService.getFacultyByUniversityId(university_id).subscribe(fct => {
-      this.facultyLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(fct.docs);
+      this.facultyLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(fct.map(payload => payload.payload.doc));
       this.facultyLtb.paginator = this.paginator;
       if (this.facultyLtb.data.length === 0) {
         this.showTable = false;

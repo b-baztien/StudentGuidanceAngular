@@ -15,8 +15,8 @@ export class CareerService {
   ) {
   }
 
-  getAllCareer(): Observable<QuerySnapshot<DocumentData>> {
-    return this.firestore.collection('Career').get();
+  getAllCareer() {
+    return this.firestore.collection('Career').snapshotChanges();
   }
 
   getCareer(careerId: string) {

@@ -24,12 +24,13 @@ export class FacultyService {
   ) {
   }
 
-  addFaculty(universityId: string, faculty: Faculty) {
+  async addFaculty(universityId: string, faculty: Faculty) {
     const firestoreCol = this.firestore.collection('University').doc(universityId).collection('Faculty');
     try {
-      if (firestoreCol.ref.where('faculty_name', '==', faculty.faculty_name).isEqual)
+      if (!(await firestoreCol.ref.where('faculty_name', '==', faculty.faculty_name).get()).empty) {
         throw new Error('มีคณะนี้อยู่ในระบบแล้ว');
-      firestoreCol.add(faculty);
+      }
+      firestoreCol.add(Object.assign({}, faculty));
     } catch (error) {
       console.error(error);
       if (error.message == 'มีคณะนี้อยู่ในระบบแล้ว') {
@@ -53,8 +54,8 @@ export class FacultyService {
     return this.firestore.collection('Faculty').snapshotChanges();
   }
 
-  getFacultyByUniversityId(universityId: string): Observable<QuerySnapshot<unknown>> {
-    return this.firestore.collection('University').doc(universityId).collection('Faculty').get();
+  getFacultyByUniversityId(universityId: string) {
+    return this.firestore.collection('University').doc(universityId).collection('Faculty').snapshotChanges();
   }
 
   getFacultyByFacultyId(facultyId: string) {

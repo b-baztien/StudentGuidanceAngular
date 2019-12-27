@@ -56,7 +56,7 @@ export class AddNewsDialogComponent implements OnInit {
   async ngAfterViewInit() {
     this.universityService.getAllUniversity().subscribe(listUniRes => {
       listUniRes.forEach(uniRes => {
-        const university = uniRes.data() as University;
+        const university = uniRes.payload.doc.data() as University;
         this.allUniversity.push(university.university_name);
       });
       this.loadData = true;
