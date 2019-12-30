@@ -163,7 +163,7 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
           await this.facultyService.addFaculty(this.university_id, facultyRs.faculty);
           new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลคณะสำเร็จแล้ว', 'success', 'สำเร็จ !');
         } else if (facultyRs.mode === 'แก้ไข') {
-          this.facultyService.updateFaculty(faculty.id, facultyRs.faculty);
+          await this.facultyService.updateFaculty(faculty.ref, facultyRs.faculty);
           new Notifications().showNotification('done', 'top', 'right', 'แก้ไขข้อมูลคณะสำเร็จแล้ว', 'success', 'สำเร็จ !');
         }
       } catch (error) {
@@ -181,7 +181,7 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe(async result => {
       try {
         if (result) {
-          await this.facultyService.deleteFaculty(faculty);
+          await this.facultyService.deleteFaculty(faculty.ref);
           new Notifications().showNotification('done', 'top', 'right', 'ลบข้อมูลคณะสำเร็จแล้ว', 'success', 'สำเร็จ !');
         }
       } catch (error) {

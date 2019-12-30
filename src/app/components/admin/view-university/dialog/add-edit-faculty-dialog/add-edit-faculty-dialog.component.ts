@@ -21,7 +21,6 @@ export class AddEditFacultyDialogComponent implements OnInit, ErrorStateMatcher 
   mode: string;
 
   constructor(
-    private facultyService: FacultyService,
     public dialogRef: MatDialogRef<AddEditFacultyDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Faculty | null,
   ) {

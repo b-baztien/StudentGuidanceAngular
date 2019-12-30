@@ -5,8 +5,7 @@
   </h1>
   <mat-dialog-content>
     <mat-form-field>
-      <input matInput placeholder="ชื่อคณะ" required formControlName="faculty_name" readonly *ngIf="mode === 'แก้ไข'">
-      <input matInput placeholder="ชื่อคณะ" required formControlName="faculty_name" *ngIf="mode === 'เพิ่ม'">
+      <input matInput placeholder="ชื่อคณะ" required formControlName="faculty_name">
       <mat-error *ngIf="facultyForm.controls.faculty_name.hasError('required')">
         กรุณากรอกชื่อคณะ
       </mat-error>

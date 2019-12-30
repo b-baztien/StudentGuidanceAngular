@@ -2,10 +2,8 @@ import { Injectable } from '@angular/core';
 import {
   AngularFirestore,
   QueryDocumentSnapshot,
-  DocumentReference,
-  DocumentChangeAction,
-  DocumentData,
-  QuerySnapshot
+  FieldPath,
+  DocumentReference
 } from '@angular/fire/firestore';
 import { Faculty } from 'src/app/model/Faculty';
 import { University } from 'src/app/model/University';
@@ -42,9 +40,9 @@ export class FacultyService {
     }
   }
 
-  updateFaculty(facultyId: string, faculty: Faculty) {
+  async updateFaculty(facultyRef: DocumentReference, faculty: Faculty) {
     try {
-      return this.firestore.collection('Faculty').doc(facultyId).set(Object.assign({}, faculty));
+      await this.firestore.collection(facultyRef.parent).doc(facultyRef.id).update(Object.assign({}, faculty));
     } catch (error) {
       console.error(error);
       throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
@@ -52,7 +50,7 @@ export class FacultyService {
   }
 
   getAllFaculty() {
-    return this.firestore.collection('Faculty').snapshotChanges();
+    return this.firestore.collection('Faculty', query => query.orderBy('faculty_name')).snapshotChanges();
   }
 
   getFacultyByUniversityId(universityId: string) {
@@ -65,10 +63,9 @@ export class FacultyService {
     return this.firestore.collectionGroup(`Faculty/${facultyId}`).snapshotChanges();
   }
 
-  async deleteFaculty(faculty: QueryDocumentSnapshot<unknown>) {
+  async deleteFaculty(faculty: DocumentReference) {
     try {
-      const firestoreCol = this.firestore.collection(faculty.ref.parent.path).doc(faculty.ref.id);
-      await firestoreCol.delete();
+      await this.firestore.collection(faculty.parent).doc(faculty.id).delete();
     } catch (error) {
       console.log(error);
       throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
