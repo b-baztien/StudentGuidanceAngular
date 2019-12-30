@@ -29,8 +29,8 @@ import { Notifications } from '../../util/notification';
     ]),
   ],
 })
-export class ViewUniversityComponent implements OnInit {
-  university: University;
+export class ViewUniversityComponent implements OnInit, AfterViewInit {
+  university: University = new University;
   university_id;
 
   universityImg: string = 'assets/img/no-photo-available.png';
@@ -61,6 +61,22 @@ export class ViewUniversityComponent implements OnInit {
     this.getFaculty(this.university_id);
   }
 
+  ngAfterViewInit() {
+    //custom text paginator
+    this.paginatorInit.getRangeLabel = (page: number, pageSize: number, length: number) => {
+      if (length === 0 || pageSize === 0) {
+        return `0 จากทั้งหมด ${length}`;
+      }
+      length = Math.max(length, 0);
+      const startIndex = page * pageSize;
+      const endIndex = startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
+      return `${startIndex + 1} - ${endIndex} จากทั้งหมด ${length}`;
+    };
+    this.paginatorInit.changes.next();
+    if (!this.showTable) return;
+    this.paginator._intl = this.paginatorInit;
+  }
+
   private getUniversity(university_id: string) {
     this.universityService.getUniversity(university_id).subscribe(async universityRes => {
       this.university = universityRes.payload.data() as University;
@@ -80,22 +96,8 @@ export class ViewUniversityComponent implements OnInit {
 
   private getFaculty(university_id: string) {
     this.facultyService.getFacultyByUniversityId(university_id).subscribe(fct => {
-      this.facultyLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(fct.map(payload => payload.payload.doc));
+      this.facultyLtb = new MatTableDataSource<DocumentData>(fct);
       this.facultyLtb.paginator = this.paginator;
-
-      //custom text paginator
-      this.paginatorInit.getRangeLabel = (page: number, pageSize: number, length: number) => {
-        if (length === 0 || pageSize === 0) {
-          return `0 จากทั้งหมด ${length}`;
-        }
-        length = Math.max(length, 0);
-        const startIndex = page * pageSize;
-        const endIndex = startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
-        return `${startIndex + 1} - ${endIndex} จากทั้งหมด ${length}`;
-      };
-      this.paginatorInit.changes.next();
-      this.paginator._intl = this.paginatorInit;
-
       if (this.facultyLtb.data.length === 0) {
         this.showTable = false;
       } else {
@@ -126,7 +128,7 @@ export class ViewUniversityComponent implements OnInit {
       data: `คุณต้องการลบข้อมูล${this.university.university_name} ใช่ หรือ ไม่ ?`,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(async result => {
       try {
         if (result) {
           this.universityService.deleteUniversity(this.university_id);

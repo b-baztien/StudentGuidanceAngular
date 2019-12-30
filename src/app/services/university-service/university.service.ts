@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, Action, DocumentSnapshot, DocumentChangeAction, DocumentData } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { University } from 'src/app/model/University';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { Faculty } from 'src/app/model/Faculty';
-import { CareerService } from '../career-service/career.service';
-import { Major } from 'src/app/model/Major';
-import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -14,12 +11,10 @@ export class UniversityService {
   constructor(
     private firestore: AngularFirestore,
     private afStorage: AngularFireStorage,
-    private careerService: CareerService,
   ) {
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   async addUniversity(universityId: string, university: University) {
     const firestoreCol = this.firestore.collection('University');
@@ -50,38 +45,17 @@ export class UniversityService {
 
   deleteUniversity(universityId: string) {
     try {
-      this.firestore.collection('University').doc(universityId).snapshotChanges().subscribe(result => {
-        const university = result.payload.data() as University;
-        if (undefined !== university.image || undefined !== university.albumImage) {
-          this.afStorage.ref(`university${universityId}`).delete();
-        }
-        // if (undefined !== university.faculty) {
-        //   university.faculty.forEach(fct => {
-        //     this.firestore.collection('Faculty').doc(fct.id).snapshotChanges().subscribe(async facRef => {
-        //       let faculty = facRef.payload.data() as Faculty;
-        //       for (let i = 0; i < faculty.major.length; i++) {
-        //         this.firestore.collection('Major').doc(faculty.major[i].id).snapshotChanges().subscribe(async mj => {
-        //           console.log('major 1');
-        //           console.log(mj.payload.data());
-        //           let major = mj.payload.data() as Major;
-        //           if (major.career !== undefined) {
-        //             await this.careerService.deleteMajorInCareer(mj.payload.ref).then(async () => {
-        //               await this.firestore.collection('Major').doc(faculty.major[i].id).delete();
-        //             });
-        //           }
-        //         });
-        //         if (i === faculty.major.length - 1) {
-        //           this.firestore.collection('Faculty').doc(fct.id).delete();
-        //         }
-        //       }
-        //       if (faculty.major === undefined) {
-        //         this.firestore.collection('Faculty').doc(fct.id).delete();
-        //       }
-        //     });
-        //   });
-        // }
-        this.firestore.collection('University').doc(universityId).delete();
-      });
+      this.firestore.collection('University').doc(universityId).snapshotChanges()
+        .pipe(map(docs => docs.payload.data())).subscribe(async result => {
+          const university = result as University;
+          if (university.image || university.albumImage) {
+            (await this.afStorage.storage.ref('university').child(universityId).listAll())
+              .items.forEach(file => {
+                file.delete();
+              });
+          }
+          this.firestore.collection('University').doc(universityId).delete();
+        });
     } catch (error) {
       console.error(error);
       throw new Error('เกิดข้อมผิดพลาดในการลบ กรุณาลองใหม่อีกครั้งภายหลัง');
@@ -89,7 +63,8 @@ export class UniversityService {
   }
 
   getAllUniversity() {
-    return this.firestore.collection('University').snapshotChanges();
+    return this.firestore.collection('University', query => query.orderBy('university_name'))
+      .snapshotChanges().pipe(map(result => result.map(doc => doc.payload.doc)));
   }
 
   getUniversity(university_id: string) {

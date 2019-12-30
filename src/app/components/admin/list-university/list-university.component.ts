@@ -7,14 +7,23 @@ import { AddUniversityDialogComponent } from './dialog/add-university-dialog/add
 import { University } from 'src/app/model/University';
 import { Subscription } from 'rxjs';
 
+export interface DataDisplay {
+  university_name: string;
+  phone_no: string;
+  url: string;
+  view: string;
+  province: string;
+  zone: string;
+}
+
 @Component({
   selector: 'app-list-university',
   templateUrl: './list-university.component.html',
   styleUrls: ['./list-university.component.css']
 })
 export class ListUniversityComponent implements OnInit, OnDestroy {
-  universityList: MatTableDataSource<QueryDocumentSnapshot<DocumentData>>;
   displayedColumns: string[] = ['university_name', 'phone_no', 'url', 'view', 'province', 'zone'];
+  universityList: MatTableDataSource<DataDisplay>;
 
   resultsLength = 0;
   isLoadingResults = true;
@@ -35,7 +44,10 @@ export class ListUniversityComponent implements OnInit, OnDestroy {
   ngOnInit() {
     //add data to table datasource
     this.uniSub = this.universityService.getAllUniversity().subscribe(docs => {
-      this.universityList = new MatTableDataSource<QueryDocumentSnapshot<DocumentData>>(docs.map(uni => uni.payload.doc));
+      this.universityList = new MatTableDataSource<DataDisplay>(docs
+        .map(uniRef => {
+          return { ...uniRef.data() as DataDisplay, id: uniRef.id };
+        }));
       if (this.universityList.data.length === 0) {
         this.showTable = false;
       } else {
@@ -64,6 +76,7 @@ export class ListUniversityComponent implements OnInit, OnDestroy {
 
   applyFilter(filterValue: string) {
     this.universityList.filter = filterValue.trim().toLowerCase();
+    console.log(this.universityList.filteredData);
   }
 
   openAddUniversityDialog(): void {

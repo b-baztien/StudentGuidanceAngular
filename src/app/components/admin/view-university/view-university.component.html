@@ -1,6 +1,6 @@
 <div class="main-content">
     <div class="container-fluid">
-        <div class="row" *ngIf="showContent">
+        <div class="row">
             <div class="col-md-12">
                 <div class="card card-profile">
                     <div class="card-avatar">
@@ -139,9 +139,9 @@
                                         </p>
                                     </div>
                                 </div>
+                                <mat-paginator [hidePageSize]="true" [showFirstLastButtons]="true" [pageSize]="10">
+                                </mat-paginator>
                             </div>
-                            <mat-paginator [hidePageSize]="true" [showFirstLastButtons]="true" [pageSize]="10">
-                            </mat-paginator>
                         </div>
                     </div>
                 </div>

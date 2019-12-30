@@ -12,6 +12,7 @@ import { University } from 'src/app/model/University';
 import { UniversityService } from '../university-service/university.service';
 import { Observable } from 'rxjs';
 import { MajorService } from '../major-service/major.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -55,7 +56,9 @@ export class FacultyService {
   }
 
   getFacultyByUniversityId(universityId: string) {
-    return this.firestore.collection('University').doc(universityId).collection('Faculty').snapshotChanges();
+    return this.firestore.collection('University', query => query.orderBy('faculty_name'))
+      .doc(universityId).collection('Faculty').snapshotChanges()
+      .pipe(map(docs => docs.map(result => result.payload.doc)));
   }
 
   getFacultyByFacultyId(facultyId: string) {

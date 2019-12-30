@@ -91,7 +91,7 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
     });
 
     this.universityService.getAllUniversity().subscribe(result => {
-      const universitys = result.map(doc => doc.payload.doc.data() as University);
+      const universitys = result.map(doc => doc.data() as University);
       let highlightSet = new Set<string>();
       universitys.filter(uni => uni.highlight !== undefined).forEach(uni => {
         uni.highlight.forEach(hl => {

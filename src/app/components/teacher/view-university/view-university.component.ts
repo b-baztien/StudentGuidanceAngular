@@ -80,7 +80,7 @@ export class ViewUniversityComponent implements OnInit {
 
   private getFaculty(university_id: string) {
     this.facultyService.getFacultyByUniversityId(university_id).subscribe(fct => {
-      this.facultyLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(fct.map(payload => payload.payload.doc));
+      this.facultyLtb = new MatTableDataSource<QueryDocumentSnapshot<unknown>>(fct);
       this.facultyLtb.paginator = this.paginator;
       if (this.facultyLtb.data.length === 0) {
         this.showTable = false;

@@ -64,11 +64,11 @@ export class EditNewsDialogComponent implements OnInit {
       });
       this.universityService.getAllUniversity().subscribe(listUniRes => {
         listUniRes.forEach(uniRes => {
-          const university = uniRes.payload.doc.data() as University;
+          const university = uniRes.data() as University;
           this.allUniversity.push(university.university_name);
           if (this.news.university !== undefined) {
             this.news.university.forEach(uni => {
-              if (uniRes.payload.doc.id === uni.id) {
+              if (uniRes.id === uni.id) {
                 this.listUniversity_name.push(university.university_name);
               }
             });

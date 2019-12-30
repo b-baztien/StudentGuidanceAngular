@@ -3,6 +3,7 @@ import { MatTableDataSource, MatDialog, MatPaginator, MatPaginatorIntl } from '@
 import { QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { UniversityService } from 'src/app/services/university-service/university.service';
 import { Router } from '@angular/router';
+import { University } from 'src/app/model/University';
 
 @Component({
   selector: 'app-list-university',
@@ -10,7 +11,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./list-university.component.css']
 })
 export class ListUniversityTeacherComponent implements OnInit, AfterViewInit, OnDestroy {
-  universityList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
+  universityList: MatTableDataSource<{ id: string, value: University }>;
   displayedColumns: string[] = ['university_name', 'phone_no', 'url', 'view', 'province', 'zone'];
 
   resultsLength = 0;
@@ -46,11 +47,8 @@ export class ListUniversityTeacherComponent implements OnInit, AfterViewInit, On
     this.paginator._intl = this.paginatorInit;
 
     this.listUniObs = this.universityService.getAllUniversity().subscribe(result => {
-      let resultListUniversity = new Array<QueryDocumentSnapshot<Object>>();
-      this.universityList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListUniversity);
-      result.forEach(element => {
-        resultListUniversity.push(element.payload.doc);
-      });
+      this.universityList = new MatTableDataSource<{ id: string, value: University }>(result
+        .map(uniRef => { return { id: uniRef.id, value: uniRef.data() as University } }));
       this.universityList.paginator = this.paginator;
       if (this.universityList.data.length === 0) {
         this.showTable = false;

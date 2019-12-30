@@ -39,31 +39,31 @@
                                 class="table table-hover">
                                 <ng-container matColumnDef="university_name">
                                     <th mat-header-cell id="university_name" *matHeaderCellDef>ชื่อ</th>
-                                    <td mat-cell *matCellDef="let university"> {{university.data().university_name}}
+                                    <td mat-cell *matCellDef="let university"> {{university.university_name}}
                                     </td>
                                 </ng-container>
                                 <ng-container matColumnDef="phone_no">
                                     <th mat-header-cell id="phone_no" *matHeaderCellDef>หมายเลขโทรศัพท์</th>
                                     <td mat-cell *matCellDef="let university">
-                                        {{university.data().phone_no | phone: 'TH'}}
+                                        {{university.phone_no | phone: 'TH'}}
                                     </td>
                                 </ng-container>
                                 <ng-container matColumnDef="url">
                                     <th mat-header-cell id="url" *matHeaderCellDef>เว็บไซต์</th>
-                                    <td mat-cell *matCellDef="let university"> <a href="{{university.data().url}}"
-                                            target="_blank">{{university.data().url}}</a> </td>
+                                    <td mat-cell *matCellDef="let university"> <a href="{{university.url}}"
+                                            target="_blank">{{university.url}}</a> </td>
                                 </ng-container>
                                 <ng-container matColumnDef="view">
                                     <th mat-header-cell id="view" *matHeaderCellDef>จำนวนเข้าชม (ครั้ง)</th>
-                                    <td mat-cell *matCellDef="let university"> {{university.data().view | number}} </td>
+                                    <td mat-cell *matCellDef="let university"> {{university.view | number}} </td>
                                 </ng-container>
                                 <ng-container matColumnDef="province">
                                     <th mat-header-cell id="province" *matHeaderCellDef>จังหวัด</th>
-                                    <td mat-cell *matCellDef="let university"> {{university.data().province}} </td>
+                                    <td mat-cell *matCellDef="let university"> {{university.province}} </td>
                                 </ng-container>
                                 <ng-container matColumnDef="zone">
                                     <th mat-header-cell id="zone" *matHeaderCellDef>ภาค</th>
-                                    <td mat-cell *matCellDef="let university"> {{university.data().zone}} </td>
+                                    <td mat-cell *matCellDef="let university"> {{university.zone}} </td>
                                 </ng-container>
                                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                                 <tr class="row-hover" mat-row *matRowDef="let row; columns: displayedColumns;"
