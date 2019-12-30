@@ -160,9 +160,9 @@ export class EditNewsDialogComponent implements OnInit {
         let listUniversityRef = new Array<DocumentReference>();
         if (setUniversity.size > 0) {
           setUniversity.forEach(async university_name => {
-            this.universityService.getUniversityByUniversityName(university_name).then(universityRef => {
-              if (universityRef != null) {
-                listUniversityRef.push(universityRef);
+            this.universityService.getUniversityByUniversityName(university_name).subscribe(universityRef => {
+              if (!universityRef[0].exists) {
+                listUniversityRef.push(universityRef[0].ref);
               }
               if (setUniversity.size === listUniversityRef.length) {
                 this.news.university = listUniversityRef;

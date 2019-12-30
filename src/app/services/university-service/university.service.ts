@@ -71,10 +71,8 @@ export class UniversityService {
     return this.firestore.collection('University').doc(university_id).snapshotChanges();
   }
 
-  async getUniversityByUniversityName(university_name: string) {
-    return await this.firestore.collection('University').ref.where('university_name', '==', university_name)
-      .get().then(async result => {
-        return await result.docs[0].exists ? result.docs[0].ref : null;
-      });
+  getUniversityByUniversityName(university_name: string) {
+    return this.firestore.collection('University', query => query.where('university_name', '==', university_name))
+      .snapshotChanges().pipe(map(result => result.map(item => item.payload.doc)));
   }
 }

@@ -8,5 +8,5 @@ export class News {
     start_time: firestore.Timestamp;
     end_time: firestore.Timestamp;
     teacher: DocumentReference;
-    university: DocumentReference[];
+    university: DocumentReference[] = new Array<DocumentReference>();
 }
