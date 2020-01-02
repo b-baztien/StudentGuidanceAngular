@@ -1,6 +1,7 @@
 import { DocumentReference } from '@angular/fire/firestore';
 
 export class University {
+    id?: string;
     university_name: string;
     url: string;
     phone_no: string;

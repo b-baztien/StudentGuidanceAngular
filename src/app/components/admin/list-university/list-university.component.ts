@@ -1,20 +1,10 @@
-import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, AfterViewChecked } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatDialog, MatPaginatorIntl, MatSort } from '@angular/material';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { MatTableDataSource, MatPaginator, MatDialog, MatPaginatorIntl } from '@angular/material';
 import { Router } from '@angular/router';
 import { UniversityService } from 'src/app/services/university-service/university.service';
-import { QueryDocumentSnapshot, DocumentData } from '@angular/fire/firestore';
 import { AddUniversityDialogComponent } from './dialog/add-university-dialog/add-university-dialog.component';
 import { University } from 'src/app/model/University';
 import { Subscription } from 'rxjs';
-
-export interface DataDisplay {
-  university_name: string;
-  phone_no: string;
-  url: string;
-  view: string;
-  province: string;
-  zone: string;
-}
 
 @Component({
   selector: 'app-list-university',
@@ -23,7 +13,7 @@ export interface DataDisplay {
 })
 export class ListUniversityComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['university_name', 'phone_no', 'url', 'view', 'province', 'zone'];
-  universityList: MatTableDataSource<DataDisplay>;
+  universityList: MatTableDataSource<University>;
 
   resultsLength = 0;
   isLoadingResults = true;
@@ -42,12 +32,23 @@ export class ListUniversityComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.universityList = new MatTableDataSource<University>();
+    this.universityList.filterPredicate = (data: University, filter: string) => {
+      if (data.university_name.indexOf(filter) != -1 ||
+        data.phone_no.indexOf(filter) != -1 ||
+        data.province.indexOf(filter) != -1 ||
+        data.zone.indexOf(filter) != -1
+      ) {
+        return true;
+      }
+      return false;
+    }
     //add data to table datasource
     this.uniSub = this.universityService.getAllUniversity().subscribe(docs => {
-      this.universityList = new MatTableDataSource<DataDisplay>(docs
+      this.universityList.data = docs
         .map(uniRef => {
-          return { ...uniRef.data() as DataDisplay, id: uniRef.id };
-        }));
+          return { ...uniRef.data() as University, id: uniRef.id };
+        });
       if (this.universityList.data.length === 0) {
         this.showTable = false;
       } else {
