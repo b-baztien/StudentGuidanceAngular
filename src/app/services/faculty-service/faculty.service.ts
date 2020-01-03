@@ -67,7 +67,7 @@ export class FacultyService {
     try {
       await this.firestore.collection(faculty.parent).doc(faculty.id).delete();
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
     }
   }

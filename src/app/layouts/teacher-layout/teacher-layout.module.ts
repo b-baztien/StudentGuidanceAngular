@@ -4,22 +4,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TeacherLayoutRoutes } from './teacher-layout.routing';
 
-import {
-  MatButtonModule,
-  MatInputModule,
-  MatRippleModule,
-  MatFormFieldModule,
-  MatTooltipModule,
-  MatSelectModule,
-  MatTableModule,
-  MatPaginatorModule,
-  MatCardModule,
-  MatIconModule,
-  MatStepperModule,
-  MatAutocompleteModule,
-  MatChipsModule,
-  MatCheckboxModule
-} from '@angular/material';
 import { ComponentsModule } from 'src/app/components/navigation/components.module';
 import { ListNewsComponent } from 'src/app/components/teacher/list-news/list-news.component';
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -42,22 +26,7 @@ import { ListEntranceExamResultComponent } from 'src/app/components/teacher/list
     RouterModule.forChild(TeacherLayoutRoutes),
     FormsModule,
     ReactiveFormsModule,
-    MatButtonModule,
-    MatRippleModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatTooltipModule,
-    MatTableModule,
-    MatCardModule,
-    MatIconModule,
-    MatPaginatorModule,
-    SharedModule,
-    MatStepperModule,
-    MatAutocompleteModule,
-    MatChipsModule,
-    MatCheckboxModule,
-    MatCheckboxModule,
+    SharedModule
   ], exports: [ComponentsModule]
 })
 

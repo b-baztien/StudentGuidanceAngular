@@ -2,6 +2,28 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PhonePipe } from '../pipe/phone.pipe';
 import { UserTypePipe } from '../pipe/user-type.pipe';
+import {
+  MatButtonModule,
+  MatInputModule,
+  MatRippleModule,
+  MatFormFieldModule,
+  MatTooltipModule,
+  MatSelectModule,
+  MatTableModule,
+  MatPaginatorModule,
+  MatCardModule,
+  MatIconModule,
+  MatStepperModule,
+  MatAutocompleteModule,
+  MatRadioModule,
+  MatChipsModule,
+  MatSortModule,
+  MatCheckboxModule,
+  MatExpansionModule,
+  MatDatepickerModule,
+  MatProgressSpinnerModule,
+  MatDialogModule
+} from '@angular/material';
 
 
 
@@ -10,6 +32,29 @@ import { UserTypePipe } from '../pipe/user-type.pipe';
   imports: [
     CommonModule,
   ],
-  exports: [PhonePipe, UserTypePipe]
+  exports: [
+    PhonePipe,
+    UserTypePipe,
+    MatButtonModule,
+    MatInputModule,
+    MatRippleModule,
+    MatFormFieldModule,
+    MatTooltipModule,
+    MatSelectModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatCardModule,
+    MatIconModule,
+    MatStepperModule,
+    MatAutocompleteModule,
+    MatRadioModule,
+    MatChipsModule,
+    MatSortModule,
+    MatCheckboxModule,
+    MatExpansionModule,
+    MatDatepickerModule,
+    MatProgressSpinnerModule,
+    MatDialogModule
+  ]
 })
 export class SharedModule { }

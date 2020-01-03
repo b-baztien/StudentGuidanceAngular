@@ -34,9 +34,9 @@ export class UniversityService {
     }
   }
 
-  updateUniversity(universityId: string, university: University) {
+  async updateUniversity(universityId: string, university: University) {
     try {
-      return this.firestore.collection('University').doc(universityId).update(Object.assign({}, university));
+      return await this.firestore.collection('University').doc(universityId).update(Object.assign({}, university));
     } catch (error) {
       console.error(error);
       throw new Error('เกิดข้อมผิดพลาดในการแก้ไข กรุณาลองใหม่อีกครั้งภายหลัง');

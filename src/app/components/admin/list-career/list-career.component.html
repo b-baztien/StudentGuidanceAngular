@@ -33,14 +33,14 @@
                                     <input matInput placeholder="ค้นหาอาชีพในระบบ..."
                                         (keyup)="applyFilter($event.target.value)">
                                 </mat-form-field>
-                                <table mat-table [dataSource]="careerList" class="table table-hover">
+                                <table aria-describedby="careerTable" mat-table [dataSource]="careerList" class="table table-hover">
                                     <ng-container matColumnDef="career_name">
-                                        <th mat-header-cell *matHeaderCellDef>ชื่ออาชีพ</th>
+                                        <th id="career_name" mat-header-cell *matHeaderCellDef>ชื่ออาชีพ</th>
                                         <td mat-cell *matCellDef="let career"> {{career.data().career_name}}
                                         </td>
                                     </ng-container>
                                     <ng-container matColumnDef="manage">
-                                        <th mat-header-cell colspan="2" *matHeaderCellDef>จัดการข้อมูล</th>
+                                        <th id="manage" mat-header-cell colspan="2" *matHeaderCellDef>จัดการข้อมูล</th>
                                         <td mat-cell *matCellDef="let career">
                                             <div class="button-row">
                                                 <button mat-raised-button class="btn-warning"

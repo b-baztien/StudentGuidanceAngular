@@ -9,8 +9,6 @@ import { LoginService } from './services/login-service/login.service';
 import { AngularFireModule } from "@angular/fire";
 import { AngularFirestoreModule } from "@angular/fire/firestore";
 import { environment } from 'src/environments/environment';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressButtonsModule } from 'mat-progress-buttons';
 import { AppRoutingModule } from './app-routing.module';
 import { UserLayoutComponent } from './layouts/user-layout/user-layout.component';
@@ -19,7 +17,6 @@ import { ComponentsModule } from './components/navigation/components.module';
 import { AddUniversityDialogComponent } from './components/admin/list-university/dialog/add-university-dialog/add-university-dialog.component';
 import { AddEditFacultyDialogComponent } from './components/admin/view-university/dialog/add-edit-faculty-dialog/add-edit-faculty-dialog.component';
 import { AddMajorDialogComponent } from './components/admin/view-university/dialog/add-major-dialog/add-major-dialog.component';
-import { MatStepperModule, MatAutocompleteModule, MatSelectModule, MatFormFieldModule, MatChipsModule, MatExpansionModule, MatDatepickerModule, MatCheckboxModule, MatRadioModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from './shared/shared.module';
 import { EditUniversityDialogComponent } from './components/admin/view-university/dialog/edit-university-dialog/edit-university-dialog.component';
@@ -82,27 +79,16 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra);
     AppRoutingModule,
     BrowserAnimationsModule,
     AngularMaterialModule,
-    MatProgressSpinnerModule,
     MatProgressButtonsModule,
-    MatStepperModule,
     ReactiveFormsModule,
-    MatDialogModule,
     FormsModule,
     FlexLayoutModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
     AngularFireStorageModule,
     ComponentsModule,
-    MatAutocompleteModule,
     HttpClientModule,
-    MatSelectModule,
     SharedModule,
-    MatFormFieldModule,
-    MatChipsModule,
-    MatExpansionModule,
-    MatDatepickerModule,
-    MatCheckboxModule,
-    MatRadioModule,
     MatProgressBarModule,
   ],
   providers: [LoginService, { provide: LOCALE_ID, useValue: 'th-TH' }],

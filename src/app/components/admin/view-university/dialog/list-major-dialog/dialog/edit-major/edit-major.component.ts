@@ -44,35 +44,27 @@ export class EditMajorComponent implements OnInit {
     public dialogRef: MatDialogRef<AddMajorDialogComponent>,
     private majorService: MajorService,
     private careerService: CareerService,
-    @Inject(MAT_DIALOG_DATA) public data: Observable<Action<DocumentSnapshot<unknown>>>,
+    @Inject(MAT_DIALOG_DATA) public data: Major,
   ) { }
 
   ngOnInit() {
-    this.data.subscribe(async result => {
-      this.majorDoc = result.payload;
+    this.majorForm.get('major_name').setValue(this.data.major_name);
+    this.majorForm.get('url').setValue(this.data.url);
 
-      let major = this.majorDoc.data() as Major;
-      this.majorForm.get('major_name').setValue(major.major_name);
-      this.majorForm.get('entrance_detail').setValue(major.entrance_detail);
-      this.majorForm.get('url').setValue(major.url);
-
-      major.career.forEach(result => {
-        this.listCareer_name.push(result.id);
-      });
-    });
+    console.log(this.data);
   }
 
   ngAfterViewInit() {
     this.careerService.getAllCareer().subscribe(listCareerRes => {
       listCareerRes.forEach(careerRes => {
-        const career = careerRes.payload.doc.data() as Career;
+        const career = careerRes.data() as Career;
         this.allCareer.push(career.career_name);
       })
-        this.loadData = true;
+      this.loadData = true;
     })
-      this.filteredCareer = this.majorForm.get('career').valueChanges.pipe(
-        startWith(null),
-        map((career: string | null) => career ? this._filter(career) : this.allCareer.slice()));
+    this.filteredCareer = this.majorForm.get('career').valueChanges.pipe(
+      startWith(null),
+      map((career: string | null) => career ? this._filter(career) : this.allCareer.slice()));
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -117,34 +109,34 @@ export class EditMajorComponent implements OnInit {
   }
 
   async onSubmit() {
-    try {
-      await this.careerService.deleteMajorInCareer(this.majorDoc.ref).then(async () => {
-        let major = this.majorDoc.data() as Major;
-        if (this.majorForm.valid && this.listCareer_name.length !== 0) {
-          major.major_name = this.majorForm.get('major_name').value;
-          major.url = this.majorForm.get('url').value;
-          major.entrance_detail = this.majorForm.get('entrance_detail').value;
+    // try {
+    //   await this.careerService.deleteMajorInCareer(this.majorDoc.ref).then(async () => {
+    //     let major = this.majorDoc.data() as Major;
+    //     if (this.majorForm.valid && this.listCareer_name.length !== 0) {
+    //       major.major_name = this.majorForm.get('major_name').value;
+    //       major.url = this.majorForm.get('url').value;
+    //       major.entrance_detail = this.majorForm.get('entrance_detail').value;
 
-          let listCareerRef = new Array<DocumentReference>();
-          const setCareer = new Set(this.listCareer_name);
-          setCareer.forEach(async careerName => {
-            const career = new Career();
-            career.career_name = careerName;
-            career.major = career.major === undefined ? new Array<DocumentReference>() : career.major;
-            career.major.push(this.majorDoc.ref);
-            await this.careerService.addCareer(career).then(async careerDocRef => {
-              listCareerRef.push(careerDocRef);
-              major.career = listCareerRef;
-              this.majorService.updateMajor(this.majorDoc.id, major);
-            });
-          });
-        }
-        new Notifications().showNotification('done', 'top', 'right', 'แก้ไขข้อมูลสาขาสำเร็จแล้ว', 'success', 'สำเร็จ !');
-        this.dialogRef.close();
-      });
-    } catch (error) {
-      new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'เพิ่มข้อมูลล้มเหลว !');
-    }
+    //       let listCareerRef = new Array<DocumentReference>();
+    //       const setCareer = new Set(this.listCareer_name);
+    //       setCareer.forEach(async careerName => {
+    //         const career = new Career();
+    //         career.career_name = careerName;
+    //         career.major = career.major === undefined ? new Array<DocumentReference>() : career.major;
+    //         career.major.push(this.majorDoc.ref);
+    //         // await this.careerService.addCareer(career).then(async careerDocRef => {
+    //         //   listCareerRef.push(careerDocRef);
+    //         //   major.career = listCareerRef;
+    //         //   this.majorService.updateMajor(this.majorDoc.id, major);
+    //         // });
+    //       });
+    //     }
+    //     new Notifications().showNotification('done', 'top', 'right', 'แก้ไขข้อมูลสาขาสำเร็จแล้ว', 'success', 'สำเร็จ !');
+    //     this.dialogRef.close();
+    //   });
+    // } catch (error) {
+    //   new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'เพิ่มข้อมูลล้มเหลว !');
+    // }
   }
 
   private _filter(value: string): string[] {

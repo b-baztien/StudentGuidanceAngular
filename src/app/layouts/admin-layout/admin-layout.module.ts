@@ -4,23 +4,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdminLayoutRoutes } from './admin-layout.routing';
 
-import {
-  MatButtonModule,
-  MatInputModule,
-  MatRippleModule,
-  MatFormFieldModule,
-  MatTooltipModule,
-  MatSelectModule,
-  MatTableModule,
-  MatPaginatorModule,
-  MatCardModule,
-  MatIconModule,
-  MatStepperModule,
-  MatAutocompleteModule,
-  MatRadioModule,
-  MatChipsModule,
-  MatSortModule
-} from '@angular/material';
 import { ListUniversityComponent } from 'src/app/components/admin/list-university/list-university.component';
 import { ComponentsModule } from 'src/app/components/navigation/components.module';
 import { ViewUniversityComponent } from 'src/app/components/admin/view-university/view-university.component';
@@ -41,22 +24,7 @@ import { ListCareerComponent } from 'src/app/components/admin/list-career/list-c
     RouterModule.forChild(AdminLayoutRoutes),
     FormsModule,
     ReactiveFormsModule,
-    MatButtonModule,
-    MatRippleModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatTooltipModule,
-    MatTableModule,
-    MatCardModule,
-    MatIconModule,
-    MatPaginatorModule,
-    SharedModule,
-    MatStepperModule,
-    MatAutocompleteModule,
-    MatRadioModule,
-    MatChipsModule,
-    MatSortModule
+    SharedModule
   ], exports: [ComponentsModule]
 })
 

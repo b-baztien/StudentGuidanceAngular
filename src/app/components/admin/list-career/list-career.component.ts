@@ -37,7 +37,7 @@ export class ListCareerComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     //add data to table datasource
     this.careerSub = this.careerService.getAllCareer().subscribe(result => {
-      this.careerList = new MatTableDataSource<QueryDocumentSnapshot<DocumentData>>(result.map(career => career.payload.doc));
+      this.careerList = new MatTableDataSource<QueryDocumentSnapshot<DocumentData>>(result.map(career => career));
       this.careerList.paginator = this.paginator;
 
       if (this.careerList.data.length === 0) {
@@ -82,7 +82,7 @@ export class ListCareerComponent implements OnInit, AfterViewInit, OnDestroy {
       try {
         if (careerRs === undefined || careerRs === null) return;
         if (careerRs.mode === 'เพิ่ม') {
-          this.careerService.addCareer(careerRs.career);
+          this.careerService.addAllCareer(careerRs.career);
           new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลอาชีพสำเร็จแล้ว', 'success', 'สำเร็จ !');
         } else if (careerRs.mode === 'แก้ไข') {
           this.careerService.updateCareer(careerRs.career);

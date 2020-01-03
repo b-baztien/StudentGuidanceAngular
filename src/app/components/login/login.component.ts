@@ -14,7 +14,6 @@ import { TeacherService } from 'src/app/services/teacher-service/teacher.service
   styleUrls: ['./login.component.css']
 })
 export class LogInComponent implements OnInit, ErrorStateMatcher {
-
   loginForm = new FormGroup({
     username: new FormControl(null, [
       Validators.required]),
@@ -22,6 +21,7 @@ export class LogInComponent implements OnInit, ErrorStateMatcher {
       Validators.required]),
   });
 
+  hide = false;
   login: Login;
 
   constructor(

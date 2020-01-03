@@ -38,7 +38,7 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
   showContent: boolean = false;
   showTable: boolean = false;
 
-  facultyLtb: MatTableDataSource<DocumentData>;
+  facultyLtb: MatTableDataSource<Faculty>;
   displayedColumns: string[] = ['faculty_name', 'url', 'major', 'manage'];
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   paginatorInit = new MatPaginatorIntl;
@@ -62,6 +62,23 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.customTextPaginator();
+    this.paginator._intl = this.paginatorInit;
+    this.customFilter();
+  }
+
+  private customFilter() {
+    this.facultyLtb.filterPredicate = (data: Faculty, filter: string) => {
+      if (data.faculty_name.indexOf(filter) != -1 ||
+        data.url.indexOf(filter) != -1
+      ) {
+        return true;
+      }
+      return false;
+    }
+  }
+
+  private customTextPaginator() {
     //custom text paginator
     this.paginatorInit.getRangeLabel = (page: number, pageSize: number, length: number) => {
       if (length === 0 || pageSize === 0) {
@@ -73,8 +90,6 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
       return `${startIndex + 1} - ${endIndex} จากทั้งหมด ${length}`;
     };
     this.paginatorInit.changes.next();
-    if (!this.showTable) return;
-    this.paginator._intl = this.paginatorInit;
   }
 
   private getUniversity(university_id: string) {
@@ -95,8 +110,16 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
   }
 
   private getFaculty(university_id: string) {
-    this.facultyService.getFacultyByUniversityId(university_id).subscribe(fct => {
-      this.facultyLtb = new MatTableDataSource<DocumentData>(fct);
+    this.facultyLtb = new MatTableDataSource<Faculty>();
+    this.facultyService.getFacultyByUniversityId(university_id).subscribe(docs => {
+      this.facultyLtb.data = docs
+        .map(item => {
+          return {
+            id: item.id,
+            ref: item.ref,
+            ...item.data() as Faculty
+          };
+        });
       this.facultyLtb.paginator = this.paginator;
       if (this.facultyLtb.data.length === 0) {
         this.showTable = false;
@@ -141,19 +164,19 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
     });
   }
 
-  openAddMajorDialog(faculty: QueryDocumentSnapshot<unknown>) {
+  openAddMajorDialog(facultyRef: DocumentReference) {
     const dialogRef = this.dialog.open(AddMajorDialogComponent, {
       width: '90%',
-      data: faculty.id,
+      data: facultyRef,
     });
 
     dialogRef.afterClosed().subscribe();
   }
 
-  openAddEditFacultyDialog(faculty?: QueryDocumentSnapshot<unknown>): void {
+  openAddEditFacultyDialog(faculty?: Faculty): void {
     const dialogRef = this.dialog.open(AddEditFacultyDialogComponent, {
       width: '90%',
-      data: faculty ? faculty.data() as Faculty : null,
+      data: faculty ? faculty : null,
     });
 
     dialogRef.afterClosed().subscribe(async facultyRs => {
@@ -172,10 +195,10 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
     });
   }
 
-  openDeleteFacultyDialog(faculty: QueryDocumentSnapshot<unknown>) {
+  openDeleteFacultyDialog(faculty: Faculty) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: 'auto',
-      data: `คุณต้องการลบข้อมูลคณะ${(faculty.data() as Faculty).faculty_name} ใช่ หรือ ไม่ ?`,
+      data: `คุณต้องการลบข้อมูลคณะ${faculty.faculty_name} ใช่ หรือ ไม่ ?`,
     });
 
     dialogRef.afterClosed().subscribe(async result => {
@@ -192,12 +215,11 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
 
   openListMajorDialog(faculty: DocumentReference) {
     const dialogRef = this.dialog.open(ListMajorAdminDialogComponent, {
-      width: 'auto',
+      width: '90%',
       maxHeight: '90%',
       data: faculty,
     });
 
-    dialogRef.afterClosed().subscribe(() => {
-    });
+    dialogRef.afterClosed();
   }
 }

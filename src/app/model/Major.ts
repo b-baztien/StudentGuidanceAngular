@@ -1,9 +1,15 @@
 import { DocumentReference } from '@angular/fire/firestore';
+import { Career } from './Career';
+import { Tcas } from './Tcas';
 
-export class Major
- {
+export class Major {
+    id?: string;
+    ref?: DocumentReference;
     major_name: string;
-    career: DocumentReference[] = new Array<DocumentReference>();
     url: string;
-    entrance_detail: string;
+    tcasEntranceRound: Tcas[];
+    certificate: string;
+    courseDuration: string;
+    career?: DocumentReference[];
+
 }

@@ -33,21 +33,12 @@ export class ListUniversityComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.universityList = new MatTableDataSource<University>();
-    this.universityList.filterPredicate = (data: University, filter: string) => {
-      if (data.university_name.indexOf(filter) != -1 ||
-        data.phone_no.indexOf(filter) != -1 ||
-        data.province.indexOf(filter) != -1 ||
-        data.zone.indexOf(filter) != -1
-      ) {
-        return true;
-      }
-      return false;
-    }
+    this.customFilter();
     //add data to table datasource
     this.uniSub = this.universityService.getAllUniversity().subscribe(docs => {
       this.universityList.data = docs
         .map(uniRef => {
-          return { ...uniRef.data() as University, id: uniRef.id };
+          return { id: uniRef.id, ...uniRef.data() as University };
         });
       if (this.universityList.data.length === 0) {
         this.showTable = false;
@@ -75,9 +66,21 @@ export class ListUniversityComponent implements OnInit, OnDestroy {
     this.uniSub.unsubscribe();
   }
 
+  private customFilter() {
+    this.universityList.filterPredicate = (data: University, filter: string) => {
+      if (data.university_name.indexOf(filter) != -1 ||
+        data.phone_no.indexOf(filter) != -1 ||
+        data.province.indexOf(filter) != -1 ||
+        data.zone.indexOf(filter) != -1
+      ) {
+        return true;
+      }
+      return false;
+    }
+  }
+
   applyFilter(filterValue: string) {
     this.universityList.filter = filterValue.trim().toLowerCase();
-    console.log(this.universityList.filteredData);
   }
 
   openAddUniversityDialog(): void {

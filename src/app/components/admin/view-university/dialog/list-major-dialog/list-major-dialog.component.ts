@@ -1,14 +1,12 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { MatTableDataSource, MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
-import { QueryDocumentSnapshot, DocumentReference, DocumentData } from '@angular/fire/firestore';
 import { MajorService } from 'src/app/services/major-service/major.service';
-import { Career } from 'src/app/model/Career';
-import { CareerService } from 'src/app/services/career-service/career.service';
 import { Major } from 'src/app/model/Major';
 import { EditMajorComponent } from './dialog/edit-major/edit-major.component';
 import { Notifications } from 'src/app/components/util/notification';
 import { ConfirmDialogComponent } from 'src/app/components/util/confirm-dialog/confirm-dialog.component';
 import { Subscription } from 'rxjs';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { DocumentReference } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-list-major-dialog',
@@ -24,7 +22,6 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
   majorSub: Subscription;
 
   constructor(
-    private careerService: CareerService,
     private majorService: MajorService,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<ListMajorAdminDialogComponent>,
@@ -33,7 +30,7 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.majorSub = this.majorService.getMajorByFacultyReference(this.data).subscribe(majorDocs => {
-      this.listMajor = majorDocs.map(doc => doc.payload.doc.data() as Major);
+      this.listMajor = majorDocs.map(docs => { return { id: docs.id, ref: docs.ref, ...docs.data() as Major } });
       if (this.listMajor === undefined || this.listMajor.length === 0) {
         this.showData = false;
       } else {
@@ -46,10 +43,12 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
     this.majorSub.unsubscribe();
   }
 
-  openEditMajorDialog(majorId: string): void {
+  openEditMajorDialog(major: Major): void {
+    console.log('after', major);
     const dialogRef = this.dialog.open(EditMajorComponent, {
-      width: '60%',
-      data: this.majorService.getMajorById(majorId),
+      width: '90%',
+      maxHeight: '90%',
+      data: major,
     });
 
     dialogRef.afterClosed().subscribe();
@@ -57,16 +56,14 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
 
   onDelete(major: Major) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '40%',
+      width: 'auto',
       data: `คุณต้องการลบข้อมูลสาขา${major.major_name} ใช่ หรือ ไม่ ?`,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(async result => {
       try {
         if (result) {
-          this.majorService.getMajorById(`${major.major_name}`).subscribe(result => {
-            this.majorService.deleteMajor(result.payload);
-          });
+          await this.majorService.deleteMajor(major.ref);
           new Notifications().showNotification('done', 'top', 'right', 'ลบข้อมูลสาขาสำเร็จแล้ว', 'success', 'สำเร็จ !');
         }
       } catch (error) {

@@ -6,6 +6,7 @@ import { Subject } from 'rxjs';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Career } from 'src/app/model/Career';
 import { EntranceExamResultService } from '../entrance-exam-result-service/entrance-exam-result.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -22,35 +23,32 @@ export class MajorService {
     return this.firestore.collection('Major').snapshotChanges();
   }
 
-  getMajorById(majorId: string) {
-    return this.firestore.collection('Major').doc(majorId).snapshotChanges();
+  getMajorByReference(majorRef: DocumentReference) {
+    return this.firestore.collection(majorRef.parent).doc(majorRef.id).snapshotChanges()
+      .pipe(map(result => result.payload));
   }
 
   getMajorByFacultyReference(facultyRef: DocumentReference) {
-    return this.firestore.collection(facultyRef.parent.path).doc(facultyRef.id).collection('Major').snapshotChanges();
+    return this.firestore.collection(facultyRef.parent.path).doc(facultyRef.id)
+      .collection('Major', query => query.orderBy('major_name')).snapshotChanges()
+      .pipe(map(docs => docs.map(item => item.payload.doc)));
   }
 
-  async addMajor(facultyId: string, major: Major) {
+  async addMajor(facultyRef: DocumentReference, major: Major, listCareer: Career[]) {
     try {
-      return await this.firestore.collection('Major').doc(major.major_name + facultyId).ref.get().then(async result => {
-        // major.faculty = this.firestore.collection('Faculty').doc(facultyId).ref;
-        // if (!result.exists) {
-        //   return await this.firestore.collection('Major').doc(major.major_name + facultyId).set(Object.assign({}, major))
-        //     .then(async () => {
-        //       return await major.faculty.get().then(facultyRef => {
-        //         const faculty = facultyRef.data() as Faculty;
-        //         faculty.major = faculty.major === undefined ? new Array<DocumentReference>() : faculty.major;
-        //         faculty.major.push(this.firestore.collection('Major').doc(major.major_name + facultyId).ref);
-        //         this.firestore.collection('Faculty').doc(facultyId).set(Object.assign({}, faculty));
-        //         return this.firestore.collection('Major').doc(major.major_name + facultyId).ref
-        //       });
-        //     });
-        // } else {
-        //   throw new Error('มีสาขานี้อยู่ในระบบแล้ว');
-        // }
-      });
+      await this.firestore.collection(facultyRef.parent).doc(facultyRef.id)
+        .collection('Major', query => query.where('major_name', '==', major.major_name)).get()
+        .toPromise().then(async result => {
+          if (result.size > 0) throw new Error('มีสาขานี้อยู่ในระบบแล้ว');
+          await this.firestore.collection(facultyRef.parent).doc(facultyRef.id)
+            .collection('Major').add(Object.assign({}, major)).then(majorRef => {
+              listCareer.forEach(async career => {
+                await majorRef.collection('Career').add(Object.assign({}, career));
+              });
+            });
+        });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       if (error.message == 'มีสาขานี้อยู่ในระบบแล้ว') {
         throw error;
       } else {
@@ -67,34 +65,11 @@ export class MajorService {
     }
   }
 
-  deleteMajor(major: QueryDocumentSnapshot<unknown>) {
+  async deleteMajor(major: DocumentReference) {
     try {
-      this.entranceExamResultService.deleteMajorInExamResult(major.ref);
-      this.firestore.collection('Career').ref.where('major', 'array-contains', major.ref).onSnapshot(result => {
-        result.forEach(docsRs => {
-          const career = docsRs.data() as Career;
-          for (let i = 0; i < career.major.length; i++) {
-            if (career.major[i].id == major.id) {
-              career.major.splice(i, 1);
-              this.firestore.collection('Career').doc(docsRs.id).set(Object.assign({}, career));
-            }
-          }
-        })
-      });
-      this.firestore.collection('Faculty').ref.where('major', 'array-contains', major.ref).onSnapshot(result => {
-        result.forEach(docsRs => {
-          const faculty = docsRs.data() as Faculty;
-          // for (let i = 0; i < faculty.major.length; i++) {
-          //   if (faculty.major[i].id == major.id) {
-          //     faculty.major.splice(i, 1);
-          //     this.firestore.collection('Faculty').doc(docsRs.id).set(Object.assign({}, faculty));
-          //   }
-          // }
-          this.firestore.collection('Major').doc(major.id).delete();
-        });
-      });
+      await this.firestore.collection(major.parent).doc(major.id).delete();
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
     }
   }
