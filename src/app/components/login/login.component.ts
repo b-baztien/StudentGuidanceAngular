@@ -28,7 +28,6 @@ export class LogInComponent implements OnInit, ErrorStateMatcher {
     private loginService: LoginService,
     private router: Router,
     private _snackBar: MatSnackBar,
-    private teacherService: TeacherService,
   ) { }
 
   ngOnInit() {
