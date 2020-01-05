@@ -22,7 +22,10 @@ import {
   MatExpansionModule,
   MatDatepickerModule,
   MatProgressSpinnerModule,
-  MatDialogModule
+  MatDialogModule,
+  MatListModule,
+  MatTreeModule,
+  MatDividerModule
 } from '@angular/material';
 
 
@@ -54,7 +57,10 @@ import {
     MatExpansionModule,
     MatDatepickerModule,
     MatProgressSpinnerModule,
-    MatDialogModule
+    MatDialogModule,
+    MatListModule,
+    MatTreeModule,
+    MatDividerModule
   ]
 })
 export class SharedModule { }

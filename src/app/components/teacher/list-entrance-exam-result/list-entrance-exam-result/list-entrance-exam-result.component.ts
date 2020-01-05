@@ -103,7 +103,7 @@ export class ListEntranceExamResultComponent implements OnInit {
     this.majorService.getAllMajor().subscribe(result => {
       result.forEach(majorRef => {
         let major = majorRef.payload.doc.data() as Major;
-        this.mapUniData.set(majorRef.payload.doc.id, major.major_name);
+        this.mapUniData.set(majorRef.payload.doc.id, major.majorName);
       });
     });
 

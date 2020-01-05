@@ -14,7 +14,6 @@ import { DocumentReference } from '@angular/fire/firestore';
   styleUrls: ['./list-major-dialog.component.css']
 })
 export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['major_name', 'url'];
   listMajor = new Array<Major>();
   haveCareer = false;
   showData = false;
@@ -44,7 +43,6 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
   }
 
   openEditMajorDialog(major: Major): void {
-    console.log('after', major);
     const dialogRef = this.dialog.open(EditMajorComponent, {
       width: '90%',
       maxHeight: '90%',
@@ -57,7 +55,7 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
   onDelete(major: Major) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: 'auto',
-      data: `คุณต้องการลบข้อมูลสาขา${major.major_name} ใช่ หรือ ไม่ ?`,
+      data: `คุณต้องการลบข้อมูลสาขา${major.majorName} ใช่ หรือ ไม่ ?`,
     });
 
     dialogRef.afterClosed().subscribe(async result => {

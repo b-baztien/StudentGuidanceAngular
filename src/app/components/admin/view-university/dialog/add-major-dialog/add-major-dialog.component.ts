@@ -10,6 +10,7 @@ import { map, startWith } from 'rxjs/operators';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Career } from 'src/app/model/Career';
 import { Tcas } from 'src/app/model/Tcas';
+import { Notifications } from 'src/app/components/util/notification';
 
 @Component({
   selector: 'app-add-major-dialog',
@@ -71,7 +72,7 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
   ];
 
   majorForm = new FormGroup({
-    major_name: new FormControl(null, [Validators.required]),
+    majorName: new FormControl(null, [Validators.required]),
     url: new FormControl(null, [Validators.required]),
     tcasEntranceRound: new FormControl([], [Validators.required]),
     certificate: new FormControl(null, [Validators.required]),
@@ -165,34 +166,28 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
     this.majorForm.get('career').setValue(null);
   }
 
-  onSubmit() {
-    console.log(this.majorForm.get('tcasEntranceRound').value);
+  async onSubmit() {
+    this.major = new Major;
+    let listCareer = new Array<Career>();
+    if (this.majorForm.invalid && this.selectedCareer.length === 0) return;
+    try {
+      this.major.majorName = this.majorForm.get('majorName').value;
+      this.major.url = this.majorForm.get('url').value;
+      this.major.certificate = this.majorForm.get('certificate').value;
+      this.major.courseDuration = this.majorForm.get('courseDuration').value;
+      this.major.tcasEntranceRound = this.majorForm.get('tcasEntranceRound').value;
+
+      this.major.listCareerName = this.selectedCareer;
+
+      await this.careerService.addAllCareer(listCareer);
+      await this.majorService.addMajor(this.data, this.major);
+      new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลสาขาสำเร็จแล้ว', 'success', 'สำเร็จ !');
+    }
+    catch (error) {
+      new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'เพิ่มข้อมูลล้มเหลว !');
+    }
+    this.dialogRef.close();
   }
-
-  // async onSubmit() {
-  //   this.major = new Major;
-  //   let listCareer = new Array<Career>();
-  //   if (this.majorForm.invalid && this.selectedCareer.length === 0) return;
-  //   try {
-  //     this.major.major_name = this.majorForm.get('major_name').value;
-  //     this.major.url = this.majorForm.get('url').value;
-
-  //     listCareer = this.selectedCareer.map(item => {
-  //       let career = new Career();
-  //       career.career_name = item;
-  //       return career;
-  //     });
-
-  //     this.careerService.addAllCareer(listCareer);
-
-  //     await this.majorService.addMajor(this.data, this.major, listCareer);
-  //     new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลสาขาสำเร็จแล้ว', 'success', 'สำเร็จ !');
-  //   }
-  //   catch (error) {
-  //     new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'เพิ่มข้อมูลล้มเหลว !');
-  //   }
-  //   this.dialogRef.close();
-  // }
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();

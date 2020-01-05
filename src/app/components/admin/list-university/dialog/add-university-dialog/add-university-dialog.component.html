@@ -76,7 +76,7 @@
           </mat-autocomplete>
         </mat-form-field>
         <mat-form-field>
-          <input matInput type="number" type="tel" placeholder="เบอร์โทรศัพท์" required formControlName="phone_no">
+          <input matInput type="tel" placeholder="เบอร์โทรศัพท์" required formControlName="phone_no">
           <mat-error *ngIf="universityDetailForm.controls.phone_no.hasError('required')">
             กรุณากรอกเบอร์โทรศัพท์
           </mat-error>
@@ -131,7 +131,7 @@
           </mat-error>
         </mat-form-field>
         <mat-form-field>
-          <input matInput type="number" placeholder="รหัสไปรษณีย์" required formControlName="zipcode" maxlength="5">
+          <input matInput placeholder="รหัสไปรษณีย์" required formControlName="zipcode" maxlength="5">
           <mat-error *ngIf="universityAddressForm.controls.zipcode.hasError('required')">
             กรุณากรอกรหัสไปรษณีย์
           </mat-error>

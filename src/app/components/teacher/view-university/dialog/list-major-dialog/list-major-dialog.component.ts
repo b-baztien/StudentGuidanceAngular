@@ -11,7 +11,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
   styleUrls: ['./list-major-dialog.component.css']
 })
 export class ListMajorTeacherDialogComponent implements OnInit {
-  displayedColumns: string[] = ['major_name', 'url'];
+  displayedColumns: string[] = ['majorName', 'url'];
   listMajor = new Array<DocumentData>();
   listCareer = new Array<QueryDocumentSnapshot<unknown>>();
   haveCareer = false;

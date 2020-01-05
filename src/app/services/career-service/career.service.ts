@@ -33,15 +33,13 @@ export class CareerService {
 
   async addAllCareer(listCareer: Career[]) {
     try {
-      let listCareerRef = new Array<DocumentReference>();
       listCareer.forEach(async (career) => {
-        listCareerRef.push(await this.firestore.collection('Career').doc(career.career_name).get().toPromise().then(result => {
-          if (result.exists) return result.ref;
-          return this.firestore.collection('Career').doc(career.career_name).set(Object.assign({}, career))
-            .then(() => this.firestore.collection('Career').doc(career.career_name).ref);
-        }));
+        await this.firestore.collection('Career').doc(career.career_name)
+          .get().toPromise().then(result => {
+            if (result.exists) return;
+            this.firestore.collection('Career').doc(career.career_name).set(Object.assign({}, career));
+          });
       });
-      return listCareerRef;
     } catch (error) {
       console.error(error);
       throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');

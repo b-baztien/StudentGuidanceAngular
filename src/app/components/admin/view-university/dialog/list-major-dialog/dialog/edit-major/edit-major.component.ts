@@ -19,7 +19,7 @@ import { Notifications } from 'src/app/components/util/notification';
 })
 export class EditMajorComponent implements OnInit {
   majorForm = new FormGroup({
-    major_name: new FormControl(null, [Validators.required]),
+    majorName: new FormControl(null, [Validators.required]),
     url: new FormControl(null, [Validators.required]),
     entrance_detail: new FormControl(null, [Validators.required]),
     career: new FormControl(null),
@@ -48,7 +48,7 @@ export class EditMajorComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.majorForm.get('major_name').setValue(this.data.major_name);
+    this.majorForm.get('majorName').setValue(this.data.majorName);
     this.majorForm.get('url').setValue(this.data.url);
 
     console.log(this.data);
@@ -113,7 +113,7 @@ export class EditMajorComponent implements OnInit {
     //   await this.careerService.deleteMajorInCareer(this.majorDoc.ref).then(async () => {
     //     let major = this.majorDoc.data() as Major;
     //     if (this.majorForm.valid && this.listCareer_name.length !== 0) {
-    //       major.major_name = this.majorForm.get('major_name').value;
+    //       major.majorName = this.majorForm.get('majorName').value;
     //       major.url = this.majorForm.get('url').value;
     //       major.entrance_detail = this.majorForm.get('entrance_detail').value;
 

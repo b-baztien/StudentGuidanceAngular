@@ -9,7 +9,7 @@
             <mat-expansion-panel-header>
                 <mat-panel-title color="primary">
                     <h4>
-                        <mat-icon>school</mat-icon> {{major.major_name}}
+                        <mat-icon>school</mat-icon> {{major.majorName}}
                     </h4>
                 </mat-panel-title>
             </mat-expansion-panel-header>
@@ -19,27 +19,45 @@
                     <mat-icon>language</mat-icon> ที่อยู่เว็บไซต์
                 </h4>
             </mat-panel-description>
-            <mat-panel-title><a href="{{major.url}}">{{major.url}}</a></mat-panel-title><br>
+            <mat-panel-title>
+                <div class="container">
+                    <a href="{{major.url}}">{{major.url}}</a>
+                </div>
+            </mat-panel-title><br>
             <mat-panel-description>
                 <h4>
-                    <mat-icon>post_add</mat-icon> เงื่อนไขการเข้าศึกษาต่อ
+                    <mat-icon>assignment_turned_in</mat-icon> วุฒิหลังสำเร็จการศึกษา
                 </h4>
             </mat-panel-description>
             <mat-panel-title>
-                <p>{{major.entrance_detail}}</p>
+                <div class="container">
+                    <p>{{major.certificate}}</p>
+                </div>
             </mat-panel-title><br>
+            <mat-panel-description>
+                <h4>
+                    <mat-icon>post_add</mat-icon> ข้อมูลการศึกษาต่อ (TCAS)
+                </h4>
+            </mat-panel-description>
+            <mat-panel-title>
+                <mat-chip-list *ngFor="let tcas of major.tcasEntranceRound">
+                    <mat-chip color="accent" selected>
+                        รอบ {{tcas.description}}
+                    </mat-chip>
+                </mat-chip-list>
+            </mat-panel-title>
             <mat-panel-description>
                 <h4>
                     <mat-icon>build</mat-icon> อาชีพเมื่อสำเร็จการศึกษา
                 </h4>
             </mat-panel-description>
             <mat-panel-title>
-                <p *ngIf="major.career === undefined">
+                <p *ngIf="major.listCareerName === undefined">
                     -
                 </p>
                 <mat-chip-list>
-                    <mat-chip color="primary" selected *ngFor="let career of major.career">
-                        {{career.id}}
+                    <mat-chip color="primary" selected *ngFor="let careerName of major.listCareerName">
+                        {{careerName}}
                     </mat-chip>
                 </mat-chip-list>
             </mat-panel-title>

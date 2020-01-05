@@ -8,8 +8,8 @@
 <form [formGroup]="majorForm" *ngIf="loadData">
     <mat-dialog-content>
         <mat-form-field>
-            <input matInput placeholder="ชื่อสาขา" required formControlName="major_name">
-            <mat-error *ngIf="majorForm.controls.major_name.hasError('required')">
+            <input matInput placeholder="ชื่อสาขา" required formControlName="majorName">
+            <mat-error *ngIf="majorForm.controls.majorName.hasError('required')">
                 กรุณากรอกชื่อสาขา
             </mat-error>
         </mat-form-field>

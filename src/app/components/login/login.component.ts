@@ -21,7 +21,7 @@ export class LogInComponent implements OnInit, ErrorStateMatcher {
       Validators.required]),
   });
 
-  hide = false;
+  hide = true;
   login: Login;
 
   constructor(

@@ -30,22 +30,18 @@ export class MajorService {
 
   getMajorByFacultyReference(facultyRef: DocumentReference) {
     return this.firestore.collection(facultyRef.parent.path).doc(facultyRef.id)
-      .collection('Major', query => query.orderBy('major_name')).snapshotChanges()
+      .collection('Major', query => query.orderBy('majorName')).snapshotChanges()
       .pipe(map(docs => docs.map(item => item.payload.doc)));
   }
 
-  async addMajor(facultyRef: DocumentReference, major: Major, listCareer: Career[]) {
+  async addMajor(facultyRef: DocumentReference, major: Major) {
     try {
       await this.firestore.collection(facultyRef.parent).doc(facultyRef.id)
-        .collection('Major', query => query.where('major_name', '==', major.major_name)).get()
+        .collection('Major', query => query.where('majorName', '==', major.majorName)).get()
         .toPromise().then(async result => {
-          if (result.size > 0) throw new Error('มีสาขานี้อยู่ในระบบแล้ว');
+          if (!result.empty) throw new Error('มีสาขานี้อยู่ในระบบแล้ว');
           await this.firestore.collection(facultyRef.parent).doc(facultyRef.id)
-            .collection('Major').add(Object.assign({}, major)).then(majorRef => {
-              listCareer.forEach(async career => {
-                await majorRef.collection('Career').add(Object.assign({}, career));
-              });
-            });
+            .collection('Major').add(Object.assign({}, major));
         });
     } catch (error) {
       console.error(error);
