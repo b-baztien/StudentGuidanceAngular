@@ -50,8 +50,15 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
       maxHeight: '90%',
       data: major,
     });
-
-    dialogRef.afterClosed().subscribe();
+    dialogRef.afterClosed().subscribe(async newMajor => {
+      try {
+        if (!newMajor) return;
+        await this.majorService.updateMajor(major.ref, newMajor);
+        new Notifications().showNotification('done', 'top', 'right', 'แก้ไขข้อมูลสาขาสำเร็จแล้ว', 'success', 'สำเร็จ !');
+      } catch (error) {
+        new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'แก้ไขข้อมูลล้มเหลว !');
+      }
+    });
   }
 
   onDelete(major: Major) {

@@ -9,7 +9,8 @@ import { CareerService } from 'src/app/services/career-service/career.service';
 import { Career } from 'src/app/model/Career';
 import { startWith, map } from 'rxjs/operators';
 import { ENTER } from '@angular/cdk/keycodes';
-import { DocumentReference, DocumentSnapshot, Action, QuerySnapshot } from '@angular/fire/firestore';
+import { DocumentSnapshot } from '@angular/fire/firestore';
+import { Tcas } from 'src/app/model/Tcas';
 import { Notifications } from 'src/app/components/util/notification';
 
 @Component({
@@ -18,16 +19,76 @@ import { Notifications } from 'src/app/components/util/notification';
   styleUrls: ['./edit-major.component.css']
 })
 export class EditMajorComponent implements OnInit {
+  tcasRound: Tcas[] = [
+    {
+      round: '1',
+      description: 'Portfolio',
+      examReference: [
+        'แฟ้มสะสมงาน หรือ portfolio',
+        'เกรดเฉลี่ยสะสม (4-5 ภาคเรียน)',
+        'คุณสมบัติพิเศษ ของแต่คณะ / สาขาวิชาและมหาวิทยาลัย'
+      ]
+    },
+    {
+      round: '2',
+      description: 'การรับแบบโควตา',
+      examReference: [
+        'เกรดเฉลี่ยสะสม',
+        'GAT/PAT',
+        '9 วิชาสามัญ',
+        'คุณสมบัติพิเศษ (มีความแตกต่างกันออกไป ขึ้นอยู่กับแต่ละคณะ/สาขาวิชา)',
+        'คะแนน O-NET ขั้นต่ำ (สำหรับบางโครงการ)'
+      ]
+    },
+    {
+      round: '3',
+      description: 'รับตรงร่วมกัน (+กสพท)',
+      examReference: [
+        'เกรดเฉลี่ยขั้นต่ำ (สำหรับบางโครงการ)',
+        'GAT/PAT',
+        '9 วิชาสามัญ',
+        'สอบวิชาเฉพาะ',
+        'คะแนน O-NET ขั้นต่ำ (สำหรับบางโครงการ + กสพท)'
+      ]
+    },
+    {
+      round: '4',
+      description: 'การรับแบบแอดมิชชัน',
+      examReference: [
+        'เกรดเฉลี่ยสะสม',
+        'O-NET',
+        'GAT/PAT'
+      ]
+    },
+    {
+      round: '5',
+      description: 'การรับตรงอิสระ',
+      examReference: [
+        'เกรดเฉลี่ยขั้นต่ำ (สำหรับบางโครงการ)',
+        'O-NET',
+        'GAT/PAT',
+        '9 วิชาสามัญ'
+      ]
+    }
+  ];
+
   majorForm = new FormGroup({
     majorName: new FormControl(null, [Validators.required]),
     url: new FormControl(null, [Validators.required]),
-    entrance_detail: new FormControl(null, [Validators.required]),
+    tcasEntranceRound: new FormControl([], [Validators.required]),
+    certificate: new FormControl(null, [Validators.required]),
+    courseDuration: new FormControl(null, Validators.compose(
+      [
+        Validators.required,
+        Validators.pattern('^[0-9]*$')
+      ])
+    ),
     career: new FormControl(null),
   });
 
   majorDoc: DocumentSnapshot<unknown>;
-  listCareer_name: string[] = new Array<string>();
-  allCareer: string[] = new Array<string>();
+  selectedCareer: string[] = new Array<string>();
+  listAllCareerName: string[] = new Array<string>();
   filteredCareer: Observable<string[]>;
 
   loadData = false;
@@ -42,27 +103,33 @@ export class EditMajorComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<AddMajorDialogComponent>,
-    private majorService: MajorService,
     private careerService: CareerService,
+    private majorService: MajorService,
     @Inject(MAT_DIALOG_DATA) public data: Major,
   ) { }
 
   ngOnInit() {
     this.majorForm.get('majorName').setValue(this.data.majorName);
     this.majorForm.get('url').setValue(this.data.url);
-  }
+    this.majorForm.get('certificate').setValue(this.data.certificate);
+    this.majorForm.get('courseDuration').setValue(this.data.courseDuration);
+    this.majorForm.get('career').setValue(this.data.listCareerName);
+    this.selectedCareer = this.data.listCareerName;
+    this.majorForm.get('tcasEntranceRound').setValue(this.data.tcasEntranceRound.map(tcas => tcas.round));
 
-  ngAfterViewInit() {
     this.careerService.getAllCareer().subscribe(listCareerRes => {
       listCareerRes.forEach(careerRes => {
         const career = careerRes.data() as Career;
-        this.allCareer.push(career.career_name);
+        this.listAllCareerName.push(career.career_name);
       })
       this.loadData = true;
     })
     this.filteredCareer = this.majorForm.get('career').valueChanges.pipe(
       startWith(null),
-      map((career: string | null) => career ? this._filter(career) : this.allCareer.slice()));
+      map((career: string | null) => career ? this._filter(career) : this.listAllCareerName.slice()));
+  }
+
+  ngAfterViewInit() {
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -74,6 +141,10 @@ export class EditMajorComponent implements OnInit {
     this.dialogRef.close(null);
   }
 
+  getTcas(round: string) {
+    return this.tcasRound.filter(tcas => tcas.round === round)[0];
+  }
+
 
   addCareer(event: MatChipInputEvent): void {
     if (!this.matAutocomplete.isOpen) {
@@ -81,7 +152,7 @@ export class EditMajorComponent implements OnInit {
       const value = event.value;
 
       if ((value || '').trim()) {
-        this.listCareer_name.push(value.trim());
+        this.selectedCareer.push(value.trim());
       }
 
       if (input) {
@@ -93,52 +164,37 @@ export class EditMajorComponent implements OnInit {
   }
 
   removeCareer(career: string): void {
-    const index = this.listCareer_name.indexOf(career);
+    const index = this.selectedCareer.indexOf(career);
 
     if (index >= 0) {
-      this.listCareer_name.splice(index, 1);
+      this.selectedCareer.splice(index, 1);
     }
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.listCareer_name.push(event.option.viewValue);
+    this.selectedCareer.push(event.option.viewValue);
     this.careerInput.nativeElement.value = '';
     this.majorForm.get('career').setValue(null);
   }
 
   async onSubmit() {
-    // try {
-    //   await this.careerService.deleteMajorInCareer(this.majorDoc.ref).then(async () => {
-    //     let major = this.majorDoc.data() as Major;
-    //     if (this.majorForm.valid && this.listCareer_name.length !== 0) {
-    //       major.majorName = this.majorForm.get('majorName').value;
-    //       major.url = this.majorForm.get('url').value;
-    //       major.entrance_detail = this.majorForm.get('entrance_detail').value;
+    let major = new Major;
+    if (this.majorForm.invalid && this.selectedCareer.length === 0) return;
+    major.majorName = this.majorForm.get('majorName').value;
+    major.url = this.majorForm.get('url').value;
+    major.certificate = this.majorForm.get('certificate').value;
+    major.courseDuration = this.majorForm.get('courseDuration').value;
+    major.tcasEntranceRound = this.majorForm.get('tcasEntranceRound').value.map(round => {
+      return this.tcasRound.filter(tcas => tcas.round === round)[0];
+    });
 
-    //       let listCareerRef = new Array<DocumentReference>();
-    //       const setCareer = new Set(this.listCareer_name);
-    //       setCareer.forEach(async careerName => {
-    //         const career = new Career();
-    //         career.career_name = careerName;
-    //         career.major = career.major === undefined ? new Array<DocumentReference>() : career.major;
-    //         career.major.push(this.majorDoc.ref);
-    //         // await this.careerService.addCareer(career).then(async careerDocRef => {
-    //         //   listCareerRef.push(careerDocRef);
-    //         //   major.career = listCareerRef;
-    //         //   this.majorService.updateMajor(this.majorDoc.id, major);
-    //         // });
-    //       });
-    //     }
-    //     new Notifications().showNotification('done', 'top', 'right', 'แก้ไขข้อมูลสาขาสำเร็จแล้ว', 'success', 'สำเร็จ !');
-    //     this.dialogRef.close();
-    //   });
-    // } catch (error) {
-    //   new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'เพิ่มข้อมูลล้มเหลว !');
-    // }
+    major.listCareerName = this.selectedCareer;
+
+    this.dialogRef.close(major);
   }
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.allCareer.filter(career => career.toLowerCase().includes(filterValue));
+    return this.listAllCareerName.filter(career => career.toLowerCase().includes(filterValue));
   }
 }

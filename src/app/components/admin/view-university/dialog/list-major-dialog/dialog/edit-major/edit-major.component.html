@@ -1,10 +1,12 @@
 <div class="row">
     <div class="col-sm-12">
-        <h1 mat-dialog-title>แก้ไขข้อมูลสาขา</h1>
+        <h1 mat-dialog-title>
+            <mat-icon>edit</mat-icon> แก้ไขข้อมูลสาขา
+        </h1>
     </div>
 </div>
 <form [formGroup]="majorForm" *ngIf="loadData">
-    <div mat-dialog-content>
+    <mat-dialog-content>
         <mat-form-field>
             <input matInput placeholder="ชื่อสาขา" required formControlName="majorName">
             <mat-error *ngIf="majorForm.controls.majorName.hasError('required')">
@@ -13,29 +15,57 @@
         </mat-form-field>
         <mat-form-field>
             <input matInput placeholder="ที่อยู่เว็บไซต์" required formControlName="url">
+            <mat-hint>เช่น http://www.xxxx.xxx</mat-hint>
             <mat-error *ngIf="majorForm.controls.url.hasError('required')">
                 กรุณากรอกที่อยู่เว็บไซต์
             </mat-error>
         </mat-form-field>
         <mat-form-field>
-            <textarea matInput placeholder="เงื่อนไขการเข้าศึกษาต่อ" required
-                formControlName="entrance_detail"></textarea>
-            <mat-error *ngIf="majorForm.controls.url.hasError('required')">
-                กรุณากรอกเงื่อนไขการเข้าศึกษาต่อ
+            <mat-select placeholder="รอบที่เปิดรับ (TCAS)" formControlName="tcasEntranceRound" required multiple>
+                <mat-select-trigger>
+                    {{majorForm.controls.tcasEntranceRound.value.length === 0 ? '' : getTcas(majorForm.controls.tcasEntranceRound.value[0]).description}}
+                    <span *ngIf="majorForm.controls.tcasEntranceRound.value?.length > 1">
+                        (+{{majorForm.controls.tcasEntranceRound.value.length - 1}} รอบอื่นๆ)
+                    </span>
+                </mat-select-trigger>
+                <mat-option *ngFor="let tcas of tcasRound" [value]="tcas.round" (value)="tcas">{{tcas.description}}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="majorForm.controls.tcasEntranceRound.hasError('required')">
+                กรุณาเลือกรอบที่เปิดรับอย่างน้อย 1 รอบ
             </mat-error>
         </mat-form-field>
         <mat-form-field>
+            <input matInput placeholder="วุฒิการศึกษาที่ได้รับ หลังสำเร็จการศึกษา" required
+                formControlName="certificate">
+            <mat-hint>เช่น วิทยาศาสตร์บัณฑิต</mat-hint>
+            <mat-error *ngIf="majorForm.controls.certificate.hasError('required')">
+                กรุณากรอกวุฒิการศึกษา
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="ระยะเวลาการศึกษาตามหลักสูตร (ปี)" required maxlength="2"
+                formControlName="courseDuration">
+            <mat-error *ngIf="majorForm.controls.courseDuration.hasError('required')">
+                กรุณากรอกระยะเวลาการศึกษา
+            </mat-error>
+            <mat-error *ngIf="majorForm.controls.courseDuration.hasError('pattern')">
+                ระยะเวลาการศึกษาต้องเป็นตัวเลขเท่านั้น
+            </mat-error>
+            <mat-hint>เช่น 4 ปี</mat-hint>
+        </mat-form-field>
+        <mat-form-field>
             <mat-chip-list #chipList aria-label="Career">
-                <mat-chip *ngFor="let career_name of listCareer_name" [removable]="removable"
+                <mat-chip *ngFor="let career_name of selectedCareer" [removable]="removable"
                     (removed)="removeCareer(career_name)">
                     {{career_name}}
                     <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
                 </mat-chip>
-                <input placeholder="อาชีพเมื่อสำเร็จการศึกษา" #careerInput formControlName="career"
+                <input matInput placeholder="อาชีพเมื่อสำเร็จการศึกษา" #careerInput formControlName="career"
                     [matAutocomplete]="auto" [matChipInputFor]="chipList"
                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
                     (matChipInputTokenEnd)="addCareer($event)">
-                <mat-error *ngIf="listCareer_name.length === 0 && majorForm.get('career').touched">
+                <mat-error *ngIf="selectedCareer.length === 0 && majorForm.get('career').touched">
                     กรุณากรอกอาชีพเมื่อสำเร็จการศึกษา
                 </mat-error>
             </mat-chip-list>
@@ -45,9 +75,13 @@
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>
-    </div>
-    <div mat-dialog-actions>
-        <button mat-raised-button class="btn-secondary" (click)="onNoClick()">ปิด</button>
-        <button mat-raised-button class="btn-success" (click)="onSubmit()">แก้ไขข้อมูล</button>
-    </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button class="btn-secondary" (click)="onNoClick()">
+            <mat-icon>close</mat-icon> ปิด
+        </button>
+        <button mat-raised-button class="btn-warning" (click)="onSubmit()">
+            <mat-icon>edit</mat-icon> แก้ไขข้อมูล
+        </button>
+    </mat-dialog-actions>
 </form>
