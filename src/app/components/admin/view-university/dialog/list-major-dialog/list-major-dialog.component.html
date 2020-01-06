@@ -20,20 +20,18 @@
                 </h4>
             </mat-panel-description>
             <mat-panel-title>
-                <div class="container">
-                    <a href="{{major.url}}">{{major.url}}</a>
-                </div>
-            </mat-panel-title><br>
+                <a href="{{major.url}}">{{major.url}}</a>
+            </mat-panel-title>
+            <hr />
             <mat-panel-description>
                 <h4>
                     <mat-icon>assignment_turned_in</mat-icon> วุฒิหลังสำเร็จการศึกษา
                 </h4>
             </mat-panel-description>
             <mat-panel-title>
-                <div class="container">
-                    <p>{{major.certificate}}</p>
-                </div>
-            </mat-panel-title><br>
+                {{major.certificate}}
+            </mat-panel-title>
+            <hr />
             <mat-panel-description>
                 <h4>
                     <mat-icon>post_add</mat-icon> ข้อมูลการศึกษาต่อ (TCAS)
@@ -46,6 +44,7 @@
                     </mat-chip>
                 </mat-chip-list>
             </mat-panel-title>
+            <hr />
             <mat-panel-description>
                 <h4>
                     <mat-icon>build</mat-icon> อาชีพเมื่อสำเร็จการศึกษา
@@ -72,7 +71,7 @@
         </mat-expansion-panel>
     </mat-accordion>
 </div>
-<div class="card-profile no-margin" *ngIf="!showData">
+<div class="card-profile no-margin align-middle" *ngIf="!showData">
     <div class="card-body">
         <mat-icon class="card-title">block</mat-icon>
         <h4 class="card-description">ไม่พบข้อมูลสาขา</h4>

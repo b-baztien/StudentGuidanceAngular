@@ -168,7 +168,6 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
 
   async onSubmit() {
     this.major = new Major;
-    let listCareer = new Array<Career>();
     if (this.majorForm.invalid && this.selectedCareer.length === 0) return;
     try {
       this.major.majorName = this.majorForm.get('majorName').value;
@@ -179,7 +178,13 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
 
       this.major.listCareerName = this.selectedCareer;
 
-      await this.careerService.addAllCareer(listCareer);
+      await this.careerService.addAllCareer(
+        this.selectedCareer.map(career_name => {
+          let career = new Career();
+          career.career_name = career_name;
+          return career;
+        })
+      );
       await this.majorService.addMajor(this.data, this.major);
       new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลสาขาสำเร็จแล้ว', 'success', 'สำเร็จ !');
     }

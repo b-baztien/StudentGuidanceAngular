@@ -216,7 +216,7 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
   openListMajorDialog(faculty: DocumentReference) {
     const dialogRef = this.dialog.open(ListMajorAdminDialogComponent, {
       width: '90%',
-      height: '90%',
+      maxHeight: '90%',
       data: faculty,
     });
 

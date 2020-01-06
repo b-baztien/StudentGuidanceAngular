@@ -104,7 +104,7 @@ export class ListCareerComponent implements OnInit, AfterViewInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       try {
         if (result) {
-          this.careerService.deleteCareer(career);
+          this.careerService.deleteCareer(career.ref);
           new Notifications().showNotification('done', 'top', 'right', 'ลบข้อมูลอาชีพสำเร็จแล้ว', 'success', 'สำเร็จ !');
         }
       } catch (error) {

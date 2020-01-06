@@ -50,8 +50,6 @@ export class EditMajorComponent implements OnInit {
   ngOnInit() {
     this.majorForm.get('majorName').setValue(this.data.majorName);
     this.majorForm.get('url').setValue(this.data.url);
-
-    console.log(this.data);
   }
 
   ngAfterViewInit() {

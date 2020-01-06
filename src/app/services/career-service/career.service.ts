@@ -55,28 +55,24 @@ export class CareerService {
     }
   }
 
-  deleteCareer(careerRef: QueryDocumentSnapshot<unknown>) {
-    // try {
-    //   const career = careerRef.data() as Career;
-    //   if (career.image !== undefined) {
-    //     this.afStorage.storage.ref(career.image).delete();
-    //   }
-    //   this.firestore.collection('Major').ref.where('career', 'array-contains', careerRef.ref).onSnapshot(result => {
-    //     result.forEach(docsRs => {
-    //       const major = docsRs.data() as Major;
-    //       for (let i = 0; i < major.career.length; i++) {
-    //         if (major.career[i].id == careerRef.id) {
-    //           major.career.splice(i, 1);
-    //           this.firestore.collection('Major').doc(docsRs.id).set(Object.assign({}, major));
-    //         }
-    //       }
-    //     });
-    //     this.firestore.collection('Career').doc(career.career_name).delete();
-    //   });
-    // } catch (error) {
-    //   console.error(error);
-    //   throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
-    // }
+  deleteCareer(careerRef: DocumentReference) {
+    const firestoreDoc = this.firestore.collection(careerRef.parent).doc(careerRef.id);
+    try {
+      firestoreDoc.snapshotChanges()
+        .pipe(map(docs => docs.payload)).subscribe(async result => {
+          const career = { id: result.id, ref: result.ref, ...result.data() as Career };
+          if (career.image) {
+            (await this.afStorage.storage.ref('career').child(career.ref.id).listAll())
+              .items.forEach(file => {
+                file.delete();
+              });
+          }
+          firestoreDoc.delete();
+        });
+    } catch (error) {
+      console.error(error);
+      throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
+    }
   }
 
   async deleteMajorInCareer(major: DocumentReference) {

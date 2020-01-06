@@ -32,8 +32,10 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
       this.listMajor = majorDocs.map(docs => { return { id: docs.id, ref: docs.ref, ...docs.data() as Major } });
       if (this.listMajor === undefined || this.listMajor.length === 0) {
         this.showData = false;
+        this.dialogRef.updateSize('90%', 'auto');
       } else {
         this.showData = true;
+        this.dialogRef.updateSize('90%', '90%');
       }
     });
   }
