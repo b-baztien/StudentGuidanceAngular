@@ -20,7 +20,7 @@ export class AddEditCareerDialogComponent implements OnInit {
   career: Career;
   mode: string;
 
-  imgURL: any = 'assets/img/no-photo-available.png';
+  imgURL: string = 'assets/img/no-photo-available.png';
 
   showData = false;
 
@@ -54,14 +54,14 @@ export class AddEditCareerDialogComponent implements OnInit {
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 
-  async upload(file, filePath) {
+  async upload(file, filePath: string, filename?: string) {
     const metadata = {
       contentType: 'image/jpeg',
     };
 
-    const fileName = this.afirestore.createId();
+    const newFileName = filename ? filename : this.afirestore.createId();
     if (file.type.split('/')[0] == 'image') {
-      return await this.afStorage.upload(`${filePath}/${fileName}`, file, metadata).then(async result => {
+      return await this.afStorage.upload(`${filePath}/${newFileName}`, file, metadata).then(async result => {
         return result.ref.fullPath;
       });
     }
@@ -73,7 +73,7 @@ export class AddEditCareerDialogComponent implements OnInit {
       let reader = new FileReader();
       reader.readAsDataURL(event.target.files[0]);
       reader.onload = (_event) => {
-        this.imgURL = reader.result;
+        this.imgURL = reader.result.toString();
       }
     } else {
       this.imgURL = 'assets/img/no-photo-available.png';
@@ -86,18 +86,19 @@ export class AddEditCareerDialogComponent implements OnInit {
 
   async onSubmit() {
     if (this.careerForm.valid) {
-      this.career.career_name = this.careerForm.get('career_name').value;
-      this.career.description = this.careerForm.get('description').value;
+      let career = new Career;
+      career.career_name = this.careerForm.get('career_name').value;
+      career.description = this.careerForm.get('description').value;
 
-      let filePath = `career`;
+      let filePath = 'career';
       let fileLogo: any = document.getElementById('logoImage');
       if (fileLogo.files[0] !== undefined) {
-        this.career.image = await this.upload(fileLogo, filePath).then(result => {
+        career.image = await this.upload(fileLogo, filePath, career.career_name).then(result => {
           return result;
         });
       }
 
-      this.dialogRef.close({ career: this.career, mode: this.mode });
+      this.dialogRef.close({ career: career, mode: this.mode });
     }
   }
 }

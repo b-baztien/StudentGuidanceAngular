@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./list-career.component.css']
 })
 export class ListCareerComponent implements OnInit, AfterViewInit, OnDestroy {
-  careerList: MatTableDataSource<QueryDocumentSnapshot<DocumentData>>;
+  careerList: MatTableDataSource<Career>;
   displayedColumns: string[] = ['career_name', 'manage'];
 
   resultsLength = 0;
@@ -35,9 +35,11 @@ export class ListCareerComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.careerList = new MatTableDataSource<Career>();
+    this.customFilter();
     //add data to table datasource
     this.careerSub = this.careerService.getAllCareer().subscribe(result => {
-      this.careerList = new MatTableDataSource<QueryDocumentSnapshot<DocumentData>>(result.map(career => career));
+      this.careerList.data = result.map(career => { return { id: career.id, ref: career.ref, ...career.data() as Career } });
       this.careerList.paginator = this.paginator;
 
       if (this.careerList.data.length === 0) {
@@ -71,21 +73,30 @@ export class ListCareerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.careerList.filter = filterValue.trim().toLowerCase();
   }
 
-  openAddEditCareerDialog(career?: QueryDocumentSnapshot<unknown>): void {
+  private customFilter() {
+    this.careerList.filterPredicate = (data: Career, filter: string) => {
+      if (data.career_name.indexOf(filter) != -1) {
+        return true;
+      }
+      return false;
+    }
+  }
+
+  openAddEditCareerDialog(career?: Career): void {
     const dialogRef = this.dialog.open(AddEditCareerDialogComponent, {
       width: '90%',
       maxHeight: '90%',
-      data: career ? career.data() as Career : null,
+      data: career ? career : null,
     });
 
-    dialogRef.afterClosed().subscribe(careerRs => {
+    dialogRef.afterClosed().subscribe(dialogRs => {
       try {
-        if (careerRs === undefined || careerRs === null) return;
-        if (careerRs.mode === 'เพิ่ม') {
-          this.careerService.addAllCareer(careerRs.career);
+        if (dialogRs === undefined || dialogRs === null) return;
+        if (dialogRs.mode === 'เพิ่ม') {
+          this.careerService.addCareer(dialogRs.career);
           new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลอาชีพสำเร็จแล้ว', 'success', 'สำเร็จ !');
-        } else if (careerRs.mode === 'แก้ไข') {
-          this.careerService.updateCareer(careerRs.career);
+        } else if (dialogRs.mode === 'แก้ไข') {
+          this.careerService.updateCareer(dialogRs.career);
           new Notifications().showNotification('done', 'top', 'right', 'แก้ไขข้อมูลอาชีพสำเร็จแล้ว', 'success', 'สำเร็จ !');
         }
       } catch (error) {
@@ -95,16 +106,16 @@ export class ListCareerComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  openDeleteCareerDialog(career: QueryDocumentSnapshot<unknown>) {
+  openDeleteCareerDialog(career: Career) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: 'auto',
-      data: `คุณต้องการลบข้อมูลอาชีพ${(career.data() as Career).career_name} ใช่ หรือ ไม่ ?`,
+      data: `คุณต้องการลบข้อมูลอาชีพ ${(career).career_name} ใช่ หรือ ไม่ ?`,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(async result => {
       try {
         if (result) {
-          this.careerService.deleteCareer(career.ref);
+          await this.careerService.deleteCareer(career.ref);
           new Notifications().showNotification('done', 'top', 'right', 'ลบข้อมูลอาชีพสำเร็จแล้ว', 'success', 'สำเร็จ !');
         }
       } catch (error) {

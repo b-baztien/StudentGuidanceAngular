@@ -31,6 +31,19 @@ export class CareerService {
       .pipe(map(result => result.map(item => item.payload.doc)));
   }
 
+  async addCareer(career: Career) {
+    try {
+      await this.firestore.collection('Career').doc(career.career_name)
+        .get().toPromise().then(result => {
+          if (result.exists) return;
+          this.firestore.collection('Career').doc(career.career_name).set(Object.assign({}, career));
+        });
+    } catch (error) {
+      console.error(error);
+      throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
+    }
+  }
+
   async addAllCareer(listCareer: Career[]) {
     try {
       listCareer.forEach(async (career) => {
@@ -48,17 +61,17 @@ export class CareerService {
 
   updateCareer(career: Career) {
     try {
-      this.firestore.collection('Career').doc(career.career_name).set(Object.assign({}, career));
+      this.firestore.collection('Career').doc(career.career_name).update(Object.assign({}, career));
     } catch (error) {
       console.error(error);
       throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
     }
   }
 
-  deleteCareer(careerRef: DocumentReference) {
+  async deleteCareer(careerRef: DocumentReference) {
     const firestoreDoc = this.firestore.collection(careerRef.parent).doc(careerRef.id);
     try {
-      firestoreDoc.snapshotChanges()
+      await firestoreDoc.snapshotChanges()
         .pipe(map(docs => docs.payload)).subscribe(async result => {
           const career = { id: result.id, ref: result.ref, ...result.data() as Career };
           if (career.image) {
@@ -67,7 +80,7 @@ export class CareerService {
                 file.delete();
               });
           }
-          firestoreDoc.delete();
+          await firestoreDoc.delete();
         });
     } catch (error) {
       console.error(error);

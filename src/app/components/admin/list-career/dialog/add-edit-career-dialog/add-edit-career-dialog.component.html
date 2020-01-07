@@ -23,16 +23,18 @@
             </mat-error>
         </mat-form-field>
         <mat-form-field>
-            <textarea matInput placeholder="รายละเอียดอาชีพ" required formControlName="description"></textarea>
+            <textarea matInput placeholder="รายละเอียดอาชีพ" formControlName="description"></textarea>
         </mat-form-field>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
         <button mat-raised-button class="btn-secondary" (click)="onNoClick()">
             <mat-icon>close</mat-icon> ปิด
         </button>
-        <button mat-raised-button class="btn-success" (click)="onSubmit()">
-            <mat-icon *ngIf="mode === 'เพิ่ม'">add</mat-icon>
-            <mat-icon *ngIf="mode === 'แก้ไข'">edit</mat-icon> {{mode}}ข้อมูล
+        <button mat-raised-button class="btn-success" (click)="onSubmit()" *ngIf="mode === 'เพิ่ม'">
+            <mat-icon>add</mat-icon> {{mode}}ข้อมูล
+        </button>
+        <button mat-raised-button class="btn-warning" (click)="onSubmit()" *ngIf="mode === 'แก้ไข'">
+            <mat-icon>edit</mat-icon> {{mode}}ข้อมูล
         </button>
     </mat-dialog-actions>
 </form>
