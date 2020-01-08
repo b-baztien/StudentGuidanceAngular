@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import { News } from 'src/app/model/News';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,9 @@ export class NewsService {
   ) {
   }
 
-  getAllNews() {
-    return this.firestore.collection('News').snapshotChanges();
+  getNewsByTeacherReference(teacher: DocumentReference) {
+    return this.firestore.collection(teacher.parent).doc(teacher.id).collection('News').snapshotChanges()
+      .pipe(map(result => result.map(item => item.payload.doc)));
   }
 
   getAllNewsOrderByDate() {

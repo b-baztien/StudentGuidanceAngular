@@ -50,32 +50,39 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     let login: Login = JSON.parse(localStorage.getItem('userData')) as Login;
-    console.log(login);
     this.teacherService.getTeacherByUsername(login.username).subscribe(teacherRef => {
-      console.log('get teacher', teacherRef.ref);
-      this.teacher = teacherRef.data() as Teacher;
-      this.schoolService.getSchool(this.teacher.school.id).subscribe(schoolRef => {
-        this.school = schoolRef.payload.data() as School;
+      this.showContent = true;
+      this.teacher = { id: teacherRef.id, ref: teacherRef.ref, ...teacherRef.data() as Teacher };
+      this.schoolService.getSchool(this.teacher.ref.parent.parent.id).subscribe(schoolRef => {
+        this.school = { id: schoolRef.id, ref: schoolRef.ref, ...schoolRef.data() as School };
         this.showContent = true;
-        this.studentService.getStudentBySchoolId(schoolRef.payload.id).subscribe(listStdRef => {
-          this.studentList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(listStdRef);
-          this.studentList.paginator = this.paginator;
-          if (this.studentList.data.length === 0) {
-            this.showStudentTable = false;
-          } else {
-            this.showStudentTable = true;
-          }
-        });
-        this.alumniService.getAlumniBySchoolId(schoolRef.payload.id).subscribe(listAlnRef => {
-          this.alumniList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(listAlnRef);
-          this.alumniList.paginator = this.paginator;
-          if (this.alumniList.data.length === 0) {
-            this.showAlumniTable = false;
-          } else {
-            this.showAlumniTable = true;
-          }
-        });
+        this.getStudentData(this.school);
+        this.getAlumniData(this.school);
       });
+    });
+  }
+
+  private getStudentData(school: School) {
+    this.studentService.getStudentBySchoolReference(school.ref).subscribe(listStdRef => {
+      this.studentList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(listStdRef);
+      this.studentList.paginator = this.paginator;
+      if (this.studentList.data.length === 0) {
+        this.showStudentTable = false;
+      } else {
+        this.showStudentTable = true;
+      }
+    });
+  }
+
+  private getAlumniData(school: School) {
+    this.alumniService.getAlumniBySchoolReference(school.ref).subscribe(listAlnRef => {
+      this.alumniList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(listAlnRef);
+      this.alumniList.paginator = this.paginator;
+      if (this.alumniList.data.length === 0) {
+        this.showAlumniTable = false;
+      } else {
+        this.showAlumniTable = true;
+      }
     });
   }
 

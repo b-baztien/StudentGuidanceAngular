@@ -3,7 +3,7 @@
     <h1 mat-dialog-title>เพิ่มข้อมูลมหาวิทยาลัย</h1>
   </div>
 </div>
-<mat-vertical-stepper [linear]="true" #stepper *ngIf="showData">
+<mat-vertical-stepper [linear]="true" #stepper>
   <mat-step [stepControl]="universityDetailForm">
     <form [formGroup]="universityDetailForm">
       <ng-template matStepLabel>ข้อมูลรายละเอียดมหาวิทยาลัย</ng-template>
@@ -57,23 +57,6 @@
         </mat-form-field>
         <mat-form-field>
           <textarea matInput placeholder="รายละเอียดมหาวิทยาลัย" formControlName="university_detail"></textarea>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-chip-list #chipList aria-label="Highlight">
-            <mat-chip *ngFor="let highlight of listHighlight" [removable]="removable"
-              (removed)="removeHighlight(highlight)">
-              {{highlight}}
-              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-            </mat-chip>
-            <input placeholder="จุดเด่นมหาวิทยาลัย" #highlightInput formControlName="highlight" [matAutocomplete]="auto"
-              [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-              [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="addHighlight($event)">
-          </mat-chip-list>
-          <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption (optionSelected)="selected($event)">
-            <mat-option *ngFor="let highlight of filteredHighlight | async" [value]="highlight">
-              {{highlight}}
-            </mat-option>
-          </mat-autocomplete>
         </mat-form-field>
         <mat-form-field>
           <input matInput type="tel" placeholder="เบอร์โทรศัพท์" required formControlName="phone_no">

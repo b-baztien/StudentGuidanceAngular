@@ -9,7 +9,6 @@ export class University {
     view: number;
     image: string = '';
     albumImage: string[] = new Array<string>();
-    highlight: string[] = new Array<string>();
     address: string;
     tambon: string;
     amphur: string;

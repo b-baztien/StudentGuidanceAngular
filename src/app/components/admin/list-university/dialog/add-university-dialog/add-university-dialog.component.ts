@@ -26,7 +26,6 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
       Validators.required,
       Validators.pattern('^[0-9]*$')])),
     university_detail: new FormControl(null),
-    highlight: new FormControl(null),
   });
 
   universityAddressForm = new FormGroup({
@@ -48,8 +47,6 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
   university: University;
   universityId;
 
-  showData = false;
-
   imgURL: any = 'assets/img/no-photo-available.png';
   albumUrl: any[] = [
     'assets/img/no-photo-available.png',
@@ -58,10 +55,6 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
     'assets/img/no-photo-available.png',
     'assets/img/no-photo-available.png',
   ];
-
-  listHighlight: string[] = new Array<string>();
-  allHighlight: string[] = new Array<string>();
-  filteredHighlight: Observable<string[]>;
 
   selectable = true;
   addOnBlur = true;
@@ -89,24 +82,6 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
     this.getProvinceJSON().subscribe(data => {
       this.listProvince = data;
     });
-
-    this.universityService.getAllUniversity().subscribe(result => {
-      const universitys = result.map(doc => doc.data() as University);
-      let highlightSet = new Set<string>();
-      universitys.filter(uni => uni.highlight !== undefined).forEach(uni => {
-        uni.highlight.forEach(hl => {
-          highlightSet.add(hl);
-        });
-      });
-
-      this.allHighlight = Array.from(highlightSet);
-
-      this.showData = true;
-    });
-
-    this.filteredHighlight = this.universityDetailForm.get('highlight').valueChanges.pipe(
-      startWith(null),
-      map((highlight: string | null) => highlight ? this._filter(highlight) : this.allHighlight.slice()));
   }
 
   async upload(file, filePath) {
@@ -174,9 +149,6 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
       this.university.university_detail = this.universityDetailForm.get('university_detail').value;
       this.university.zone = this.universityAddressForm.get('province').value.zone;
       this.university.view = 0;
-      if (this.listHighlight.length != 0) {
-        this.university.highlight = this.listHighlight;
-      }
       let filePath = `university/${this.universityId}`;
       let fileLogo: any = document.getElementById('logoImage');
       if (fileLogo.files.length != 0) {
@@ -197,46 +169,5 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
     } catch (error) {
       new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'เพิ่มข้อมูลล้มเหลว !');
     }
-  }
-
-  addHighlight(event: MatChipInputEvent): void {
-    if (!this.matAutocomplete.isOpen) {
-      const input = event.input;
-      const value = event.value;
-
-      if ((value || '').trim()) {
-        this.listHighlight.push(value.trim());
-      }
-
-      if (input) {
-        input.value = '';
-      }
-
-      this.universityDetailForm.get('highlight').setValue(null);
-    }
-  }
-
-  clearHighlight(): void {
-    this.highlightInput.nativeElement.value = null;
-    this.universityDetailForm.get('highLight').setValue(null);
-  }
-
-  removeHighlight(highlight: string): void {
-    const index = this.listHighlight.indexOf(highlight);
-
-    if (index >= 0) {
-      this.listHighlight.splice(index, 1);
-    }
-  }
-
-  selected(event: MatAutocompleteSelectedEvent): void {
-    this.listHighlight.push(event.option.viewValue);
-    this.highlightInput.nativeElement.value = null;
-    this.universityDetailForm.get('highlight').setValue(null);
-  }
-
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.allHighlight.filter(highlight => highlight.toLowerCase().includes(filterValue));
   }
 }

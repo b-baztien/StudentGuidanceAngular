@@ -142,7 +142,7 @@ export class ListEntranceExamResultComponent implements OnInit {
     });
 
     //get alumni data
-    this.alumniService.getAlumniBySchoolId(this.teacher.school.id).subscribe(async result => {
+    this.alumniService.getAlumniBySchoolReference(this.teacher.ref).subscribe(async result => {
       this.showStudyUniTable = false;
       let resultListStudy = new Array<QueryDocumentSnapshot<Object>>();
       this.studyUniList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListStudy);

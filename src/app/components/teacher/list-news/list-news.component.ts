@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
 import { QueryDocumentSnapshot, DocumentReference } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
@@ -9,14 +9,17 @@ import { News } from 'src/app/model/News';
 import { UniversityService } from 'src/app/services/university-service/university.service';
 import { University } from 'src/app/model/University';
 import { EditNewsDialogComponent } from './dialog/edit-news-dialog/edit-news-dialog.component';
+import { Login } from 'src/app/model/Login';
+import { TeacherService } from 'src/app/services/teacher-service/teacher.service';
+import { Teacher } from 'src/app/model/Teacher';
 
 @Component({
   selector: 'app-list-news',
   templateUrl: './list-news.component.html',
   styleUrls: ['./list-news.component.css']
 })
-export class ListNewsComponent implements OnInit, AfterViewInit {
-  newsList;
+export class ListNewsComponent implements OnInit, OnDestroy {
+  newsList: News[] = [];
   displayedColumns: string[] = ['topic', 'detail', 'start_time', 'end_time'];
 
   resultsLength = 0;
@@ -37,43 +40,27 @@ export class ListNewsComponent implements OnInit, AfterViewInit {
     private newsService: NewsService,
     private universityService: UniversityService,
     private afStorage: AngularFireStorage,
+    private teacherService: TeacherService
   ) {
   }
 
   ngOnInit() {
-  }
-
-  async ngAfterViewInit() {
-    this.listNewsObs = this.newsService.getAllNews().subscribe(() => {
-      this.newsService.getAllNewsOrderByDate().then(result => {
-        let resultListUniversity = new Array<QueryDocumentSnapshot<Object>>();
-        result.forEach(element => {
-          let news = element.data() as News;
+    let login: Login = JSON.parse(localStorage.getItem('userData')) as Login;
+    this.listNewsObs = this.teacherService.getTeacherByUsername(login.username).subscribe(teacherDoc => {
+      const teacher = { id: teacherDoc.id, ref: teacherDoc.ref, ...teacherDoc.data() as Teacher }
+      this.newsService.getNewsByTeacherReference(teacher.ref).subscribe(newsDocs => {
+        this.newsList = newsDocs.map(doc => {
+          let news = { id: doc.id, ref: doc.ref, ...doc.data() as News };
           if (news.image !== undefined) {
             this.afStorage.storage.ref(news.image).getDownloadURL().then(url => {
-              this.imagePath.set(element.id, url);
+              this.imagePath.set(news.id, url);
             });
           } else {
-            this.imagePath.set(element.id, 'assets/img/no-photo-available.png');
+            this.imagePath.set(news.id, 'assets/img/no-photo-available.png');
           }
-          let listUniName = new Array<string>();
-          if (news.university !== undefined) {
-            news.university.forEach(uniRef => {
-              this.universityService.getUniversity(uniRef.id).subscribe(result => {
-                let uni = result.payload.data() as University;
-                listUniName.push(uni.university_name);
-                if (listUniName.length === news.university.length) {
-                  this.mapUniversity.set(element.id, listUniName);
-                }
-              });
-            });
-          } else {
-            this.mapUniversity.set(element.id, null);
-          }
-
-          resultListUniversity.push(element);
+          return news;
         });
-        this.newsList = resultListUniversity;
+
         if (this.newsList.length === 0) {
           this.showContent = false;
         } else {

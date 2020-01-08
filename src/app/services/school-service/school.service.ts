@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { School } from 'src/app/model/School';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class SchoolService {
   }
 
   getSchool(schoolId: string) {
-    return this.firestore.collection('School').doc(schoolId).snapshotChanges();
+    return this.firestore.collection('School').doc(schoolId).snapshotChanges().pipe(map(result => result.payload));
   }
 
   getSchoolByCondition(schoolId: string, queryFn) {
