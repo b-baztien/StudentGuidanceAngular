@@ -1,13 +1,11 @@
-import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
-import { QueryDocumentSnapshot, DocumentReference } from '@angular/fire/firestore';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { MatPaginator, MatDialog } from '@angular/material';
+import { DocumentReference } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { NewsService } from 'src/app/services/news-service/news.service';
 import { AddNewsDialogComponent } from './dialog/add-news-dialog/add-news-dialog.component';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { News } from 'src/app/model/News';
-import { UniversityService } from 'src/app/services/university-service/university.service';
-import { University } from 'src/app/model/University';
 import { EditNewsDialogComponent } from './dialog/edit-news-dialog/edit-news-dialog.component';
 import { Login } from 'src/app/model/Login';
 import { TeacherService } from 'src/app/services/teacher-service/teacher.service';
@@ -38,7 +36,6 @@ export class ListNewsComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private router: Router,
     private newsService: NewsService,
-    private universityService: UniversityService,
     private afStorage: AngularFireStorage,
     private teacherService: TeacherService
   ) {
@@ -79,7 +76,7 @@ export class ListNewsComponent implements OnInit, OnDestroy {
       width: '60%',
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(() => {
     });
   }
 
@@ -91,7 +88,7 @@ export class ListNewsComponent implements OnInit, OnDestroy {
 
     dialogRef.beforeClose().subscribe()
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(() => {
     });
   }
 
