@@ -1,38 +1,44 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { Major } from 'src/app/model/Major';
-import { QueryDocumentSnapshot, DocumentReference, DocumentData } from '@angular/fire/firestore';
-import { CareerService } from 'src/app/services/career-service/career.service';
+import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MajorService } from 'src/app/services/major-service/major.service';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Major } from 'src/app/model/Major';
+import { Subscription } from 'rxjs';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { DocumentReference } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-list-major-dialog',
   templateUrl: './list-major-dialog.component.html',
   styleUrls: ['./list-major-dialog.component.css']
 })
-export class ListMajorTeacherDialogComponent implements OnInit {
-  displayedColumns: string[] = ['majorName', 'url'];
-  listMajor = new Array<DocumentData>();
-  listCareer = new Array<QueryDocumentSnapshot<unknown>>();
+export class ListMajorTeacherDialogComponent implements OnInit, OnDestroy {
+  listMajor = new Array<Major>();
   haveCareer = false;
   showData = false;
 
+  majorSub: Subscription;
+
   constructor(
-    private careerService: CareerService,
+    private majorService: MajorService,
+    public dialog: MatDialog,
     public dialogRef: MatDialogRef<ListMajorTeacherDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DocumentData[]) {
+    @Inject(MAT_DIALOG_DATA) public data: DocumentReference) {
   }
 
-  async ngOnInit() {
-    this.listMajor = this.data;
+  ngOnInit() {
+    this.majorSub = this.majorService.getMajorByFacultyReference(this.data).subscribe(majorDocs => {
+      this.listMajor = majorDocs.map(docs => { return { id: docs.id, ref: docs.ref, ...docs.data() as Major } });
+      if (this.listMajor === undefined || this.listMajor.length === 0) {
+        this.showData = false;
+        this.dialogRef.updateSize('90%', 'auto');
+      } else {
+        this.showData = true;
+        this.dialogRef.updateSize('90%', '90%');
+      }
+    });
   }
 
-  ngAfterViewInit() {
-    if (this.listMajor === undefined || this.listMajor.length === 0) {
-      this.showData = false;
-    } else {
-      this.showData = true;
-    }
+  ngOnDestroy(): void {
+    this.majorSub.unsubscribe();
   }
 
   onNoClick(): void {

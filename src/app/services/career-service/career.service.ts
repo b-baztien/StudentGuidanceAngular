@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentReference, QueryDocumentSnapshot, QuerySnapshot, DocumentData } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import { Career } from 'src/app/model/Career';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { Major } from 'src/app/model/Major';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -86,21 +84,5 @@ export class CareerService {
       console.error(error);
       throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
     }
-  }
-
-  async deleteMajorInCareer(major: DocumentReference) {
-    // return await this.firestore.collection('Career').ref.where('major', '==', major).get().then(async result => {
-    //   if (!result.empty) {
-    //     result.docs.forEach(careerRef => {
-    //       let career = careerRef.data() as Career;
-    //       for (let i = 0; i < career.major.length; i++) {
-    //         if (career.major[i].id == major.id) {
-    //           career.major.splice(i, 1);
-    //           this.firestore.collection('Career').doc(careerRef.id).update(Object.assign({}, career));
-    //         }
-    //       }
-    //     });
-    //   }
-    // });
   }
 }
