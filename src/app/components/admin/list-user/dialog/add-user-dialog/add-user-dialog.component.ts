@@ -106,11 +106,6 @@ export class AddUserDialogComponent implements OnInit {
       this.listProvince = data;
     });
 
-    this.teacherService.getTeacherId().subscribe(result => {
-      this.teacherId = result;
-      this.onCreateUsername();
-    });
-
     this.studentService.getStudentId().subscribe(result => {
       this.studentId = result;
       this.onCreateUsername();
@@ -208,7 +203,7 @@ export class AddUserDialogComponent implements OnInit {
           }
           this.loginService.addUser(this.login).then(loginRef => {
             this.teacher.login = loginRef;
-            this.teacherService.addTeacher(this.login, this.teacher, this.userForm.get('isCreateId').value);
+            this.teacherService.addTeacher(this.login, this.teacher);
           });
           this.dialogRef.close();
         }

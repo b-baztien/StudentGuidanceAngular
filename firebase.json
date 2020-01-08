@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "studentguidance",
     "public": "dist/StudentGuidanceAngular",
     "ignore": [
       "firebase.json",

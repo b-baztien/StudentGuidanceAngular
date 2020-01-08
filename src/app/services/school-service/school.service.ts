@@ -17,6 +17,10 @@ export class SchoolService {
     return this.firestore.collection('School').doc(schoolId).snapshotChanges();
   }
 
+  getSchoolByCondition(schoolId: string, queryFn) {
+    return this.firestore.collection('School', queryFn).doc(schoolId).snapshotChanges();
+  }
+
   async addSchool(school: School) {
     return await this.firestore.collection('School').doc(school.school_name).ref.get().then(async schoolRes => {
       if (!schoolRes.exists) {

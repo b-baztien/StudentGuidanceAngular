@@ -79,7 +79,7 @@ export class ListEntranceExamResultComponent implements OnInit {
 
     //add data to table datasource
     let userData: Login = JSON.parse(localStorage.getItem('userData'));
-    this.teacher = await this.teacherService.getTeacherByUsername(userData.username).then(result => {
+    this.teacher = await this.teacherService.getTeacherByUsername(userData.username).toPromise().then(result => {
       return result.data() as Teacher;
     });
 

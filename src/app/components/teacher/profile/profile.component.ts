@@ -55,7 +55,7 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.login = JSON.parse(localStorage.getItem('userData'));
-    this.teacherService.getTeacherByUsername(this.login.username).then(result => {
+    this.teacherService.getTeacherByUsername(this.login.username).toPromise().then(result => {
       this.teacherId = result.id;
       this.teacher = result.data() as Teacher;
 

@@ -50,8 +50,10 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     let login: Login = JSON.parse(localStorage.getItem('userData')) as Login;
-    this.teacherService.getTeacher(login.username).subscribe(teacherRef => {
-      this.teacher = teacherRef.payload.data() as Teacher;
+    console.log(login);
+    this.teacherService.getTeacherByUsername(login.username).subscribe(teacherRef => {
+      console.log('get teacher', teacherRef.ref);
+      this.teacher = teacherRef.data() as Teacher;
       this.schoolService.getSchool(this.teacher.school.id).subscribe(schoolRef => {
         this.school = schoolRef.payload.data() as School;
         this.showContent = true;
