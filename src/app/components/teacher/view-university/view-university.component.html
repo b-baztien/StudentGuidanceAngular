@@ -10,11 +10,6 @@
                     </div>
                     <div class="card-body">
                         <h4 class="card-title">{{university.university_name}}</h4>
-                        <mat-chip-list class="card-title" *ngIf="university.highlight !== undefined">
-                            <mat-chip color="primary" selected *ngFor="let highlight of university.highlight">
-                                {{highlight}}
-                            </mat-chip>
-                        </mat-chip-list>
                         <p class="card-description">
                             {{university.university_detail}}
                         </p>
