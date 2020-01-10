@@ -86,7 +86,9 @@
                                     class="table table-hover">
                                     <ng-container matColumnDef="faculty_name">
                                         <th id="faculty_name" mat-header-cell *matHeaderCellDef>ชื่อคณะ</th>
-                                        <td mat-cell *matCellDef="let faculty"> {{faculty.faculty_name}} </td>
+                                        <td mat-cell *matCellDef="let faculty">
+                                            <mat-icon>{{faculty.facultyIcon.name}}</mat-icon> {{faculty.faculty_name}}
+                                        </td>
                                     </ng-container>
                                     <ng-container matColumnDef="url">
                                         <th id="faculty_url" mat-header-cell *matHeaderCellDef>เว็บไซต์</th>

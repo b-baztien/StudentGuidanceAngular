@@ -15,7 +15,9 @@ export class AlumniService {
 
   getAlumniBySchoolReference(school: DocumentReference) {
     return this.firestore.collection(school.parent).doc(school.id)
-      .collection('Alumni')
-      .snapshotChanges().pipe(map(result => result.map(item => item.payload.doc)));
+      .collection('Student')
+      .snapshotChanges().pipe(
+        map(result => result.filter(item => (item.payload.doc.data() as Student).student_status !== 'กำลังศึกษา')
+          .map(item => item.payload.doc)));
   }
 }

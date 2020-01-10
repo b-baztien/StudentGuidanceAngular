@@ -76,6 +76,10 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
     url: new FormControl(null, [Validators.required]),
     tcasEntranceRound: new FormControl([], [Validators.required]),
     certificate: new FormControl(null, [Validators.required]),
+    tuitionFee: new FormControl(null, [
+      Validators.required,
+      Validators.pattern('^[0-9]*$')
+    ]),
     courseDuration: new FormControl(null, Validators.compose(
       [
         Validators.required,
@@ -85,9 +89,6 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
     career: new FormControl(null),
   });
 
-  toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
-
-  major: Major;
   selectedCareer = new Array<string>();
   listAllCareer: string[] = new Array<string>();
   filteredCareer: Observable<string[]>;
@@ -167,16 +168,16 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
   }
 
   async onSubmit() {
-    this.major = new Major;
+    let major = new Major;
     if (this.majorForm.invalid && this.selectedCareer.length === 0) return;
     try {
-      this.major.majorName = this.majorForm.get('majorName').value;
-      this.major.url = this.majorForm.get('url').value;
-      this.major.certificate = this.majorForm.get('certificate').value;
-      this.major.courseDuration = this.majorForm.get('courseDuration').value;
-      this.major.tcasEntranceRound = this.majorForm.get('tcasEntranceRound').value;
-
-      this.major.listCareerName = this.selectedCareer;
+      major.majorName = this.majorForm.get('majorName').value;
+      major.url = this.majorForm.get('url').value;
+      major.certificate = this.majorForm.get('certificate').value;
+      major.courseDuration = this.majorForm.get('courseDuration').value;
+      major.tcasEntranceRound = this.majorForm.get('tcasEntranceRound').value;
+      major.tuitionFee = this.majorForm.get('tuitionFee').value;
+      major.listCareerName = this.selectedCareer;
 
       await this.careerService.addAllCareer(
         this.selectedCareer.map(career_name => {
@@ -185,7 +186,7 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
           return career;
         })
       );
-      await this.majorService.addMajor(this.data, this.major);
+      await this.majorService.addMajor(this.data, major);
       new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลสาขาสำเร็จแล้ว', 'success', 'สำเร็จ !');
     }
     catch (error) {

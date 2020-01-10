@@ -104,7 +104,6 @@ export class EditMajorComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<AddMajorDialogComponent>,
     private careerService: CareerService,
-    private majorService: MajorService,
     @Inject(MAT_DIALOG_DATA) public data: Major,
   ) { }
 

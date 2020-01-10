@@ -1,8 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, ErrorStateMatcher } from '@angular/material';
-import { FacultyService } from 'src/app/services/faculty-service/faculty.service';
 import { Faculty } from 'src/app/model/Faculty';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
+import { flutterMeterialIcons, UtilIcons } from 'src/app/model/util/UtilIcons';
+import { Observable } from 'rxjs';
+import { startWith, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-edit-faculty-dialog',
@@ -10,15 +12,20 @@ import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '
   styleUrls: ['./add-edit-faculty-dialog.component.css']
 })
 export class AddEditFacultyDialogComponent implements OnInit, ErrorStateMatcher {
+  icons: UtilIcons[] = flutterMeterialIcons;
+
   facultyForm = new FormGroup({
     faculty_name: new FormControl(this.data === null ? null : this.data.faculty_name, [
       Validators.required]),
     url: new FormControl(this.data === null ? null : this.data.url, [
       Validators.required]),
+    facultyIcon: new FormControl(
+      this.data === null ? null : this.icons.filter(icon => icon.name === this.data.facultyIcon.name
+      )[0].name, [Validators.required]),
   });
 
-  faculty: Faculty;
   mode: string;
+
 
   constructor(
     public dialogRef: MatDialogRef<AddEditFacultyDialogComponent>,
@@ -39,10 +46,11 @@ export class AddEditFacultyDialogComponent implements OnInit, ErrorStateMatcher 
   }
 
   async onSubmit() {
-    this.faculty = new Faculty();
+    let faculty = new Faculty();
     if (this.facultyForm.invalid) return;
-    this.faculty.faculty_name = this.facultyForm.get('faculty_name').value;
-    this.faculty.url = this.facultyForm.get('url').value;
-    this.dialogRef.close({ faculty: this.faculty, mode: this.mode });
+    faculty.faculty_name = this.facultyForm.controls.faculty_name.value;
+    faculty.url = this.facultyForm.controls.url.value;
+    faculty.facultyIcon = this.icons.filter(icon => icon.name === this.facultyForm.controls.facultyIcon.value)[0];
+    this.dialogRef.close({ faculty: faculty, mode: this.mode });
   }
 }

@@ -17,7 +17,7 @@ export class StudentService {
 
   getStudentBySchoolReference(school: DocumentReference) {
     return this.firestore.collection(school.parent).doc(school.id)
-      .collection('Student', query => query.orderBy('firstname'))
+      .collection('Student', query => query.where('student_status', '==', 'กำลังศึกษา').orderBy('firstname'))
       .snapshotChanges().pipe(map(result => result.map(item => item.payload.doc)));
   }
 
@@ -29,8 +29,8 @@ export class StudentService {
     return this.firestore.collectionGroup('Student', queryGroupFn).snapshotChanges();
   }
 
-  updateStudent(studentId: string, student: Student) {
-    return this.firestore.collection('Student').doc(studentId).update(Object.assign({}, student));
+  updateStudent(studentRef: DocumentReference, student: Student) {
+    return this.firestore.collection(studentRef.parent).doc(studentRef.id).update(Object.assign({}, student));
   }
 
   addStudent(login: Login, student: Student, increase: boolean) {

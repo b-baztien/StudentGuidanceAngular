@@ -5,6 +5,26 @@
   </h1>
   <mat-dialog-content>
     <mat-form-field>
+      <mat-select placeholder="ไอคอนคณะ" required formControlName="facultyIcon">
+        <mat-select-trigger>
+          <mat-icon>
+            {{facultyForm.controls.facultyIcon.value ? facultyForm.controls.facultyIcon.value : ''}}
+          </mat-icon>
+          <span>
+            {{facultyForm.controls.facultyIcon.value ? facultyForm.controls.facultyIcon.value : ''}}
+          </span>
+        </mat-select-trigger>
+        <mat-option *ngFor="let icon of icons" [value]="icon.name" (value)="icon">
+          <mat-icon>{{icon.name}}</mat-icon>
+          <span>{{icon.name}}</span>
+        </mat-option>
+      </mat-select>
+      <mat-hint>ไอคอนคณะ ใช้แสดงในแอพพลิเคชัน</mat-hint>
+      <mat-error *ngIf="facultyForm.controls.facultyIcon.hasError('required')">
+        กรุณาเลือกไอคอนคณะ
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
       <input matInput placeholder="ชื่อคณะ" required formControlName="faculty_name">
       <mat-error *ngIf="facultyForm.controls.faculty_name.hasError('required')">
         กรุณากรอกชื่อคณะ

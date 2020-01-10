@@ -1,6 +1,8 @@
 import { DocumentReference } from '@angular/fire/firestore';
 
 export class Student {
+    id?: string;
+    ref?: DocumentReference;
     firstname: string;
     lastname: string;
     image: string = '';

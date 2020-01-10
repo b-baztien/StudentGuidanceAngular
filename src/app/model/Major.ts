@@ -9,6 +9,7 @@ export class Major {
     tcasEntranceRound: Tcas[];
     certificate: string;
     courseDuration: string;
+    tuitionFee: string;
     listCareerName?: string[];
 
 }

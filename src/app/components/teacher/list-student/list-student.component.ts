@@ -18,9 +18,9 @@ import { AlumniService } from 'src/app/services/alumni-service/alumni.service';
 })
 export class ListStudentComponent implements OnInit, AfterViewInit {
   teacher: Teacher = new Teacher();
-  school: School;
-  studentList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
-  alumniList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
+  school: School = new School();
+  studentList: MatTableDataSource<Student>;
+  alumniList: MatTableDataSource<Student>;
 
   displayedColumns: string[] = ['select', 'fullname', 'email', 'phone_no', 'gender', 'entry_year', 'manage'];
   displayedAlumniColumns: string[] = ['fullname', 'email', 'phone_no', 'gender', 'entry_year'];
@@ -28,15 +28,14 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
   resultsLength = 0;
   isLoadingResults = true;
 
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-
-  listUniObs;
+  @ViewChild('stdPaginator', { static: false }) stdPaginator: MatPaginator;
+  @ViewChild('alnPaginator', { static: false }) alnPaginator: MatPaginator;
 
   showContent = false;
   showStudentTable: boolean = false;
   showAlumniTable: boolean = false;
 
-  selection = new SelectionModel<QueryDocumentSnapshot<Object>>(true, []);
+  selection = new SelectionModel<Student>(true, []);
 
   constructor(
     public dialog: MatDialog,
@@ -46,9 +45,7 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
     private teacherService: TeacherService,
   ) { }
 
-  ngOnInit() { }
-
-  ngAfterViewInit(): void {
+  ngOnInit() {
     let login: Login = JSON.parse(localStorage.getItem('userData')) as Login;
     this.teacherService.getTeacherByUsername(login.username).subscribe(teacherRef => {
       this.showContent = true;
@@ -62,10 +59,15 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
     });
   }
 
+  ngAfterViewInit(): void { }
+
   private getStudentData(school: School) {
+    this.studentList = new MatTableDataSource<Student>();
     this.studentService.getStudentBySchoolReference(school.ref).subscribe(listStdRef => {
-      this.studentList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(listStdRef);
-      this.studentList.paginator = this.paginator;
+      this.studentList.data = listStdRef.map(doc => {
+        return { id: doc.id, ref: doc.ref, ...doc.data() as Student }
+      })
+      this.studentList.paginator = this.stdPaginator;
       if (this.studentList.data.length === 0) {
         this.showStudentTable = false;
       } else {
@@ -75,9 +77,13 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
   }
 
   private getAlumniData(school: School) {
+    this.alumniList = new MatTableDataSource<Student>();
     this.alumniService.getAlumniBySchoolReference(school.ref).subscribe(listAlnRef => {
-      this.alumniList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(listAlnRef);
-      this.alumniList.paginator = this.paginator;
+      this.alumniList.data = listAlnRef.map(doc => {
+        return { id: doc.id, ref: doc.ref, ...doc.data() as Student }
+      });
+      console.log(listAlnRef);
+      this.alumniList.paginator = this.alnPaginator;
       if (this.alumniList.data.length === 0) {
         this.showAlumniTable = false;
       } else {
@@ -94,20 +100,19 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
     this.alumniList.filter = filterValue.trim().toLowerCase();
   }
 
-  openAddStudentDialog(): void {
-  }
+  openAddStudentDialog(): void { }
 
   onStudentClick(id: string) {
   }
 
-  onChangeStudentStatus(student?: QueryDocumentSnapshot<unknown>) {
+  onChangeStudentStatus(student?: Student) {
     if (student) {
       this.selection.toggle(student);
     }
     this.selection.selected.forEach(studentRef => {
-      let std = studentRef.data() as Student;
+      let std = student;
       std.student_status = 'สำเร็จการศึกษา';
-      this.studentService.updateStudent(studentRef.id, std);
+      this.studentService.updateStudent(student.ref, std);
     });
   }
 
@@ -123,7 +128,7 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
       this.studentList.data.forEach(row => this.selection.select(row));
   }
 
-  checkboxLabel(row?: QueryDocumentSnapshot<Object>): string {
+  checkboxLabel(row?: Student): string {
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }

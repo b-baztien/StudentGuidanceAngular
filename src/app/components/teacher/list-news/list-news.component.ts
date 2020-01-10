@@ -38,8 +38,7 @@ export class ListNewsComponent implements OnInit, OnDestroy {
     private newsService: NewsService,
     private afStorage: AngularFireStorage,
     private teacherService: TeacherService
-  ) {
-  }
+  ) { }
 
   ngOnInit() {
     let login: Login = JSON.parse(localStorage.getItem('userData')) as Login;
