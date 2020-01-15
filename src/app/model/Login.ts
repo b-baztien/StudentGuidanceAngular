@@ -6,5 +6,5 @@ export class Login {
     username: string;
     password: string;
     type: string;
-    isNewLogin: boolean;
+    isNewLogin?: boolean;
 }

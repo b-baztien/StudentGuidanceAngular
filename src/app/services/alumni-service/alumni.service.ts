@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Query } from '@angular/core';
 import { AngularFirestore, QueryDocumentSnapshot, DocumentReference } from '@angular/fire/firestore';
 import { Subject } from 'rxjs';
 import { Student } from 'src/app/model/Student';
 import { map } from 'rxjs/operators';
+import { firestore } from 'firebase';
 
 @Injectable({
   providedIn: 'root'
@@ -14,9 +15,8 @@ export class AlumniService {
   ) { }
 
   getAlumniBySchoolReference(school: DocumentReference) {
-    return this.firestore.collection(school.parent).doc(school.id)
-      .collection('Student')
-      .snapshotChanges().pipe(
+    return this.firestore.collectionGroup('School', query => query.where('school_name', '==', school.id)
+      .orderBy('firstname')).snapshotChanges().pipe(
         map(result => result.filter(item => (item.payload.doc.data() as Student).student_status !== 'กำลังศึกษา')
           .map(item => item.payload.doc)));
   }

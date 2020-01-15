@@ -142,25 +142,25 @@ export class ListEntranceExamResultComponent implements OnInit {
     });
 
     //get alumni data
-    this.alumniService.getAlumniBySchoolReference(this.teacher.ref).subscribe(async result => {
-      this.showStudyUniTable = false;
-      let resultListStudy = new Array<QueryDocumentSnapshot<Object>>();
-      this.studyUniList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListStudy);
-      for (let i = 0; i < result.length; i++) {
-        let studyResult = result[i].data() as Alumni;
-        if (this.teacher.school.id == studyResult.school.id) {
-          resultListStudy.push(result[i]);
-        }
-        if (i == result.length - 1) {
-          if (this.examResultList.data.length === 0) {
-            this.showStudyUniTable = false;
-          } else {
-            this.showStudyUniTable = true;
-          }
-        }
-      }
-      this.examResultList.paginator = this.paginator;
-    });
+    // (await this.alumniService.getAlumniBySchoolReference(this.teacher.ref)).subscribe(async result => {
+    //   this.showStudyUniTable = false;
+    //   let resultListStudy = new Array<QueryDocumentSnapshot<Object>>();
+    //   this.studyUniList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListStudy);
+    //   for (let i = 0; i < result.length; i++) {
+    //     let studyResult = result[i].data() as Alumni;
+    //     if (this.teacher.school.id == studyResult.school.id) {
+    //       resultListStudy.push(result[i]);
+    //     }
+    //     if (i == result.length - 1) {
+    //       if (this.examResultList.data.length === 0) {
+    //         this.showStudyUniTable = false;
+    //       } else {
+    //         this.showStudyUniTable = true;
+    //       }
+    //     }
+    //   }
+    //   this.examResultList.paginator = this.paginator;
+    // });
   }
 
   openDeleteEntranceExamResuleDialog(entranceExamResule: QueryDocumentSnapshot<unknown>) {

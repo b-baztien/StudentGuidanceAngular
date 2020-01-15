@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentReference, QueryFn } from '@angular/fire/firestore';
 import { Login } from '../../model/Login';
+import { map } from 'rxjs/operators';
+import { Teacher } from 'src/app/model/Teacher';
+import { News } from 'src/app/model/News';
 
 @Injectable({
   providedIn: 'root'
@@ -24,10 +27,11 @@ export class LoginService {
         return this.userLogin.type;
       }
     }).catch((error) => {
+      console.error(error.message);
       if (error.code === 'unavailable') {
         throw new Error('ไม่พบสัญญาณอินเทอร์เน็ต กรุณาลองใหม่อีกครั้งภายหลัง');
       }
-      throw error
+      throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
     });
   }
 
@@ -67,8 +71,13 @@ export class LoginService {
     return this.firestore.collection('Login').snapshotChanges();
   }
 
+  getLoginByCondition(queryFn: QueryFn) {
+    return this.firestore.collection('Login', queryFn).snapshotChanges()
+      .pipe(map(result => result.map(item => item.payload.doc)));
+  }
+
   logout() {
-    localStorage.setItem('userData', null)
+    localStorage.clear();
     location.reload();
   }
 }

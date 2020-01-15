@@ -30,7 +30,25 @@ export class ListUserComponent implements OnInit, AfterViewInit {
     private loginService: LoginService,
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.listUniObs = this.loginService.getAllLogin().subscribe(result => {
+      let resultListUser = new Array<QueryDocumentSnapshot<Object>>();
+      this.userList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListUser);
+      result.forEach(element => {
+        let login: Login = element.payload.doc.data() as Login;
+        if (login.type != 'admin') {
+          resultListUser.push(element.payload.doc);
+        }
+      });
+      this.userList.paginator = this.paginator;
+      if (this.userList.data.length === 0) {
+        this.showTable = false;
+      } else {
+        this.showTable = true;
+
+      }
+    });
+  }
 
   async ngAfterViewInit(): Promise<void> {
     //custom text paginator
@@ -45,19 +63,6 @@ export class ListUserComponent implements OnInit, AfterViewInit {
     };
     this.paginatorInit.changes.next();
     this.paginator._intl = this.paginatorInit;
-
-    this.listUniObs = await this.loginService.getAllLogin().subscribe(result => {
-      let resultListUser = new Array<QueryDocumentSnapshot<Object>>();
-      this.userList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListUser);
-      result.forEach(element => {
-        let login: Login = element.payload.doc.data() as Login;
-        if (login.type != 'admin') {
-          resultListUser.push(element.payload.doc);
-        }
-      });
-      this.userList.paginator = this.paginator;
-      this.showTable = this.userList.data.length === 0 ? false : true;
-    });
   }
 
   applyFilter(filterValue: string) {
@@ -70,8 +75,8 @@ export class ListUserComponent implements OnInit, AfterViewInit {
 
   openAddUserDialog(): void {
     const dialogRef = this.dialog.open(AddUserDialogComponent, {
-      width: '60%',
-      height: '100%',
+      width: '90%',
+      maxHeight: '90%',
     });
 
     dialogRef.beforeClose().subscribe()
@@ -82,7 +87,8 @@ export class ListUserComponent implements OnInit, AfterViewInit {
 
   deleteUser(user: Login, login: DocumentReference) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '40%',
+      width: 'auto',
+      maxHeight: '90%',
       data: `คุณต้องการลบผู้ใช้ ${login.id} ใช่ หรือ ไม่ ?`,
     });
 

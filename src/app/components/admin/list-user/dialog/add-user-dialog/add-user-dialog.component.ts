@@ -14,6 +14,7 @@ import { StudentService } from 'src/app/services/student-service/student.service
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { LoginService } from 'src/app/services/login-service/login.service';
+import { Notifications } from 'src/app/components/util/notification';
 
 @Component({
   selector: 'app-add-user-dialog',
@@ -32,7 +33,6 @@ export class AddUserDialogComponent implements OnInit {
       Validators.required]),
     conPassword: new FormControl(null, [
       Validators.required]),
-    isCreateId: new FormControl(false),
   });
 
   teacherForm = new FormGroup({
@@ -67,10 +67,6 @@ export class AddUserDialogComponent implements OnInit {
 
   listProvince: Array<[]>;
 
-  login: Login = new Login();
-  teacher: Teacher = new Teacher();
-  student: Student = new Student();
-
   school: School = new School();
 
   imgURL: any = 'assets/img/no-photo-available.png';
@@ -78,8 +74,8 @@ export class AddUserDialogComponent implements OnInit {
   teacherId: string;
   studentId: string;
 
-  filteredSchool: Observable<string[]>;
-  listSchool: string[] = new Array<string>();
+  filteredSchool: Observable<School[]>;
+  listSchool = new Array<School>();
 
   loadData = false;
 
@@ -106,25 +102,19 @@ export class AddUserDialogComponent implements OnInit {
       this.listProvince = data;
     });
 
-    this.studentService.getStudentId().subscribe(result => {
-      this.studentId = result;
-      this.onCreateUsername();
-    });
+    this.getSchoolData();
+    this.filteredSchool = this.userForm.get('school').valueChanges.pipe(
+      startWith(null),
+      map((schoolName: string | null) => schoolName ? this._filter(schoolName) : this.listSchool.slice()));
+  }
 
+  private getSchoolData() {
     this.schoolService.getAllSchool().subscribe(listSchoolRes => {
-      listSchoolRes.forEach(schoolRes => {
-        const school = schoolRes.payload.doc.data() as School;
-        this.listSchool.push(school.school_name);
+      this.listSchool = listSchoolRes.map(school => {
+        return { id: school.id, ref: school.ref, ...school.data() as School }
       });
       this.loadData = true;
     });
-    this.filteredSchool = this.userForm.get('school').valueChanges.pipe(
-      startWith(null),
-      map((school: string | null) => school ? this._filter(school) : this.listSchool.slice()));
-  }
-
-  getAllSchool() {
-
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -132,14 +122,14 @@ export class AddUserDialogComponent implements OnInit {
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 
-  async upload(file, filePath) {
+  async upload(file: File, filePath: string, filename?: string) {
     const metadata = {
       contentType: 'image/jpeg',
     };
 
-    const fileName = this.afirestore.createId();
-    if (file.type.split('/')[0] == 'image') {
-      return await this.afStorage.upload(`${filePath}/${fileName}`, file, metadata).then(async result => {
+    const newFileName = filename ? filename : this.afirestore.createId();
+    if (file.type.includes('image')) {
+      return await this.afStorage.upload(`${filePath}/${newFileName}`, file, metadata).then(async result => {
         return result.ref.fullPath;
       });
     }
@@ -158,21 +148,6 @@ export class AddUserDialogComponent implements OnInit {
     }
   }
 
-  onCreateUsername() {
-    if (this.userForm.get('isCreateId').value) {
-      if (this.userForm.get('userType').value === 'teacher') {
-        this.userForm.get('username').setValue(`teacher${this.teacherId}`);
-        this.userForm.get('username').disable({ onlySelf: true });
-      } else if (this.userForm.get('userType').value === 'student') {
-        this.userForm.get('username').setValue(`student${this.studentId}`);
-        this.userForm.get('username').disable({ onlySelf: true });
-      }
-    } else {
-      this.userForm.get('username').setValue(null);
-      this.userForm.get('username').enable({ onlySelf: true });
-    }
-  }
-
   selected(event: MatAutocompleteSelectedEvent): void {
     this.userForm.get('school').setValue(event.option.viewValue);
   }
@@ -182,56 +157,77 @@ export class AddUserDialogComponent implements OnInit {
   }
 
   async onSubmit() {
-    if (this.userForm.valid) {
-      this.login.username = this.userForm.get('username').value;
-      this.login.password = this.userForm.get('password').value;
-      this.login.type = this.userForm.get('userType').value;
-      this.school.school_name = this.userForm.get('school').value;
+    try {
+      let login = new Login();
+      if (this.userForm.valid) {
+        login.username = this.userForm.get('username').value;
+        login.password = this.userForm.get('password').value;
+        login.type = this.userForm.get('userType').value;
+        let school = this.listSchool
+          .find(school => school.school_name === this.userForm.get('school').value);
 
-      if (this.userForm.get('userType').value === 'teacher') {
-        this.teacher.school = await this.schoolService.addSchool(this.school).then(result => {
-          return result;
+        await this.loginService.getLoginByCondition(
+          query => query.where('username', '==', login.username)
+        ).toPromise().then(result => {
+          if (result.length > 0) return new Error('มีชื่อผู้ใช้นี้ในระบบแล้ว')
         });
-        if (this.teacherForm.valid) {
-          this.teacher.firstname = this.teacherForm.get('firstname').value;
-          this.teacher.lastname = this.teacherForm.get('lastname').value;
-          this.teacher.phone_no = this.teacherForm.get('phone_no').value;
-          this.teacher.email = this.teacherForm.get('email').value;
-          let files: any = document.getElementById('inputImage');
-          if (files.files.length !== 0) {
-            await this.upload(files, 'teacher');
+
+        if (this.userForm.get('userType').value === 'teacher') {
+          if (this.teacherForm.valid) {
+            let teacher = new Teacher();
+            teacher.firstname = this.teacherForm.get('firstname').value;
+            teacher.lastname = this.teacherForm.get('lastname').value;
+            teacher.phone_no = this.teacherForm.get('phone_no').value;
+            teacher.email = this.teacherForm.get('email').value;
+            let files: any = document.getElementById('inputImage');
+            if (files.files.length !== 0) {
+              await this.upload(files, 'teacher');
+            }
+            if (!school) {
+              console.log(school);
+              school.school_name = this.userForm.get('school').value;
+              school.ref = (await this.schoolService.addSchool(school));
+            }
+            this.teacherService.addTeacher(school.ref, login, teacher);
+            this.loginService.addUser(login).then(loginRef => {
+              teacher.login = loginRef;
+            });
+            this.dialogRef.close({
+              userType: this.userForm.controls.userType.value,
+              school: school.ref,
+              login: login,
+              teacher: teacher
+            });
           }
-          this.loginService.addUser(this.login).then(loginRef => {
-            this.teacher.login = loginRef;
-            this.teacherService.addTeacher(this.login, this.teacher);
-          });
-          this.dialogRef.close();
         }
-      } else if (this.userForm.get('userType').value === 'student') {
-        this.student.school = await this.schoolService.addSchool(this.school).then(result => {
-          return result;
-        });
-        if (this.studentForm.valid) {
-          this.student.firstname = this.studentForm.get('firstname').value;
-          this.student.lastname = this.studentForm.get('lastname').value;
-          this.student.phone_no = this.studentForm.get('phone_no').value;
-          this.student.email = this.studentForm.get('email').value;
-          let files: any = document.getElementById('inputImage');
-          if (files.files.length !== 0) {
-            await this.upload(files, 'student');
-          }
-          this.loginService.addUser(this.login).then(loginRef => {
-            this.student.login = loginRef;
-            this.studentService.addStudent(this.login, this.student, this.userForm.get('isCreateId').value);
-          });
-          this.dialogRef.close();
-        }
+        // else if (this.userForm.get('userType').value === 'student') {
+        //   this.student.school = await this.schoolService.addSchool(this.school).then(result => {
+        //     return result;
+        //   });
+        //   if (this.studentForm.valid) {
+        //     this.student.firstname = this.studentForm.get('firstname').value;
+        //     this.student.lastname = this.studentForm.get('lastname').value;
+        //     this.student.phone_no = this.studentForm.get('phone_no').value;
+        //     this.student.email = this.studentForm.get('email').value;
+        //     let files: any = document.getElementById('inputImage');
+        //     if (files.files.length !== 0) {
+        //       await this.upload(files, 'student');
+        //     }
+        //     this.loginService.addUser(this.login).then(loginRef => {
+        //       this.student.login = loginRef;
+        //       this.studentService.addStudent(this.login, this.student);
+        //     });
+        //     this.dialogRef.close();
+        //   }
+        // }
       }
+    } catch (error) {
+      new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'ลบข้อมูลล้มเหลว !');
     }
   }
 
-  private _filter(value: string): string[] {
+  private _filter(value: string): School[] {
     const filterValue = value.toLowerCase();
-    return this.listSchool.filter(school => school.toLowerCase().includes(filterValue));
+    return this.listSchool.filter(school => school.school_name.toLowerCase().includes(filterValue));
   }
 }

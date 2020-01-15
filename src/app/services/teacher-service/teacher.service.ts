@@ -3,25 +3,28 @@ import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import { Teacher } from 'src/app/model/Teacher';
 import { Subject } from 'rxjs';
 import { Login } from 'src/app/model/Login';
-import { map } from 'rxjs/operators';
+import { map, filter } from 'rxjs/operators';
+import { firestore } from 'firebase';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TeacherService {
-  constructor(private firestore: AngularFirestore) { }
+  constructor(private angularFirestore: AngularFirestore) { }
 
   getTeacherByUsername(username: string) {
-    let login: DocumentReference = this.firestore.collection('Login').doc(username).ref;
-    return this.firestore.collectionGroup('Teacher', query => query.where('login', '==', login)).snapshotChanges().pipe(map(result => result[0].payload.doc));
+    return this.angularFirestore.collectionGroup('Teacher', query => query.where(firestore.FieldPath.documentId(), '==', username)).get()
+      .pipe(
+        map(result => result.find(item => item.payload.doc.ref.id === username).payload.doc)
+      );
   }
 
-  addTeacher(login: Login, teacher: Teacher) {
-    this.firestore.collection('Teacher').doc(login.username).set(Object.assign({}, teacher)).then(() => {
-    });
+  addTeacher(schoolRef: DocumentReference, login: Login, teacher: Teacher) {
+    this.angularFirestore.collection(schoolRef.parent).doc(schoolRef.id).collection('Teacher')
+      .doc(login.username).set(Object.assign({}, teacher));
   }
 
   updateTeacher(teacherId: string, teacher: Teacher) {
-    this.firestore.collection('Teacher').doc(teacherId).update(Object.assign({}, teacher));
+    this.angularFirestore.collection('Teacher').doc(teacherId).update(Object.assign({}, teacher));
   }
 }

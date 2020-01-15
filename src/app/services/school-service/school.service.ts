@@ -11,15 +11,18 @@ export class SchoolService {
   }
 
   getAllSchool() {
-    return this.firestore.collection('School').snapshotChanges();
+    return this.firestore.collection('School').snapshotChanges()
+      .pipe(map(result => result.map(item => item.payload.doc)));
   }
 
   getSchool(schoolId: string) {
-    return this.firestore.collection('School').doc(schoolId).snapshotChanges().pipe(map(result => result.payload));
+    return this.firestore.collection('School').doc(schoolId).snapshotChanges()
+      .pipe(map(result => result.payload));
   }
 
-  getSchoolByCondition(schoolId: string, queryFn) {
-    return this.firestore.collection('School', queryFn).doc(schoolId).snapshotChanges();
+  getSchoolByUser(username: string) {
+    return this.firestore.collection('Login')
+      .doc(username).collection('School').snapshotChanges().pipe(map(result => result[0].payload.doc));
   }
 
   async addSchool(school: School) {

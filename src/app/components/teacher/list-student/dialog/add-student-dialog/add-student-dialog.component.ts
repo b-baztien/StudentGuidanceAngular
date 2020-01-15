@@ -59,10 +59,6 @@ export class AddStudentDialogComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.studentService.getStudentId().subscribe(result => {
-      this.studentId = result;
-      this.onCreateUsername();
-    });
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -114,7 +110,6 @@ export class AddStudentDialogComponent implements OnInit {
       this.login.username = this.userForm.get('username').value;
       this.login.password = this.userForm.get('password').value;
       this.login.type = 'student';
-      this.student.school = this.school;
       this.student.student_status = 'กำลังศึกษา';
 
       if (this.userForm.get('requestData').value) {
@@ -127,12 +122,12 @@ export class AddStudentDialogComponent implements OnInit {
           if (files.files[0] !== undefined) {
             await this.upload(files);
           }
-          this.studentService.addStudent(this.login, this.student, this.userForm.get('isCreateId').value);
+          this.studentService.addStudent(this.login, this.student);
           this.dialogRef.close();
         }
       } else {
         this.student.firstname = this.login.username;
-        this.studentService.addStudent(this.login, this.student, this.userForm.get('isCreateId').value);
+        this.studentService.addStudent(this.login, this.student);
         this.dialogRef.close();
       }
     }

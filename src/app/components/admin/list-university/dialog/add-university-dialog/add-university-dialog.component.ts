@@ -84,14 +84,14 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
     });
   }
 
-  async upload(file, filePath) {
+  async upload(file: File, filePath: string, filename?: string) {
     const metadata = {
       contentType: 'image/jpeg',
     };
 
-    const fileName = this.afirestore.createId();
-    if (file.type.split('/')[0] == 'image') {
-      return await this.afStorage.upload(`${filePath}/${fileName}`, file, metadata).then(async result => {
+    const newFileName = filename ? filename : this.afirestore.createId();
+    if (file.type.includes('image')) {
+      return await this.afStorage.upload(`${filePath}/${newFileName}`, file, metadata).then(async result => {
         return result.ref.fullPath;
       });
     }

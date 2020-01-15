@@ -13,9 +13,4 @@ export class Student {
     gender: string;
     student_status: string;
     study_plan: string;
-    school: DocumentReference;
-    login: DocumentReference;
-    entrance_exam_result: DocumentReference[];
-    favorite_career: DocumentReference[];
-    favorite_university: DocumentReference[];
 }

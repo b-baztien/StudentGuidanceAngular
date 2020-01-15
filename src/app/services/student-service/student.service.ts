@@ -16,9 +16,12 @@ export class StudentService {
   }
 
   getStudentBySchoolReference(school: DocumentReference) {
-    return this.firestore.collection(school.parent).doc(school.id)
-      .collection('Student', query => query.where('student_status', '==', 'กำลังศึกษา').orderBy('firstname'))
-      .snapshotChanges().pipe(map(result => result.map(item => item.payload.doc)));
+    return this.firestore.collectionGroup('School', query => query.where('school_name', '==', school.id)
+      .orderBy('firstname'))
+      .snapshotChanges().subscribe(result => console.log('ddd', result))
+    // .pipe(
+    //   map(result => result.filter(item => (item.payload.doc.data() as Student).student_status === 'กำลังศึกษา')
+    //     .map(item => item.payload.doc)));
   }
 
   getStudentByStudentId(studentId: string) {
@@ -33,31 +36,8 @@ export class StudentService {
     return this.firestore.collection(studentRef.parent).doc(studentRef.id).update(Object.assign({}, student));
   }
 
-  addStudent(login: Login, student: Student, increase: boolean) {
+  addStudent(login: Login, student: Student) {
     this.firestore.collection('Student').doc(login.username).set(Object.assign({}, student)).then(() => {
-      if (increase) {
-        this.incrementStudentId();
-      }
-    });
-  }
-
-  getStudentId() {
-    let osbStudentId = new Subject<string>();
-    this.firestore.collection('Student').snapshotChanges().subscribe(() => {
-      this.firestore.collection('Shards').doc('sequence').ref.get().then(result => {
-        osbStudentId.next(result.data().student_id);
-      });
-    });
-    return osbStudentId.asObservable();
-  }
-
-  incrementStudentId() {
-    this.firestore.collection('Student').snapshotChanges().subscribe(() => {
-      this.firestore.collection('Shards').doc('sequence').ref.get().then(result => {
-        let sequenceData = result.data();
-        sequenceData.student_id += 1;
-        this.firestore.collection('Shards').doc('sequence').update(sequenceData);
-      });
     });
   }
 }
