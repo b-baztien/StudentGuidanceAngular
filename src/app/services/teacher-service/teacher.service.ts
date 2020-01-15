@@ -14,9 +14,7 @@ export class TeacherService {
 
   getTeacherByUsername(username: string) {
     return this.angularFirestore.collectionGroup('Teacher', query => query.where(firestore.FieldPath.documentId(), '==', username)).get()
-      .pipe(
-        map(result => result.find(item => item.payload.doc.ref.id === username).payload.doc)
-      );
+      .pipe(map(result => result.docs[0]));
   }
 
   addTeacher(schoolRef: DocumentReference, login: Login, teacher: Teacher) {

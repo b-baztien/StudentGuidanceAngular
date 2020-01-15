@@ -18,10 +18,10 @@ export class StudentService {
   getStudentBySchoolReference(school: DocumentReference) {
     return this.firestore.collectionGroup('School', query => query.where('school_name', '==', school.id)
       .orderBy('firstname'))
-      .snapshotChanges().subscribe(result => console.log('ddd', result))
-    // .pipe(
-    //   map(result => result.filter(item => (item.payload.doc.data() as Student).student_status === 'กำลังศึกษา')
-    //     .map(item => item.payload.doc)));
+      .snapshotChanges()
+      .pipe(
+        map(result => result.filter(item => (item.payload.doc.data() as Student).student_status === 'กำลังศึกษา')
+          .map(item => item.payload.doc)));
   }
 
   getStudentByStudentId(studentId: string) {

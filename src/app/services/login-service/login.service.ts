@@ -19,20 +19,22 @@ export class LoginService {
   }
 
   async Login(login: Login) {
-    return await this.firestore.collection('Login').doc(login.username).ref.get().then(response => {
-      this.userLogin = response.data() as Login;
-      if (!response.exists || this.userLogin.password !== login.password) {
-        throw new ReferenceError('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้งภายหลัง');
-      } else {
-        return this.userLogin.type;
-      }
-    }).catch((error) => {
-      console.error(error.message);
-      if (error.code === 'unavailable') {
-        throw new Error('ไม่พบสัญญาณอินเทอร์เน็ต กรุณาลองใหม่อีกครั้งภายหลัง');
-      }
-      throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
-    });
+    return await this.firestore.collectionGroup('Login',
+      query => query.where('username', '==', login.username))
+      .get().toPromise().then(response => {
+        if (response.size === 0 || response.docs[0].data().password === login.password) {
+          throw new ReferenceError('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้งภายหลัง');
+        } else {
+          this.userLogin = response.docs[0].data() as Login;
+          return this.userLogin.type;
+        }
+      }).catch((error) => {
+        console.error(error.message);
+        if (error.code === 'unavailable') {
+          throw new Error('ไม่พบสัญญาณอินเทอร์เน็ต กรุณาลองใหม่อีกครั้งภายหลัง');
+        }
+        throw new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง');
+      });
   }
 
   addUser(user: Login) {
