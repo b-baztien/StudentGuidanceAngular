@@ -20,9 +20,9 @@ export class LoginService {
 
   async Login(login: Login) {
     return await this.firestore.collectionGroup('Login',
-      query => query.where('username', '==', login.username))
+      query => query.where('username', '==', login.username).where('password', '==', login.password))
       .get().toPromise().then(response => {
-        if (response.size === 0 || response.docs[0].data().password === login.password) {
+        if (response.size === 0) {
           throw new ReferenceError('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้งภายหลัง');
         } else {
           this.userLogin = response.docs[0].data() as Login;
