@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, QueryDocumentSnapshot, DocumentReference, QueryGroupFn } from '@angular/fire/firestore';
-import { firebase } from '@firebase/app';
-import { Subject } from 'rxjs';
+import { AngularFirestore, DocumentReference, QueryGroupFn } from '@angular/fire/firestore';
 import { Student } from 'src/app/model/Student';
 import { Login } from 'src/app/model/Login';
 import { map } from 'rxjs/operators';
@@ -28,7 +26,7 @@ export class StudentService {
     return this.firestore.collection('Student').doc(studentId).snapshotChanges();
   }
 
-  getStudentByCondition(studentId: string, queryGroupFn: QueryGroupFn) {
+  getStudentByCondition(queryGroupFn: QueryGroupFn) {
     return this.firestore.collectionGroup('Student', queryGroupFn).snapshotChanges();
   }
 

@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference, QueryFn } from '@angular/fire/firestore';
 import { Login } from '../../model/Login';
 import { map } from 'rxjs/operators';
-import { Teacher } from 'src/app/model/Teacher';
-import { News } from 'src/app/model/News';
 
 @Injectable({
   providedIn: 'root'

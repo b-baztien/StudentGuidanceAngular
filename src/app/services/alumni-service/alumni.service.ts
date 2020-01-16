@@ -1,9 +1,7 @@
-import { Injectable, Query } from '@angular/core';
-import { AngularFirestore, QueryDocumentSnapshot, DocumentReference } from '@angular/fire/firestore';
-import { Subject } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import { Student } from 'src/app/model/Student';
 import { map } from 'rxjs/operators';
-import { firestore } from 'firebase';
 
 @Injectable({
   providedIn: 'root'

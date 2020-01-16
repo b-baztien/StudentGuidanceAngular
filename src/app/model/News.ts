@@ -1,4 +1,4 @@
-import { firestore } from 'firebase';
+import * as firebase from 'firebase/app';
 import { DocumentReference } from '@angular/fire/firestore';
 
 export class News {
@@ -7,7 +7,7 @@ export class News {
     detail: string;
     image: string = '';
     topic: string;
-    start_time: firestore.Timestamp;
-    end_time: firestore.Timestamp;
+    start_time: firebase.firestore.Timestamp;
+    end_time: firebase.firestore.Timestamp;
     university: DocumentReference[] = new Array<DocumentReference>();
 }

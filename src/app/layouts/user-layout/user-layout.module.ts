@@ -4,7 +4,6 @@ import { LogInComponent } from 'src/app/components/login/login.component';
 import { RouterModule } from '@angular/router';
 import { UserLayoutRoutes } from './user-layout.routing';
 import { AngularMaterialModule } from 'src/app/angular-material.module';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatProgressSpinnerModule, MatDialogModule, MatCardModule, MatSnackBarModule } from '@angular/material';
 import { MatProgressButtonsModule } from 'mat-progress-buttons';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';

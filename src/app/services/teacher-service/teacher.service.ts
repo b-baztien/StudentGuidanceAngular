@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import { Teacher } from 'src/app/model/Teacher';
-import { Subject } from 'rxjs';
 import { Login } from 'src/app/model/Login';
-import { map, filter } from 'rxjs/operators';
-import { firestore } from 'firebase';
+import { map } from 'rxjs/operators';
+import * as firebase from 'firebase/app';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +12,7 @@ export class TeacherService {
   constructor(private angularFirestore: AngularFirestore) { }
 
   getTeacherByUsername(username: string) {
-    return this.angularFirestore.collectionGroup('Teacher', query => query.where(firestore.FieldPath.documentId(), '==', username)).get()
+    return this.angularFirestore.collectionGroup('Teacher', query => query.where(firebase.firestore.FieldPath.documentId(), '==', username)).get()
       .pipe(map(result => result.docs[0]));
   }
 
