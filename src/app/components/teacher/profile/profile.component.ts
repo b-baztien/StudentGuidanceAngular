@@ -57,7 +57,7 @@ export class ProfileComponent implements OnInit {
     this.login = JSON.parse(localStorage.getItem('userData'));
     this.teacherService.getTeacherByUsername(this.login.username).toPromise().then(result => {
       this.teacherId = result.id;
-      this.teacher = result.data() as Teacher;
+      this.teacher = result;
 
       if (this.teacher.image !== undefined) {
         this.afStorage.storage.ref(this.teacher.image).getDownloadURL().then(url => {

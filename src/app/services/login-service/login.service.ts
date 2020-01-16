@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentReference, QueryFn } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentReference, QueryFn, QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { Login } from '../../model/Login';
 import { map } from 'rxjs/operators';
 
@@ -68,7 +68,12 @@ export class LoginService {
   }
 
   getAllLogin() {
-    return this.firestore.collection('Login').snapshotChanges();
+    return this.firestore.collectionGroup('Login').snapshotChanges()
+      .pipe(map(
+        result => result.map(item => {
+          const doc = item.payload.doc;
+          return { id: doc.id, ref: doc.ref, ...doc.data() as Login } as Login;
+        })));
   }
 
   getLoginByCondition(queryFn: QueryFn) {

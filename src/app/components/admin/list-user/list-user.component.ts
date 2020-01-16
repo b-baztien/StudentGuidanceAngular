@@ -13,7 +13,7 @@ import { Notifications } from '../../util/notification';
   styleUrls: ['./list-user.component.css']
 })
 export class ListUserComponent implements OnInit, AfterViewInit {
-  userList: MatTableDataSource<QueryDocumentSnapshot<Object>>;
+  userList: MatTableDataSource<Login>;
   displayedColumns: string[] = ['username', 'type', 'manage'];
 
   resultsLength = 0;
@@ -31,21 +31,17 @@ export class ListUserComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit() {
-    this.listUniObs = this.loginService.getAllLogin().subscribe(result => {
-      let resultListUser = new Array<QueryDocumentSnapshot<Object>>();
-      this.userList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListUser);
-      result.forEach(element => {
-        let login: Login = element.payload.doc.data() as Login;
-        if (login.type != 'admin') {
-          resultListUser.push(element.payload.doc);
-        }
-      });
+    this.userList = new MatTableDataSource<Login>();
+    this.customFilter();
+    const storageLogin: Login = JSON.parse(localStorage.getItem('userData'))
+    this.listUniObs = this.loginService.getAllLogin().subscribe(logins => {
+      let newLogins = logins.filter(login => login.username !== storageLogin.username);
+      this.userList.data = newLogins;
       this.userList.paginator = this.paginator;
       if (this.userList.data.length === 0) {
         this.showTable = false;
       } else {
         this.showTable = true;
-
       }
     });
   }
@@ -63,6 +59,17 @@ export class ListUserComponent implements OnInit, AfterViewInit {
     };
     this.paginatorInit.changes.next();
     this.paginator._intl = this.paginatorInit;
+  }
+
+  private customFilter() {
+    this.userList.filterPredicate = (data: Login, filter: string) => {
+      if (data.username.indexOf(filter) != -1 ||
+        data.type.indexOf(filter) != -1
+      ) {
+        return true;
+      }
+      return false;
+    }
   }
 
   applyFilter(filterValue: string) {

@@ -42,9 +42,9 @@ export class ListNewsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     let login: Login = JSON.parse(localStorage.getItem('userData')) as Login;
-    this.listNewsObs = this.teacherService.getTeacherByUsername(login.username).subscribe(teacherDoc => {
-      const teacher = { id: teacherDoc.id, ref: teacherDoc.ref, ...teacherDoc.data() as Teacher }
-      this.newsService.getNewsByTeacherReference(teacher.ref).subscribe(newsDocs => {
+    this.listNewsObs = this.teacherService.getTeacherByUsername(login.username).subscribe(teacher => {
+      const newTeacher = teacher;
+      this.newsService.getNewsByTeacherReference(newTeacher.ref).subscribe(newsDocs => {
         this.newsList = newsDocs.map(doc => {
           let news = { id: doc.id, ref: doc.ref, ...doc.data() as News };
           if (news.image !== undefined) {

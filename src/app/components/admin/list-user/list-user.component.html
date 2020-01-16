@@ -34,22 +34,22 @@
                                 <input matInput placeholder="ค้นหาผู้ใช้ ภายในระบบ..."
                                     (keyup)="applyFilter($event.target.value)">
                             </mat-form-field>
-                            <table mat-table [dataSource]="userList" class="table">
+                            <table aria-describedby="userTable" mat-table [dataSource]="userList" class="table">
                                 <ng-container matColumnDef="username">
-                                    <th mat-header-cell *matHeaderCellDef>ชื่อผู้ใช้</th>
-                                    <td mat-cell *matCellDef="let user"> {{user.data().username}} </td>
+                                    <th id="username" mat-header-cell *matHeaderCellDef>ชื่อผู้ใช้</th>
+                                    <td mat-cell *matCellDef="let user"> {{user.username}} </td>
                                 </ng-container>
                                 <ng-container matColumnDef="type">
-                                    <th mat-header-cell *matHeaderCellDef>ประเภทผู้ใช้งาน</th>
-                                    <td mat-cell *matCellDef="let user"> {{user.data().type | userType}}
+                                    <th id="type" mat-header-cell *matHeaderCellDef>ประเภทผู้ใช้งาน</th>
+                                    <td mat-cell *matCellDef="let user"> {{user.type | userType}}
                                     </td>
                                 </ng-container>
                                 <ng-container matColumnDef="manage">
-                                    <th mat-header-cell colspan="2" *matHeaderCellDef>จัดการข้อมูล</th>
+                                    <th id="manage" mat-header-cell colspan="2" *matHeaderCellDef>จัดการข้อมูล</th>
                                     <td mat-cell *matCellDef="let user">
                                         <div class="button-row">
                                             <button mat-raised-button class="btn-danger"
-                                                (click)="deleteUser(user.data(), user)">
+                                                (click)="deleteUser(user, user)">
                                                 <mat-icon>delete</mat-icon> ลบข้อมูลผู้ใช้
                                             </button>
                                         </div>

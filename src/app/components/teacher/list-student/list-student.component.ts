@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
-import { QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { Teacher } from 'src/app/model/Teacher';
 import { School } from 'src/app/model/School';
 import { SchoolService } from 'src/app/services/school-service/school.service';
@@ -17,10 +16,8 @@ import { AlumniService } from 'src/app/services/alumni-service/alumni.service';
   styleUrls: ['./list-student.component.css']
 })
 export class ListStudentComponent implements OnInit, AfterViewInit {
-  teacher: Teacher = new Teacher();
-  school: School = new School();
-  studentList: MatTableDataSource<Student>;
-  alumniList: MatTableDataSource<Student>;
+  studentList: MatTableDataSource<Student> = new MatTableDataSource<Student>();
+  alumniList: MatTableDataSource<Student> = new MatTableDataSource<Student>();
 
   displayedColumns: string[] = ['select', 'fullname', 'email', 'phone_no', 'gender', 'entry_year', 'manage'];
   displayedAlumniColumns: string[] = ['fullname', 'email', 'phone_no', 'gender', 'entry_year'];
@@ -32,6 +29,7 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
   @ViewChild('alnPaginator', { static: false }) alnPaginator: MatPaginator;
 
   showContent = false;
+  school: School = new School();
   showStudentTable: boolean = false;
   showAlumniTable: boolean = false;
 
@@ -47,11 +45,11 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     let login: Login = JSON.parse(localStorage.getItem('userData')) as Login;
-    this.teacherService.getTeacherByUsername(login.username).subscribe(teacherRef => {
+    this.teacherService.getTeacherByUsername(login.username).subscribe(resultTeacher => {
       this.showContent = true;
-      this.teacher = { id: teacherRef.id, ref: teacherRef.ref, ...teacherRef.data() as Teacher };
-      this.schoolService.getSchool(this.teacher.ref.parent.parent.id).subscribe(schoolRef => {
-        this.school = { id: schoolRef.id, ref: schoolRef.ref, ...schoolRef.data() as School };
+      let teacher: Teacher = resultTeacher;
+      this.schoolService.getSchool(teacher.ref.parent.parent.id).subscribe(resultSchool => {
+        this.school = resultSchool;
         this.showContent = true;
         this.getStudentData(this.school);
         this.getAlumniData(this.school);
@@ -62,11 +60,8 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void { }
 
   private getStudentData(school: School) {
-    this.studentList = new MatTableDataSource<Student>();
-    this.studentService.getStudentBySchoolReference(school.ref).subscribe(listStdRef => {
-      this.studentList.data = listStdRef.map(doc => {
-        return { id: doc.id, ref: doc.ref, ...doc.data() as Student }
-      })
+    this.studentService.getStudentBySchoolReference(school.ref).subscribe(students => {
+      this.studentList.data = students;
       this.studentList.paginator = this.stdPaginator;
       if (this.studentList.data.length === 0) {
         this.showStudentTable = false;
@@ -77,12 +72,8 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
   }
 
   private getAlumniData(school: School) {
-    this.alumniList = new MatTableDataSource<Student>();
-    this.alumniService.getAlumniBySchoolReference(school.ref).subscribe(listAlnRef => {
-      this.alumniList.data = listAlnRef.map(doc => {
-        return { id: doc.id, ref: doc.ref, ...doc.data() as Student }
-      });
-      console.log(listAlnRef);
+    this.alumniService.getAlumniBySchoolReference(school.ref).subscribe(alumnies => {
+      this.alumniList.data = alumnies;
       this.alumniList.paginator = this.alnPaginator;
       if (this.alumniList.data.length === 0) {
         this.showAlumniTable = false;
@@ -102,14 +93,14 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
 
   openAddStudentDialog(): void { }
 
-  onStudentClick(id: string) {
+  onStudentClick() {
   }
 
   onChangeStudentStatus(student?: Student) {
     if (student) {
       this.selection.toggle(student);
     }
-    this.selection.selected.forEach(studentRef => {
+    this.selection.selected.forEach(() => {
       let std = student;
       std.student_status = 'สำเร็จการศึกษา';
       this.studentService.updateStudent(student.ref, std);

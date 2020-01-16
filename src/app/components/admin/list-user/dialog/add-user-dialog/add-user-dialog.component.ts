@@ -186,7 +186,7 @@ export class AddUserDialogComponent implements OnInit {
             if (!school) {
               console.log(school);
               school.school_name = this.userForm.get('school').value;
-              school.ref = (await this.schoolService.addSchool(school));
+              // school.ref = (await this.schoolService.addSchool(school));
             }
             this.teacherService.addTeacher(school.ref, login, teacher);
             this.loginService.addUser(login).then(loginRef => {
