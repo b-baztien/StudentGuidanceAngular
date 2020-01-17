@@ -119,16 +119,16 @@ export class ListEntranceExamResultComponent implements OnInit {
 
       for (let i = 0; i < result.length; i++) {
         let examResult = result[i].payload.doc.data() as EntranceExamResult;
-        if (this.teacher.school.id == examResult.school.id) {
-          await examResult.student.get().then(result => {
-            let student = result.data() as Student;
-            if (this.mapUniData.get(result.id) === undefined) {
-              resultListJunior.push(result);
-            }
-            this.mapUniData.set(result.id, `${student.firstname} ${student.lastname}`);
-          });
-          resultListExam.push(result[i].payload.doc);
-        }
+        // if (this.teacher.school.id == examResult.school.id) {
+        //   await examResult.student.get().then(result => {
+        //     let student = result.data() as Student;
+        //     if (this.mapUniData.get(result.id) === undefined) {
+        //       resultListJunior.push(result);
+        //     }
+        //     this.mapUniData.set(result.id, `${student.firstname} ${student.lastname}`);
+        //   });
+        //   resultListExam.push(result[i].payload.doc);
+        // }
         if (i == result.length - 1) {
           if (this.examResultList.data.length === 0) {
             this.showExamResultTable = false;

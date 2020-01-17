@@ -44,17 +44,17 @@ export class ListNewsComponent implements OnInit, OnDestroy {
     let login: Login = JSON.parse(localStorage.getItem('userData')) as Login;
     this.listNewsObs = this.teacherService.getTeacherByUsername(login.username).subscribe(teacher => {
       const newTeacher = teacher;
-      this.newsService.getNewsByTeacherReference(newTeacher.ref).subscribe(newsDocs => {
-        this.newsList = newsDocs.map(doc => {
-          let news = { id: doc.id, ref: doc.ref, ...doc.data() as News };
-          if (news.image !== undefined) {
-            this.afStorage.storage.ref(news.image).getDownloadURL().then(url => {
-              this.imagePath.set(news.id, url);
+      this.newsService.getNewsByTeacherReference(newTeacher.ref).subscribe(news => {
+        this.newsList = news;
+        news.forEach(item => {
+          if (item.image !== undefined) {
+            this.afStorage.storage.ref(item.image).getDownloadURL().then(url => {
+              this.imagePath.set(item.id, url);
             });
           } else {
-            this.imagePath.set(news.id, 'assets/img/no-photo-available.png');
+            this.imagePath.set(item.id, 'assets/img/no-photo-available.png');
           }
-          return news;
+          return item;
         });
 
         if (this.newsList.length === 0) {

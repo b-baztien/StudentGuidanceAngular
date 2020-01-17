@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { MatDialogRef, ErrorStateMatcher, MatAutocomplete, MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
+import { MatDialogRef, ErrorStateMatcher, MatAutocomplete } from '@angular/material';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 import { University } from 'src/app/model/University';
 import { UniversityService } from 'src/app/services/university-service/university.service';
@@ -8,7 +8,6 @@ import { Observable } from 'rxjs';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Notifications } from 'src/app/components/util/notification';
-import { startWith, map } from 'rxjs/operators';
 import { ENTER } from '@angular/cdk/keycodes';
 
 @Component({

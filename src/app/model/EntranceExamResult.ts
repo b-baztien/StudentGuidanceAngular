@@ -1,11 +1,13 @@
 import { DocumentReference } from '@angular/fire/firestore';
 
 export class EntranceExamResult {
-    entrance_exam_name: string;
+    id?: string;
+    ref?: DocumentReference;
+    entranceExamName: string;
     year: string;
-    student: DocumentReference;
-    university: DocumentReference;
-    school: DocumentReference;
-    faculty: DocumentReference;
-    major: DocumentReference;
+    studentName: string;
+    universityName: string;
+    schoolName: string;
+    facultyName: string;
+    majorName: string;
 }
