@@ -10,6 +10,7 @@ import { EditNewsDialogComponent } from './dialog/edit-news-dialog/edit-news-dia
 import { Login } from 'src/app/model/Login';
 import { TeacherService } from 'src/app/services/teacher-service/teacher.service';
 import { Teacher } from 'src/app/model/Teacher';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-list-news',
@@ -20,13 +21,13 @@ export class ListNewsComponent implements OnInit, OnDestroy {
   newsList: News[] = [];
   displayedColumns: string[] = ['topic', 'detail', 'start_time', 'end_time'];
 
-  resultsLength = 0;
+  teacher: Teacher;
 
-  mapUniversity = new Map();
+  resultsLength = 0;
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
-  listNewsObs;
+  listNewsObs: Subscription;
 
   imagePath = new Map();
 
@@ -43,8 +44,8 @@ export class ListNewsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     let login: Login = JSON.parse(localStorage.getItem('userData')) as Login;
     this.listNewsObs = this.teacherService.getTeacherByUsername(login.username).subscribe(teacher => {
-      const newTeacher = teacher;
-      this.newsService.getNewsByTeacherReference(newTeacher.ref).subscribe(news => {
+      this.teacher = teacher;
+      this.newsService.getNewsByTeacherReference(teacher.ref).subscribe(news => {
         this.newsList = news;
         news.forEach(item => {
           if (item.image !== undefined) {
@@ -72,10 +73,12 @@ export class ListNewsComponent implements OnInit, OnDestroy {
 
   openAddNewsDialog(): void {
     const dialogRef = this.dialog.open(AddNewsDialogComponent, {
-      width: '60%',
+      width: '90%',
+      height: '90%'
     });
 
-    dialogRef.afterClosed().subscribe(() => {
+    dialogRef.afterClosed().subscribe(async news => {
+      this.newsService.addNews(this.teacher.ref, news);
     });
   }
 

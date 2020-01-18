@@ -62,20 +62,20 @@ export class EditNewsDialogComponent implements OnInit {
       this.afStorage.storage.ref(this.news.image).getDownloadURL().then(url => {
         this.imgURL = url;
       });
-      this.universityService.getAllUniversity().subscribe(listUniRes => {
-        listUniRes.forEach(uniRes => {
-          const university = uniRes.data() as University;
-          this.allUniversity.push(university.university_name);
-          if (this.news.university !== undefined) {
-            this.news.university.forEach(uni => {
-              if (uniRes.id === uni.id) {
-                this.listUniversity_name.push(university.university_name);
-              }
-            });
-          }
-        });
-        this.loadData = true;
-      });
+      // this.universityService.getAllUniversity().subscribe(listUniRes => {
+      //   listUniRes.forEach(uniRes => {
+      //     const university = uniRes;
+      //     this.allUniversity.push(university.university_name);
+      //     if (this.news.university !== undefined) {
+      //       this.news.university.forEach(uni => {
+      //         if (uniRes.id === uni.id) {
+      //           this.listUniversity_name.push(university.university_name);
+      //         }
+      //       });
+      //     }
+      //   });
+      //   this.loadData = true;
+      // });
     });
     this.filteredUniversity = this.newsForm.get('university').valueChanges.pipe(
       startWith(null),
@@ -164,14 +164,14 @@ export class EditNewsDialogComponent implements OnInit {
               if (!universityRef[0].exists) {
                 listUniversityRef.push(universityRef[0].ref);
               }
-              if (setUniversity.size === listUniversityRef.length) {
-                this.news.university = listUniversityRef;
-                this.newsService.editNews(this.data.id, this.news);
-              }
+              // if (setUniversity.size === listUniversityRef.length) {
+              //   this.news.university = listUniversityRef;
+              //   this.newsService.editNews(this.data.id, this.news);
+              // }
             });
           });
         } else {
-          this.news.university = listUniversityRef;
+          // this.news.university = listUniversityRef;
           this.newsService.editNews(this.data.id, this.news);
         }
       }

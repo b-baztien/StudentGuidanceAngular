@@ -64,7 +64,10 @@ export class UniversityService {
 
   getAllUniversity() {
     return this.firestore.collection('University', query => query.orderBy('university_name'))
-      .snapshotChanges().pipe(map(result => result.map(doc => doc.payload.doc)));
+      .snapshotChanges().pipe(map(result => result.map(item => {
+        const doc = item.payload.doc;
+        return { id: doc.id, ref: doc.ref, ...doc.data() as University } as University;
+      })));
   }
 
   getUniversity(university_id: string) {

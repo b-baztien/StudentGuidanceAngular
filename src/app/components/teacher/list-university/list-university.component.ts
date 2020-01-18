@@ -34,11 +34,8 @@ export class ListUniversityTeacherComponent implements OnInit, OnDestroy {
     this.universityList = new MatTableDataSource<University>();
     this.customFilter();
     //add data to table datasource
-    this.uniSub = this.universityService.getAllUniversity().subscribe(docs => {
-      this.universityList.data = docs
-        .map(uniRef => {
-          return { id: uniRef.id, ...uniRef.data() as University };
-        });
+    this.uniSub = this.universityService.getAllUniversity().subscribe(university => {
+      this.universityList.data = university;
       if (this.universityList.data.length === 0) {
         this.showTable = false;
       } else {

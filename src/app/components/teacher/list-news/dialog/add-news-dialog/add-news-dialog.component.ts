@@ -25,7 +25,6 @@ export class AddNewsDialogComponent implements OnInit {
     university: new FormControl(null),
   });
 
-  news: News;
   listUniversity_name: string[] = new Array<string>();
   allUniversity: string[] = new Array<string>();
   filteredUniversity: Observable<string[]>;
@@ -43,27 +42,27 @@ export class AddNewsDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<AddMajorDialogComponent>,
-    private newsService: NewsService,
     private universityService: UniversityService,
     private afStorage: AngularFireStorage,
     private afirestore: AngularFirestore,
     @Inject(MAT_DIALOG_DATA) public data: string,
-  ) {
+  ) { }
+
+  ngOnInit() {
+    this.getAllUniversity();
   }
 
-  ngOnInit() { }
-
   async ngAfterViewInit() {
-    this.universityService.getAllUniversity().subscribe(listUniRes => {
-      listUniRes.forEach(uniRes => {
-        const university = uniRes.data() as University;
-        this.allUniversity.push(university.university_name);
-      });
-      this.loadData = true;
-    })
     this.filteredUniversity = this.newsForm.get('university').valueChanges.pipe(
       startWith(null),
       map((university: string | null) => university ? this._filter(university) : this.allUniversity.slice()));
+  }
+
+  private getAllUniversity() {
+    this.universityService.getAllUniversity().subscribe(universitys => {
+      this.allUniversity = universitys.map(uni => uni.university_name);
+      this.loadData = true;
+    })
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -83,14 +82,14 @@ export class AddNewsDialogComponent implements OnInit {
     }
   }
 
-  async upload(file, filePath) {
+  async upload(file: File, filePath: string, filename?: string) {
     const metadata = {
       contentType: 'image/jpeg',
     };
 
-    const fileName = this.afirestore.createId();
-    if (file.type.split('/')[0] == 'image') {
-      return await this.afStorage.upload(`${filePath}/${fileName}`, file, metadata).then(async result => {
+    const newFileName = filename ? filename : this.afirestore.createId();
+    if (file.type.includes('image')) {
+      return await this.afStorage.upload(`${filePath}/${newFileName}`, file, metadata).then(async result => {
         return result.ref.fullPath;
       });
     }
@@ -101,12 +100,10 @@ export class AddNewsDialogComponent implements OnInit {
     this.dialogRef.close(null);
   }
 
-
   clearUniversity(): void {
     this.universityInput.nativeElement.value = null;
     this.newsForm.get('university').setValue(null);
   }
-
 
   removeUniversity(university: string): void {
     const index = this.listUniversity_name.indexOf(university);
@@ -117,48 +114,35 @@ export class AddNewsDialogComponent implements OnInit {
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.listUniversity_name.push(event.option.viewValue);
-    this.universityInput.nativeElement.value = null;
+    if (!this.listUniversity_name.includes(event.option.viewValue)) {
+      this.listUniversity_name.push(event.option.viewValue);
+    }
+    this.universityInput.nativeElement.value = '';
     this.newsForm.get('university').setValue(null);
   }
 
   async onSubmit() {
-    this.news = new News;
+    let news = new News();
     if (this.newsForm.valid) {
       try {
-        this.news.topic = this.newsForm.get('topic').value;
-        this.news.detail = this.newsForm.get('detail').value;
-        this.news.start_time = this.newsForm.get('start_time').value;
-        this.news.end_time = this.newsForm.get('end_time').value;
+        news.topic = this.newsForm.get('topic').value;
+        news.detail = this.newsForm.get('detail').value;
+        news.start_time = this.newsForm.get('start_time').value;
+        news.end_time = this.newsForm.get('end_time').value;
+        news.listUniversity_name = this.listUniversity_name;
 
-        const file: any = document.getElementById('newsImage');
-        if (file.files.length != 0) {
-          await this.upload(file, 'news');
-        }
-
-        const setUniversity = new Set(this.listUniversity_name);
-        let listUniversityRef = new Array<DocumentReference>();
-        if (setUniversity.size > 0) {
-          setUniversity.forEach(async university_name => {
-            this.universityService.getUniversityByUniversityName(university_name).subscribe(universityRef => {
-              if (!universityRef[0].exists) {
-                listUniversityRef.push(universityRef[0].ref);
-              }
-              if (setUniversity.size === listUniversityRef.length) {
-                this.news.university = listUniversityRef;
-                this.newsService.addNews(this.news);
-              }
-            });
+        let filePath = 'news';
+        let fileLogo: any = document.getElementById('newsImage');
+        if (fileLogo.files[0] !== undefined) {
+          news.image = await this.upload(fileLogo.files[0], filePath).then(result => {
+            return result;
           });
-        } else {
-          this.news.university = listUniversityRef;
-          this.newsService.addNews(this.news);
         }
-      }
-      catch (error) {
+
+        this.dialogRef.close(news);
+      } catch (error) {
         console.error(error);
       }
-      this.dialogRef.close();
     }
   }
 

@@ -171,7 +171,9 @@ export class EditMajorComponent implements OnInit {
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.selectedCareer.push(event.option.viewValue);
+    if (!this.selectedCareer.includes(event.option.viewValue)) {
+      this.selectedCareer.push(event.option.viewValue);
+    }
     this.careerInput.nativeElement.value = '';
     this.majorForm.get('career').setValue(null);
   }

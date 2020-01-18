@@ -33,10 +33,11 @@
                                 {{news.detail}}
                             </p>
                         </div>
-                        <div class="card-footer" *ngIf="mapUniversity.get(news.id) !== null">
+                        <div class="card-footer" *ngIf="news">
                             <mat-chip-list>
-                                <mat-chip color="primary" selected
-                                    *ngFor="let university_name of mapUniversity.get(news.id)">
+                                <mat-chip color="primary" selected matTooltip="มหาวิทยาลัยที่เกี่ยวข้อง"
+                                    [matTooltipPosition]="'below'"
+                                    *ngFor="let university_name of news.listUniversity_name">
                                     {{university_name}}
                                 </mat-chip>
                             </mat-chip-list>

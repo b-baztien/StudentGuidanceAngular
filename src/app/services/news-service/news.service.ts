@@ -3,6 +3,7 @@ import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import { News } from 'src/app/model/News';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { map } from 'rxjs/operators';
+import { Teacher } from 'src/app/model/Teacher';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +26,9 @@ export class NewsService {
     return this.firestore.collection('News').ref.orderBy('start_time', 'desc').get();
   }
 
-  addNews(news: News) {
-    return this.firestore.collection('News').add(Object.assign({}, news));
+  addNews(teacherRef: DocumentReference, news: News) {
+    return this.firestore.collection(teacherRef.parent.path).doc(teacherRef.id).collection('News')
+      .add(Object.assign({}, news));
   }
 
   editNews(news_id: string, news: News) {

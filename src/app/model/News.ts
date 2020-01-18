@@ -9,5 +9,5 @@ export class News {
     topic: string;
     start_time: firebase.firestore.Timestamp;
     end_time: firebase.firestore.Timestamp;
-    university: DocumentReference[] = new Array<DocumentReference>();
+    listUniversity_name: string[];
 }
