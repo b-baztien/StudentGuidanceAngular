@@ -31,8 +31,9 @@ export class NewsService {
       .add(Object.assign({}, news));
   }
 
-  editNews(news_id: string, news: News) {
-    return this.firestore.collection('News').doc(news_id).update(Object.assign({}, news));
+  editNews(newsRef: DocumentReference, news: News) {
+    console.log('news update', newsRef.id);
+    return this.firestore.collection(newsRef.parent.path).doc(newsRef.id).update(Object.assign({}, news));
   }
 
   getNews(news_id: string) {

@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-sm-12">
-        <h1 mat-dialog-title>เพิ่มข้อมูลข่าวสาร</h1>
+        <h1 mat-dialog-title>{{mode}}ข้อมูลข่าวสาร</h1>
     </div>
 </div>
 <form [formGroup]="newsForm" *ngIf="loadData">
@@ -57,7 +57,14 @@
         </mat-form-field>
     </div>
     <mat-dialog-actions align="end">
-        <button mat-raised-button class="btn-secondary" (click)="onNoClick()">ปิด</button>
-        <button mat-raised-button class="btn-success" (click)="onSubmit()">เพิ่มข้อมูล</button>
+        <button mat-raised-button class="btn-secondary" (click)="onNoClick()">
+            <mat-icon>clear</mat-icon> ปิด
+        </button>
+        <button mat-raised-button class="btn-success" (click)="onSubmit()" *ngIf="mode === 'เพิ่ม'">
+            <mat-icon>add</mat-icon> {{mode}}ข้อมูล
+        </button>
+        <button mat-raised-button class="btn-warning" (click)="onSubmit()" *ngIf="mode === 'แก้ไข'">
+            <mat-icon>edit</mat-icon> {{mode}}ข้อมูล
+        </button>
     </mat-dialog-actions>
 </form>

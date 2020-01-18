@@ -13,7 +13,7 @@
                             </p>
                         </div>
                         <div class="col-sm-4 card-button-right">
-                            <button mat-raised-button class="btn-success" (click)="openAddNewsDialog()">
+                            <button mat-raised-button class="btn-success" (click)="openAddEditNewsDialog(null)">
                                 <mat-icon>add</mat-icon> เพิ่มข้อมูลข่าวสาร
                             </button>
                         </div>
@@ -52,7 +52,7 @@
                         <div class="card-body">
                             <div class="card-description">
                                 <button mat-raised-button class="btn-warning button-margin-right"
-                                    (click)="openEditNewsDialog(news)">
+                                    (click)="openAddEditNewsDialog(news)">
                                     <mat-icon>edit</mat-icon> แก้ไขข้อมูลข่าว
                                 </button><button mat-raised-button class="btn-danger"
                                     (click)="openDeleteNewsDialog(news.id)">

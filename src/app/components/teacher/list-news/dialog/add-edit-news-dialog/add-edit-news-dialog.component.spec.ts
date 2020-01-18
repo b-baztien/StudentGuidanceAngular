@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddNewsDialogComponent } from './add-news-dialog.component';
+import { AddEditNewsDialogComponent } from './add-edit-news-dialog.component';
 
 describe('AddNewsDialogComponent', () => {
-  let component: AddNewsDialogComponent;
-  let fixture: ComponentFixture<AddNewsDialogComponent>;
+  let component: AddEditNewsDialogComponent;
+  let fixture: ComponentFixture<AddEditNewsDialogComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddNewsDialogComponent ]
+      declarations: [ AddEditNewsDialogComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddNewsDialogComponent);
+    fixture = TestBed.createComponent(AddEditNewsDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

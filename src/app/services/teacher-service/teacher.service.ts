@@ -12,10 +12,10 @@ export class TeacherService {
   constructor(private angularFirestore: AngularFirestore) { }
 
   getTeacherByUsername(username: string) {
-    return this.angularFirestore.collectionGroup('Teacher').get()
+    return this.angularFirestore.collectionGroup('Teacher').snapshotChanges()
       .pipe(map(result => {
-        const teacher = result.docs.find(item => item.id === username);
-        return { id: teacher.id, ref: teacher.ref, ...teacher.data() } as Teacher;
+        const teacher = result.find(item => item.payload.doc.id === username);
+        return { id: teacher.payload.doc.id, ref: teacher.payload.doc.ref, ...teacher.payload.doc.data() as Teacher } as Teacher;
       }));
   }
 

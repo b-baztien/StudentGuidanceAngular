@@ -1,16 +1,15 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatPaginator, MatDialog } from '@angular/material';
-import { DocumentReference } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { NewsService } from 'src/app/services/news-service/news.service';
-import { AddNewsDialogComponent } from './dialog/add-news-dialog/add-news-dialog.component';
+import { AddEditNewsDialogComponent } from './dialog/add-edit-news-dialog/add-edit-news-dialog.component';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { News } from 'src/app/model/News';
-import { EditNewsDialogComponent } from './dialog/edit-news-dialog/edit-news-dialog.component';
 import { Login } from 'src/app/model/Login';
 import { TeacherService } from 'src/app/services/teacher-service/teacher.service';
 import { Teacher } from 'src/app/model/Teacher';
 import { Subscription } from 'rxjs';
+import { Notifications } from '../../util/notification';
 
 @Component({
   selector: 'app-list-news',
@@ -48,12 +47,12 @@ export class ListNewsComponent implements OnInit, OnDestroy {
       this.newsService.getNewsByTeacherReference(teacher.ref).subscribe(news => {
         this.newsList = news;
         news.forEach(item => {
-          if (item.image !== undefined) {
+          if (item.image === '' || item.image === null || item.image === undefined) {
+            this.imagePath.set(item.id, 'assets/img/no-photo-available.png');
+          } else {
             this.afStorage.storage.ref(item.image).getDownloadURL().then(url => {
               this.imagePath.set(item.id, url);
             });
-          } else {
-            this.imagePath.set(item.id, 'assets/img/no-photo-available.png');
           }
           return item;
         });
@@ -71,29 +70,28 @@ export class ListNewsComponent implements OnInit, OnDestroy {
     this.listNewsObs.unsubscribe();
   }
 
-  openAddNewsDialog(): void {
-    const dialogRef = this.dialog.open(AddNewsDialogComponent, {
+  openAddEditNewsDialog(news: News): void {
+    const dialogRef = this.dialog.open(AddEditNewsDialogComponent, {
       width: '90%',
-      height: '90%'
-    });
-
-    dialogRef.afterClosed().subscribe(async news => {
-      this.newsService.addNews(this.teacher.ref, news);
-    });
-  }
-
-  openEditNewsDialog(news: DocumentReference): void {
-    const dialogRef = this.dialog.open(EditNewsDialogComponent, {
-      width: '60%',
+      height: '90%',
       data: news,
     });
 
-    dialogRef.beforeClose().subscribe()
-
-    dialogRef.afterClosed().subscribe(() => {
+    dialogRef.afterClosed().subscribe(async result => {
+      if (!result) return;
+      try {
+        if (result.mode === 'เพิ่ม') {
+          this.newsService.addNews(this.teacher.ref, result.news);
+          new Notifications().showNotification('done', 'top', 'right', 'เพิ่มข้อมูลข่าวสารสำเร็จแล้ว', 'success', 'สำเร็จ !');
+        } else if (result.mode === 'แก้ไข') {
+          this.newsService.editNews(news.ref, result.news);
+          new Notifications().showNotification('done', 'top', 'right', 'แก้ไขข้อมูลข่าวสารสำเร็จแล้ว', 'success', 'สำเร็จ !');
+        }
+      } catch (error) {
+        new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'จัดการข้อมูลล้มเหลว !');
+      }
     });
   }
-
 
   openDeleteNewsDialog(newsId: string) {
     this.newsService.deleteNews(newsId);

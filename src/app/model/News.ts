@@ -5,7 +5,7 @@ export class News {
     id?: string;
     ref?: DocumentReference;
     detail: string;
-    image: string = '';
+    image: string;
     topic: string;
     start_time: firebase.firestore.Timestamp;
     end_time: firebase.firestore.Timestamp;

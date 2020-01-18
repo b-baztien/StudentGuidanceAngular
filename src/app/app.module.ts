@@ -21,13 +21,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from './shared/shared.module';
 import { EditUniversityDialogComponent } from './components/admin/view-university/dialog/edit-university-dialog/edit-university-dialog.component';
 import { AddUserDialogComponent } from './components/admin/list-user/dialog/add-user-dialog/add-user-dialog.component';
-import { AddNewsDialogComponent } from './components/teacher/list-news/dialog/add-news-dialog/add-news-dialog.component';
+import { AddEditNewsDialogComponent } from './components/teacher/list-news/dialog/add-edit-news-dialog/add-edit-news-dialog.component';
 import { registerLocaleData } from '@angular/common';
 import localeTh from '@angular/common/locales/th';
 import localeThExtra from '@angular/common/locales/extra/th';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { ListMajorAdminDialogComponent } from './components/admin/view-university/dialog/list-major-dialog/list-major-dialog.component';
-import { EditNewsDialogComponent } from './components/teacher/list-news/dialog/edit-news-dialog/edit-news-dialog.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { ListMajorTeacherDialogComponent } from './components/teacher/view-university/dialog/list-major-dialog/list-major-dialog.component';
 import { ConfirmDialogComponent } from './components/util/confirm-dialog/confirm-dialog.component';
@@ -49,9 +48,8 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra);
     AddMajorDialogComponent,
     EditUniversityDialogComponent,
     AddUserDialogComponent,
-    AddNewsDialogComponent,
+    AddEditNewsDialogComponent,
     ListMajorAdminDialogComponent,
-    EditNewsDialogComponent,
     ListMajorTeacherDialogComponent,
     LogoutComponent,
     ConfirmDialogComponent,
@@ -65,9 +63,8 @@ registerLocaleData(localeTh, 'th-TH', localeThExtra);
     AddMajorDialogComponent,
     EditUniversityDialogComponent,
     AddUserDialogComponent,
-    AddNewsDialogComponent,
+    AddEditNewsDialogComponent,
     ListMajorAdminDialogComponent,
-    EditNewsDialogComponent,
     ListMajorTeacherDialogComponent,
     ConfirmDialogComponent,
     AddStudentDialogComponent,
