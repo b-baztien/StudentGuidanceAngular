@@ -82,7 +82,7 @@
                             </ng-container>
                             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                             <tr class="row-hover" mat-row *matRowDef="let row; columns: displayedColumns;"
-                                (click)="onStudentClick(row.id)"></tr>
+                                (click)="onStudentClick(row)"></tr>
                         </table>
                         <div class="card-profile" *ngIf="studentList.filteredData.length == 0">
                             <div class="card-body">

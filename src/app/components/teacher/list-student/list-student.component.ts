@@ -93,7 +93,7 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
 
   openAddStudentDialog(): void { }
 
-  onStudentClick() {
+  onStudentClick(student: Student) {
   }
 
   onChangeStudentStatus(student?: Student) {
