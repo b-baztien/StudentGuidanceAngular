@@ -37,7 +37,8 @@
                                     <mat-checkbox (change)="$event ? masterToggle() : null"
                                         [checked]="selection.hasValue() && isAllSelected()"
                                         [indeterminate]="selection.hasValue() && !isAllSelected()"
-                                        [aria-label]="checkboxLabel()">
+                                        [aria-label]="checkboxLabel()"
+                                        *ngIf="studentList.filteredData.length !== 0">
                                     </mat-checkbox>
                                 </th>
                                 <td mat-cell *matCellDef="let row">
@@ -86,6 +87,7 @@
                         </table>
                         <div class="card-profile" *ngIf="studentList.filteredData.length == 0">
                             <div class="card-body">
+                                <mat-icon class="card-title">search</mat-icon>
                                 <h4 class="card-title">ไม่พบข้อมูลนักเรียนที่ค้นหา</h4>
                                 <p class="card-description">
                                     ไม่พบข้อมูลนักเรียนตามเงื่อนไขที่ค้นหา กรุณาค้นหาด้วยเงื่อนไขอื่น
@@ -95,6 +97,7 @@
                     </div>
                     <div class="card-profile" *ngIf="!showStudentTable">
                         <div class="card-body">
+                            <mat-icon class="card-title">highlight_off</mat-icon>
                             <h4 class="card-title">ไม่พบข้อมูลนักเรียน</h4>
                             <p class="card-description">
                                 ไม่พบข้อมูลนักเรียนในระบบ กรุณาเพิ่มข้อมูลนักเรียน
@@ -154,6 +157,7 @@
                         </table>
                         <div class="card-profile" *ngIf="alumniList.filteredData.length == 0">
                             <div class="card-body">
+                                <mat-icon class="card-title">search</mat-icon>
                                 <h4 class="card-title">ไม่พบข้อมูลศิษย์เก่าที่ค้นหา</h4>
                                 <p class="card-description">
                                     ไม่พบข้อมูลศิษย์เก่าตามเงื่อนไขที่ค้นหา กรุณาค้นหาด้วยเงื่อนไขอื่น
@@ -163,6 +167,7 @@
                     </div>
                     <div class="card-profile" *ngIf="!showAlumniTable">
                         <div class="card-body">
+                            <mat-icon class="card-title">highlight_off</mat-icon>
                             <h4 class="card-title">ไม่พบข้อมูลศิษย์เก่า</h4>
                             <p class="card-description">
                                 ไม่พบข้อมูลศิษย์เก่าในระบบ กรุณาเพิ่มข้อมูลศิษย์เก่า

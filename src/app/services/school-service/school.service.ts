@@ -12,7 +12,10 @@ export class SchoolService {
 
   getAllSchool() {
     return this.firestore.collection('School').snapshotChanges()
-      .pipe(map(result => result.map(item => item.payload.doc)));
+      .pipe(map(result => result.map(item => {
+        const doc = item.payload.doc;
+        return { id: doc.id, ref: doc.ref, ...doc.data() as School } as School;
+      })));
   }
 
   getSchool(schoolId: string) {

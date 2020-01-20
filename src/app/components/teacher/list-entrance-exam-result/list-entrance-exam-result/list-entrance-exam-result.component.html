@@ -31,7 +31,7 @@
                                 <input matInput placeholder="ค้นหาผลการสอบติด ภายในระบบ..."
                                     (keyup)="applyFilter($event.target.value)">
                             </mat-form-field>
-                            <table mat-table [dataSource]="examResultList" class="table table-hover">
+                            <table aria-describedby="examResultTable" mat-table [dataSource]="examResultList" class="table table-hover">
                                 <ng-container matColumnDef="student">
                                     <th mat-header-cell *matHeaderCellDef>ชื่อนักเรียน</th>
                                     <td mat-cell *matCellDef="let resultExam">

@@ -77,8 +77,7 @@ export class LoginService {
   }
 
   getLoginByCondition(queryFn: QueryFn) {
-    return this.firestore.collection('Login', queryFn).snapshotChanges()
-      .pipe(map(result => result.map(item => item.payload.doc)));
+    return this.firestore.collectionGroup('Login', queryFn).get();
   }
 
   logout() {

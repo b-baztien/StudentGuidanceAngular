@@ -83,10 +83,9 @@ export class ListUserComponent implements OnInit, AfterViewInit {
   openAddUserDialog(): void {
     const dialogRef = this.dialog.open(AddUserDialogComponent, {
       width: '90%',
+      height: '90%',
       maxHeight: '90%',
     });
-
-    dialogRef.beforeClose().subscribe()
 
     dialogRef.afterClosed().subscribe(result => {
     });

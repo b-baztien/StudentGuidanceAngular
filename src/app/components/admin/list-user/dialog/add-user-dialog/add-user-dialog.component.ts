@@ -1,20 +1,20 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroupDirective, FormControl, NgForm, Validators, FormGroup } from '@angular/forms';
+import { FormGroupDirective, FormControl, NgForm, Validators, FormGroup, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { MatDialogRef, MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 import { TeacherService } from 'src/app/services/teacher-service/teacher.service';
 import { Login } from 'src/app/model/Login';
 import { Teacher } from 'src/app/model/Teacher';
-import { Student } from 'src/app/model/Student';
 import { SchoolService } from 'src/app/services/school-service/school.service';
 import { School } from 'src/app/model/School';
 import { startWith, map } from 'rxjs/operators';
-import { StudentService } from 'src/app/services/student-service/student.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { LoginService } from 'src/app/services/login-service/login.service';
 import { Notifications } from 'src/app/components/util/notification';
+import { Student } from 'src/app/model/Student';
+import { StudentService } from 'src/app/services/student-service/student.service';
 
 @Component({
   selector: 'app-add-user-dialog',
@@ -25,31 +25,61 @@ export class AddUserDialogComponent implements OnInit {
   userForm = new FormGroup({
     userType: new FormControl('teacher', [
       Validators.required]),
-    school: new FormControl(null, [
+    school: new FormControl('โรงเรียนทดสอบ', [
       Validators.required]),
-    username: new FormControl(null, [
+    username: new FormControl('teacher2', [
       Validators.required]),
-    password: new FormControl(null, [
+    password: new FormControl('1234', [
       Validators.required]),
-    conPassword: new FormControl(null, [
+    conPassword: new FormControl('1234', [
       Validators.required]),
   });
 
   teacherForm = new FormGroup({
-    firstname: new FormControl(null, [
+    firstname: new FormControl('สมศักดิ์', [
       Validators.required]),
-    lastname: new FormControl(null, [
+    lastname: new FormControl('ใจเย็น', [
       Validators.required]),
-    position: new FormControl(null, [
+    position: new FormControl('ครูคณิตศาสตร์', [
       Validators.required]),
-    phone_no: new FormControl(null, Validators.compose([
+    phone_no: new FormControl('0812345678', Validators.compose([
       Validators.required,
       Validators.pattern('^[0-9]*$')])),
-    email: new FormControl(null, Validators.compose([
+    email: new FormControl('somsak@test.com', Validators.compose([
       Validators.required,
       Validators.email
     ])),
   });
+
+
+  // userForm = new FormGroup({
+  //   userType: new FormControl('teacher', [
+  //     Validators.required]),
+  //   school: new FormControl(null, [
+  //     Validators.required]),
+  //   username: new FormControl(null, [
+  //     Validators.required]),
+  //   password: new FormControl(null, [
+  //     Validators.required]),
+  //   conPassword: new FormControl(null, [
+  //     Validators.required]),
+  // });
+
+  // teacherForm = new FormGroup({
+  //   firstname: new FormControl(null, [
+  //     Validators.required]),
+  //   lastname: new FormControl(null, [
+  //     Validators.required]),
+  //   position: new FormControl(null, [
+  //     Validators.required]),
+  //   phone_no: new FormControl(null, Validators.compose([
+  //     Validators.required,
+  //     Validators.pattern('^[0-9]*$')])),
+  //   email: new FormControl(null, Validators.compose([
+  //     Validators.required,
+  //     Validators.email
+  //   ])),
+  // });
 
   studentForm = new FormGroup({
     firstname: new FormControl(null, [
@@ -76,6 +106,8 @@ export class AddUserDialogComponent implements OnInit {
 
   filteredSchool: Observable<School[]>;
   listSchool = new Array<School>();
+
+  listUsername: string[];
 
   loadData = false;
 
@@ -106,13 +138,15 @@ export class AddUserDialogComponent implements OnInit {
     this.filteredSchool = this.userForm.get('school').valueChanges.pipe(
       startWith(null),
       map((schoolName: string | null) => schoolName ? this._filter(schoolName) : this.listSchool.slice()));
+
+    this.loginService.getAllLogin().subscribe(result => {
+      this.listUsername = result.map(item => item.username);
+    })
   }
 
   private getSchoolData() {
     this.schoolService.getAllSchool().subscribe(listSchoolRes => {
-      this.listSchool = listSchoolRes.map(school => {
-        return { id: school.id, ref: school.ref, ...school.data() as School }
-      });
+      this.listSchool = listSchoolRes;
       this.loadData = true;
     });
   }
@@ -149,6 +183,7 @@ export class AddUserDialogComponent implements OnInit {
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
+    console.log(event.option.viewValue);
     this.userForm.get('school').setValue(event.option.viewValue);
   }
 
@@ -159,70 +194,46 @@ export class AddUserDialogComponent implements OnInit {
   async onSubmit() {
     try {
       let login = new Login();
-      if (this.userForm.valid) {
-        login.username = this.userForm.get('username').value;
-        login.password = this.userForm.get('password').value;
-        login.type = this.userForm.get('userType').value;
-        let school = this.listSchool
-          .find(school => school.school_name === this.userForm.get('school').value);
+      if (this.userForm.invalid || this.teacherForm.invalid || this.studentForm.invalid) return;
+      login.username = this.userForm.get('username').value;
+      login.password = this.userForm.get('password').value;
+      login.type = this.userForm.get('userType').value;
+      let schoolName: string = this.userForm.get('school').value;
 
-        await this.loginService.getLoginByCondition(
-          query => query.where('username', '==', login.username)
-        ).toPromise().then(result => {
-          if (result.length > 0) return new Error('มีชื่อผู้ใช้นี้ในระบบแล้ว')
-        });
-
-        if (this.userForm.get('userType').value === 'teacher') {
-          if (this.teacherForm.valid) {
-            let teacher = new Teacher();
-            teacher.firstname = this.teacherForm.get('firstname').value;
-            teacher.lastname = this.teacherForm.get('lastname').value;
-            teacher.phone_no = this.teacherForm.get('phone_no').value;
-            teacher.email = this.teacherForm.get('email').value;
-            let files: any = document.getElementById('inputImage');
-            if (files.files.length !== 0) {
-              await this.upload(files, 'teacher');
-            }
-            if (!school) {
-              console.log(school);
-              school.school_name = this.userForm.get('school').value;
-              // school.ref = (await this.schoolService.addSchool(school));
-            }
-            this.teacherService.addTeacher(school.ref, login, teacher);
-            this.loginService.addUser(login).then(loginRef => {
-              teacher.login = loginRef;
-            });
-            this.dialogRef.close({
-              userType: this.userForm.controls.userType.value,
-              school: school.ref,
-              login: login,
-              teacher: teacher
-            });
+      if (this.userForm.get('userType').value === 'teacher') {
+        if (this.teacherForm.valid) {
+          let teacher = new Teacher();
+          teacher.firstname = this.teacherForm.get('firstname').value;
+          teacher.lastname = this.teacherForm.get('lastname').value;
+          teacher.phone_no = this.teacherForm.get('phone_no').value;
+          teacher.email = this.teacherForm.get('email').value;
+          let files: any = document.getElementById('inputImage');
+          if (files.files.length !== 0) {
+            await this.upload(files, 'teacher');
           }
+          await this.teacherService.addTeacher(schoolName, login, teacher);
+          this.dialogRef.close({
+            userType: this.userForm.controls.userType.value,
+          });
         }
-        // else if (this.userForm.get('userType').value === 'student') {
-        //   this.student.school = await this.schoolService.addSchool(this.school).then(result => {
-        //     return result;
-        //   });
-        //   if (this.studentForm.valid) {
-        //     this.student.firstname = this.studentForm.get('firstname').value;
-        //     this.student.lastname = this.studentForm.get('lastname').value;
-        //     this.student.phone_no = this.studentForm.get('phone_no').value;
-        //     this.student.email = this.studentForm.get('email').value;
-        //     let files: any = document.getElementById('inputImage');
-        //     if (files.files.length !== 0) {
-        //       await this.upload(files, 'student');
-        //     }
-        //     this.loginService.addUser(this.login).then(loginRef => {
-        //       this.student.login = loginRef;
-        //       this.studentService.addStudent(this.login, this.student);
-        //     });
-        //     this.dialogRef.close();
-        //   }
-        // }
+      } else if (this.userForm.get('userType').value === 'student') {
+        let student = new Student();
+        if (this.studentForm.valid) {
+          student.firstname = this.studentForm.get('firstname').value;
+          student.lastname = this.studentForm.get('lastname').value;
+          student.phone_no = this.studentForm.get('phone_no').value;
+          student.email = this.studentForm.get('email').value;
+          let files: any = document.getElementById('inputImage');
+          if (files.files.length !== 0) {
+            await this.upload(files, 'student');
+          }
+          await this.studentService.addStudent(schoolName, login, student);
+          this.dialogRef.close();
+        }
       }
+      new Notifications().showNotification('close', 'top', 'right', 'เพิ่มข้อมูลสำเร็จ', 'success', 'เพิ่มข้อมูลผู้ใช้งานสำเร็จ !');
     } catch (error) {
-      new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'ลบข้อมูลล้มเหลว !');
+      new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'เกิดข้อผิดพลาด !');
     }
   }
 

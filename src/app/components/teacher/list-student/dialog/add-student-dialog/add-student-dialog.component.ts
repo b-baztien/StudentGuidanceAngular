@@ -6,6 +6,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { StudentService } from 'src/app/services/student-service/student.service';
 import { DocumentReference, AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { Notifications } from 'src/app/components/util/notification';
 
 @Component({
   selector: 'app-add-student-dialog',
@@ -106,30 +107,34 @@ export class AddStudentDialogComponent implements OnInit {
   }
 
   async onSubmit() {
-    if (this.userForm.valid) {
-      this.login.username = this.userForm.get('username').value;
-      this.login.password = this.userForm.get('password').value;
-      this.login.type = 'student';
-      this.student.student_status = 'กำลังศึกษา';
+    try {
+      if (this.userForm.valid) {
+        this.login.username = this.userForm.get('username').value;
+        this.login.password = this.userForm.get('password').value;
+        this.login.type = 'student';
+        this.student.student_status = 'กำลังศึกษา';
 
-      if (this.userForm.get('requestData').value) {
-        if (this.studentForm.valid) {
-          this.student.firstname = this.studentForm.get('firstname').value;
-          this.student.lastname = this.studentForm.get('lastname').value;
-          this.student.phone_no = this.studentForm.get('phone_no').value;
-          this.student.email = this.studentForm.get('email').value;
-          let files: any = document.getElementById('inputImage');
-          if (files.files[0] !== undefined) {
-            await this.upload(files);
+        if (this.userForm.get('requestData').value) {
+          if (this.studentForm.valid) {
+            this.student.firstname = this.studentForm.get('firstname').value;
+            this.student.lastname = this.studentForm.get('lastname').value;
+            this.student.phone_no = this.studentForm.get('phone_no').value;
+            this.student.email = this.studentForm.get('email').value;
+            let files: any = document.getElementById('inputImage');
+            if (files.files[0] !== undefined) {
+              await this.upload(files);
+            }
+            // this.studentService.addStudent(this.login, this.student);
+            this.dialogRef.close();
           }
-          this.studentService.addStudent(this.login, this.student);
+        } else {
+          this.student.firstname = this.login.username;
+          // this.studentService.addStudent(this.login, this.student);
           this.dialogRef.close();
         }
-      } else {
-        this.student.firstname = this.login.username;
-        this.studentService.addStudent(this.login, this.student);
-        this.dialogRef.close();
       }
+    } catch (error) {
+      new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'ลบข้อมูลล้มเหลว !');
     }
   }
 }

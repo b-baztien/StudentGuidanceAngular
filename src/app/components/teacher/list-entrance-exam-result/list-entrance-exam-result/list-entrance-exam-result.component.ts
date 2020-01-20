@@ -4,21 +4,16 @@ import { QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { EntranceExamResultService } from 'src/app/services/entrance-exam-result-service/entrance-exam-result.service';
 import { FormControl } from '@angular/forms';
-import { EntranceExamResult } from 'src/app/model/EntranceExamResult';
 import { Major } from 'src/app/model/Major';
 import { Faculty } from 'src/app/model/Faculty';
-import { University } from 'src/app/model/University';
 import { ConfirmDialogComponent } from 'src/app/components/util/confirm-dialog/confirm-dialog.component';
 import { Notifications } from 'src/app/components/util/notification';
 import { TeacherService } from 'src/app/services/teacher-service/teacher.service';
 import { Login } from 'src/app/model/Login';
 import { Teacher } from 'src/app/model/Teacher';
-import { Student } from 'src/app/model/Student';
 import { UniversityService } from 'src/app/services/university-service/university.service';
 import { FacultyService } from 'src/app/services/faculty-service/faculty.service';
 import { MajorService } from 'src/app/services/major-service/major.service';
-import { AlumniService } from 'src/app/services/alumni-service/alumni.service';
-import { Alumni } from 'src/app/model/Alumni';
 
 @Component({
   selector: 'app-list-entrance-exam-result',
@@ -54,14 +49,12 @@ export class ListEntranceExamResultComponent implements OnInit {
     private router: Router,
     private entranceExamResuleService: EntranceExamResultService,
     private teacherService: TeacherService,
-    private alumniService: AlumniService,
     private universityService: UniversityService,
     private facultyService: FacultyService,
     private majorService: MajorService,
   ) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   async ngAfterViewInit(): Promise<void> {
     //custom text paginator
@@ -118,17 +111,6 @@ export class ListEntranceExamResultComponent implements OnInit {
       this.juniorSchoolList = new MatTableDataSource<QueryDocumentSnapshot<Object>>(resultListJunior);
 
       for (let i = 0; i < result.length; i++) {
-        let examResult = result[i].payload.doc.data() as EntranceExamResult;
-        // if (this.teacher.school.id == examResult.school.id) {
-        //   await examResult.student.get().then(result => {
-        //     let student = result.data() as Student;
-        //     if (this.mapUniData.get(result.id) === undefined) {
-        //       resultListJunior.push(result);
-        //     }
-        //     this.mapUniData.set(result.id, `${student.firstname} ${student.lastname}`);
-        //   });
-        //   resultListExam.push(result[i].payload.doc);
-        // }
         if (i == result.length - 1) {
           if (this.examResultList.data.length === 0) {
             this.showExamResultTable = false;

@@ -16,7 +16,8 @@ export class NewsService {
   }
 
   getNewsByTeacherReference(teacher: DocumentReference) {
-    return this.firestore.collection(teacher.parent.path).doc(teacher.id).collection('News').snapshotChanges()
+    return this.firestore.collection(teacher.parent.path).doc(teacher.id)
+      .collection('News', query => query.orderBy('start_time').orderBy('topic')).snapshotChanges()
       .pipe(map(result => result.map(item => item.payload.doc).map(doc => {
         return { id: doc.id, ref: doc.ref, ...doc.data() as News } as News;
       })));

@@ -1,6 +1,8 @@
 <div class="row">
   <div class="col-sm-12">
-    <h1 mat-dialog-title>เพิ่มข้อมูลผู้ใช้</h1>
+    <h1 mat-dialog-title>
+      <mat-icon>add</mat-icon> เพิ่มข้อมูลผู้ใช้
+    </h1>
   </div>
 </div>
 <mat-vertical-stepper [linear]="true" #stepper *ngIf="loadData">
@@ -19,8 +21,8 @@
           กรุณากรอกโรงเรียน
         </mat-error>
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-          <mat-option *ngFor="let school of filteredSchool | async" [value]="school">
-            {{school}}
+          <mat-option *ngFor="let school of filteredSchool | async" [value]="school.school_name">
+            {{school.school_name}}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
@@ -45,8 +47,10 @@
           กรุณากรอกรหัสผ่านให้ตรงกัน
         </mat-error>
       </mat-form-field>
-      <div class="mat-step-footer">
-        <button mat-raised-button class="btn-success" matStepperNext>ถัดไป</button>
+      <div class="mat-step-footer" align="end">
+        <button mat-raised-button class="btn-success" matStepperNext>
+          <mat-icon>keyboard_arrow_right</mat-icon> ถัดไป
+        </button>
       </div>
     </form>
   </mat-step>
@@ -100,9 +104,13 @@
             กรุณากรอกอีเมลให้ถูกต้อง
           </mat-error>
         </mat-form-field>
-        <div class="mat-step-footer">
-          <button mat-raised-button class="btn-secondary button-margin-right" matStepperPrevious>ย้อนกลับ</button>
-          <button mat-raised-button class="btn-success" (click)="onSubmit()">เพิ่มข้อมูล</button>
+        <div class="mat-step-footer" align="end">
+          <button mat-raised-button class="btn-secondary button-margin-right" matStepperPrevious>
+            <mat-icon>keyboard_arrow_left</mat-icon> ย้อนกลับ
+          </button>
+          <button mat-raised-button class="btn-success" (click)="onSubmit()">
+            <mat-icon>add</mat-icon> เพิ่มข้อมูล
+          </button>
         </div>
       </div>
     </form>
