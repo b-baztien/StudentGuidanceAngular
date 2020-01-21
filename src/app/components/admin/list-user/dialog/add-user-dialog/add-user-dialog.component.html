@@ -157,9 +157,13 @@
             กรุณากรอกที่อยู่เว็บไซต์
           </mat-error>
         </mat-form-field>
-        <div class="mat-step-footer">
-          <button mat-raised-button class="btn-secondary button-margin-right" matStepperPrevious>ย้อนกลับ</button>
-          <button mat-raised-button class="btn-success" (click)="onSubmit()">เพิ่มข้อมูล</button>
+        <div class="mat-step-footer" align="end">
+          <button mat-raised-button class="btn btn-secondary button-margin-right" matStepperPrevious>
+            <mat-icon>keyboard_arrow_left</mat-icon> ย้อนกลับ
+          </button>
+          <button mat-raised-button class="btn btn-success" (click)="onSubmit()">
+            <mat-icon>add</mat-icon> เพิ่มข้อมูล
+          </button>
         </div>
       </div>
     </form>

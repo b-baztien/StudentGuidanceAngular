@@ -183,7 +183,6 @@ export class AddUserDialogComponent implements OnInit {
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    console.log(event.option.viewValue);
     this.userForm.get('school').setValue(event.option.viewValue);
   }
 
@@ -194,7 +193,7 @@ export class AddUserDialogComponent implements OnInit {
   async onSubmit() {
     try {
       let login = new Login();
-      if (this.userForm.invalid || this.teacherForm.invalid || this.studentForm.invalid) return;
+      if (this.userForm.invalid) return;
       login.username = this.userForm.get('username').value;
       login.password = this.userForm.get('password').value;
       login.type = this.userForm.get('userType').value;

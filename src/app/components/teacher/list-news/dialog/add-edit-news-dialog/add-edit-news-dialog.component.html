@@ -27,18 +27,6 @@
             </mat-error>
         </mat-form-field>
         <mat-form-field>
-            <input matInput [matDatepicker]="start_time" placeholder="วันที่เริ่มเผยแพร่" (click)="start_time.open()"
-                readonly required formControlName="start_time">
-            <mat-datepicker-toggle matSuffix [for]="start_time"></mat-datepicker-toggle>
-            <mat-datepicker touchUi #start_time></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field>
-            <input matInput [matDatepicker]="end_time" placeholder="วันที่เริ่มเผยแพร่" (click)="end_time.open()"
-                readonly required formControlName="end_time">
-            <mat-datepicker-toggle matSuffix [for]="end_time"></mat-datepicker-toggle>
-            <mat-datepicker touchUi #end_time></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field>
             <mat-chip-list #chipList aria-label="University">
                 <mat-chip *ngFor="let university_name of listUniversity_name" [removable]="removable"
                     (removed)="removeUniversity(university_name)">

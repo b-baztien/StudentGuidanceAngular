@@ -8,6 +8,5 @@ export class News {
     image: string;
     topic: string;
     start_time: firebase.firestore.Timestamp;
-    end_time: firebase.firestore.Timestamp;
     listUniversity_name: string[];
 }

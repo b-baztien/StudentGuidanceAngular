@@ -24,15 +24,13 @@ export class TeacherService {
   }
 
   async addTeacher(schoolName: string, login: Login, teacher: Teacher) {
-    await this.loginService.getLoginByCondition(
+    if (!(await this.loginService.getLoginByCondition(
       query => query.where('username', '==', login.username)
-    ).toPromise().then(async result => {
-      if (!result.empty) throw new Error(`มีชื่อผู้ใช้ ${login.username} ในระบบแล้ว`);
-      await this.angularFirestore.collection('School').doc(schoolName).collection('Teacher')
-        .doc(login.username).set(Object.assign({}, teacher)).then(() =>
-          this.angularFirestore.collection('School').doc(schoolName).collection('Teacher')
-            .doc(login.username).collection('Login').doc(login.username).set(Object.assign({}, login)));
-    });
+    ).toPromise()).empty) throw new Error(`มีชื่อผู้ใช้ ${login.username} ในระบบแล้ว`);
+    await this.angularFirestore.collection('School').doc(schoolName).collection('Teacher')
+      .doc(login.username).set(Object.assign({}, teacher)).then(() =>
+        this.angularFirestore.collection('School').doc(schoolName).collection('Teacher')
+          .doc(login.username).collection('Login').doc(login.username).set(Object.assign({}, login)));
   }
 
   updateTeacher(teacherId: string, teacher: Teacher) {

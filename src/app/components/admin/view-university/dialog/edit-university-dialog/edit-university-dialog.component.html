@@ -1,6 +1,8 @@
 <div class="row">
   <div class="col-sm-12">
-    <h1 mat-dialog-title>แก้ไขข้อมูลมหาวิทยาลัย</h1>
+    <h1 mat-dialog-title>
+      <mat-icon>edit</mat-icon> แก้ไขข้อมูลมหาวิทยาลัย
+    </h1>
   </div>
 </div>
 <mat-vertical-stepper [linear]="true" #stepper>
@@ -74,8 +76,10 @@
           </mat-error>
         </mat-form-field>
       </div>
-      <div class="mat-step-footer">
-        <button mat-raised-button class="btn-success" matStepperNext>ถัดไป</button>
+      <div class="mat-step-footer" align="end">
+        <button mat-raised-button class="btn-success" matStepperNext>
+          <mat-icon>keyboard_arrow_right</mat-icon> ถัดไป
+        </button>
       </div>
     </form>
   </mat-step>
@@ -122,9 +126,13 @@
             รหัสไปรษณีย์ต้องประกอบไปด้วยตัวเลขตัวเลขจำนวน 5 ตัว
           </mat-error>
         </mat-form-field>
-        <div class="mat-step-footer">
-          <button mat-raised-button class="btn-secondary button-margin-right" matStepperPrevious>ย้อนกลับ</button>
-          <button mat-raised-button class="btn-success" (click)="onSubmit()">เพิ่มข้อมูล</button>
+        <div class="mat-step-footer" align="end">
+          <button mat-raised-button class="btn-secondary button-margin-right" matStepperPrevious>
+            <mat-icon>keyboard_arrow_left</mat-icon> ย้อนกลับ
+          </button>
+          <button mat-raised-button class="btn-warning" (click)="onSubmit()">
+            <mat-icon>edit</mat-icon> แก้ไขข้อมูล
+          </button>
         </div>
       </div>
     </form>

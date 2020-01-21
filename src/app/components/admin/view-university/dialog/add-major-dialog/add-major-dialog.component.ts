@@ -28,7 +28,7 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
     certificate: new FormControl(null, [Validators.required]),
     tuitionFee: new FormControl(null, [
       Validators.required,
-      Validators.pattern('^[0-9]*$')
+      Validators.pattern('^[0-9]*$'),
     ]),
     courseDuration: new FormControl(null, Validators.compose(
       [
@@ -119,7 +119,7 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
 
   async onSubmit() {
     let major = new Major;
-    if (this.majorForm.invalid && this.selectedCareer.length === 0) return;
+    if (this.majorForm.invalid || this.selectedCareer.length === 0) return;
     try {
       major.majorName = this.majorForm.get('majorName').value;
       major.url = this.majorForm.get('url').value;
@@ -149,4 +149,5 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
     const filterValue = value.toLowerCase();
     return this.listAllCareer.filter(career => career.toLowerCase().includes(filterValue));
   }
+
 }

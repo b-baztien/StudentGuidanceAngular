@@ -18,8 +18,6 @@ export class AddEditNewsDialogComponent implements OnInit {
   newsForm = new FormGroup({
     topic: new FormControl(this.data != null ? this.data.topic : null, [Validators.required]),
     detail: new FormControl(this.data != null ? this.data.detail : null, [Validators.required]),
-    start_time: new FormControl(this.data != null ? this.data.start_time.toDate() : null, [Validators.required]),
-    end_time: new FormControl(this.data != null ? this.data.end_time.toDate() : null, [Validators.required]),
     university: new FormControl(null),
   });
 
@@ -140,10 +138,8 @@ export class AddEditNewsDialogComponent implements OnInit {
       try {
         news.topic = this.newsForm.get('topic').value;
         news.detail = this.newsForm.get('detail').value;
-        news.start_time = this.newsForm.get('start_time').value;
-        news.end_time = this.newsForm.get('end_time').value;
+        news.start_time = new Date() as any;
         news.listUniversity_name = this.listUniversity_name;
-
         let filePath = 'news';
         let fileLogo: any = document.getElementById('newsImage');
         if (fileLogo.files[0] !== undefined) {
