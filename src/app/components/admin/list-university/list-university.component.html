@@ -67,6 +67,7 @@
                                 </ng-container>
                                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                                 <tr class="row-hover" mat-row *matRowDef="let row; columns: displayedColumns;"
+                                    matTooltip="คลิกเพื่อดูรายละเอียดมหาวิทยาลัย" [matTooltipPosition]="'above'"
                                     (click)="onUniversityClick(row.id)"></tr>
                             </table>
                             <div class="card-profile" *ngIf="universityList.filteredData.length == 0">
