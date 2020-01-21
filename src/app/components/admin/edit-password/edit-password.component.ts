@@ -40,8 +40,8 @@ export class EditPasswordComponent implements OnInit, AfterViewInit {
 
   ngOnInit() { }
 
-  async ngAfterViewInit() {
-    this.login = JSON.parse(await localStorage.getItem('userData'));
+  ngAfterViewInit() {
+    this.login = JSON.parse(localStorage.getItem('userData'));
     this.userForm.get('username').setValue(this.login.username);
     this.showData = true;
   }
@@ -51,7 +51,7 @@ export class EditPasswordComponent implements OnInit, AfterViewInit {
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 
-  matchOldPasswords(group: FormGroup) {
+  private matchOldPasswords(group: FormGroup) {
     let login = JSON.parse(localStorage.getItem('userData'));
     let pass = login.password;
     let confirmPass = group.get('oldPassword').value;
@@ -63,7 +63,7 @@ export class EditPasswordComponent implements OnInit, AfterViewInit {
     }
   }
 
-  matchPasswords(group: FormGroup) {
+  private matchPasswords(group: FormGroup) {
     let pass = group.get('newPassword').value;
     let confirmPass = group.get('confirmPassword').value;
 

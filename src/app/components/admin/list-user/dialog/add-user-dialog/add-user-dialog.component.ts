@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroupDirective, FormControl, NgForm, Validators, FormGroup, ValidatorFn, AbstractControl } from '@angular/forms';
+import { FormGroupDirective, FormControl, NgForm, Validators, FormGroup, ValidatorFn, AbstractControl, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { MatDialogRef, MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
@@ -22,64 +22,53 @@ import { StudentService } from 'src/app/services/student-service/student.service
   styleUrls: ['./add-user-dialog.component.css']
 })
 export class AddUserDialogComponent implements OnInit {
-  userForm = new FormGroup({
-    userType: new FormControl('teacher', [
-      Validators.required]),
-    school: new FormControl('โรงเรียนทดสอบ', [
-      Validators.required]),
-    username: new FormControl('teacher2', [
-      Validators.required]),
-    password: new FormControl('1234', [
-      Validators.required]),
-    conPassword: new FormControl('1234', [
-      Validators.required]),
-  });
-
-  teacherForm = new FormGroup({
-    firstname: new FormControl('สมศักดิ์', [
-      Validators.required]),
-    lastname: new FormControl('ใจเย็น', [
-      Validators.required]),
-    position: new FormControl('ครูคณิตศาสตร์', [
-      Validators.required]),
-    phone_no: new FormControl('0812345678', Validators.compose([
-      Validators.required,
-      Validators.pattern('^[0-9]*$')])),
-    email: new FormControl('somsak@test.com', Validators.compose([
-      Validators.required,
-      Validators.email
-    ])),
-  });
-
-
   // userForm = new FormGroup({
   //   userType: new FormControl('teacher', [
   //     Validators.required]),
-  //   school: new FormControl(null, [
+  //   school: new FormControl('โรงเรียนทดสอบ', [
   //     Validators.required]),
-  //   username: new FormControl(null, [
+  //   username: new FormControl('teacher2', [
   //     Validators.required]),
-  //   password: new FormControl(null, [
+  //   password: new FormControl('1234', [
   //     Validators.required]),
-  //   conPassword: new FormControl(null, [
+  //   confirmPassword: new FormControl('1234', [
   //     Validators.required]),
   // });
 
   // teacherForm = new FormGroup({
-  //   firstname: new FormControl(null, [
+  //   firstname: new FormControl('สมศักดิ์', [
   //     Validators.required]),
-  //   lastname: new FormControl(null, [
+  //   lastname: new FormControl('ใจเย็น', [
   //     Validators.required]),
-  //   position: new FormControl(null, [
+  //   position: new FormControl('ครูคณิตศาสตร์', [
   //     Validators.required]),
-  //   phone_no: new FormControl(null, Validators.compose([
+  //   phone_no: new FormControl('0812345678', Validators.compose([
   //     Validators.required,
   //     Validators.pattern('^[0-9]*$')])),
-  //   email: new FormControl(null, Validators.compose([
+  //   email: new FormControl('somsak@test.com', Validators.compose([
   //     Validators.required,
   //     Validators.email
   //   ])),
   // });
+
+
+  userForm: FormGroup;
+
+  teacherForm = new FormGroup({
+    firstname: new FormControl(null, [
+      Validators.required]),
+    lastname: new FormControl(null, [
+      Validators.required]),
+    position: new FormControl(null, [
+      Validators.required]),
+    phone_no: new FormControl(null, Validators.compose([
+      Validators.required,
+      Validators.pattern('^[0-9]*$')])),
+    email: new FormControl(null, Validators.compose([
+      Validators.required,
+      Validators.email
+    ])),
+  });
 
   studentForm = new FormGroup({
     firstname: new FormControl(null, [
@@ -122,7 +111,23 @@ export class AddUserDialogComponent implements OnInit {
     private schoolService: SchoolService,
     private afStorage: AngularFireStorage,
     private afirestore: AngularFirestore,
-  ) { }
+    private formBuilder: FormBuilder,
+  ) {
+    this.userForm = this.formBuilder.group({
+      userType: new FormControl('teacher', [
+        Validators.required]),
+      school: new FormControl(null, [
+        Validators.required]),
+      username: new FormControl(null, [
+        Validators.required]),
+      password: new FormControl(null, [
+        Validators.required]),
+      confirmPassword: new FormControl(null, [
+        Validators.required]),
+    }, {
+      validators: [this.matchPasswords,],
+    });
+  }
 
   getProvinceJSON(): Observable<any> {
     return this.http.get('./assets/database/province_database.json');
@@ -188,6 +193,17 @@ export class AddUserDialogComponent implements OnInit {
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  private matchPasswords(group: FormGroup) {
+    let pass = group.get('password').value;
+    let confirmPass = group.get('confirmPassword').value;
+
+    if (pass != confirmPass) {
+      group.get('confirmPassword').setErrors({ notSame: true })
+    } else {
+      return null;
+    }
   }
 
   async onSubmit() {

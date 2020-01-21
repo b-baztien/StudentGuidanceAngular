@@ -39,11 +39,11 @@
         </mat-error>
       </mat-form-field>
       <mat-form-field>
-        <input matInput type="password" placeholder="ยืนยันรหัสผ่าน" required formControlName="conPassword">
-        <mat-error *ngIf="userForm.controls.conPassword.hasError('required')">
+        <input matInput type="password" placeholder="ยืนยันรหัสผ่าน" required formControlName="confirmPassword">
+        <mat-error *ngIf="userForm.controls.confirmPassword.hasError('required')">
           กรุณากรอกยืนยันรหัสผ่าน
         </mat-error>
-        <mat-error *ngIf="userForm.controls.password.value !== userForm.controls.conPassword.value">
+        <mat-error *ngIf="userForm.controls.confirmPassword.hasError('notSame')">
           กรุณากรอกรหัสผ่านให้ตรงกัน
         </mat-error>
       </mat-form-field>
