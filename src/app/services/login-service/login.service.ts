@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference, QueryFn, QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { Login } from '../../model/Login';
 import { map } from 'rxjs/operators';
+import { Teacher } from 'src/app/model/Teacher';
 
 @Injectable({
   providedIn: 'root'
@@ -19,15 +20,19 @@ export class LoginService {
   async Login(login: Login) {
     return await this.firestore.collectionGroup('Login',
       query => query.where('username', '==', login.username).where('password', '==', login.password))
-      .get().toPromise().then(response => {
+      .get().toPromise().then(async response => {
         if (response.size === 0) {
           throw new ReferenceError('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้งภายหลัง');
         } else {
           this.userLogin = response.docs[0].data() as Login;
+          await this.firestore.doc(response.docs[0].ref.parent.parent).get().toPromise().then(teacherDoc => {
+            const teacher = { id: teacherDoc.id, ...teacherDoc.data() } as Teacher;
+            localStorage.setItem('teacher', JSON.stringify(teacher));
+          });
           return this.userLogin.type;
         }
       }).catch((error) => {
-        console.error(error.message);
+        console.error((error as Error).stack);
         if (error.code === 'unavailable') {
           throw new Error('ไม่พบสัญญาณอินเทอร์เน็ต กรุณาลองใหม่อีกครั้งภายหลัง');
         }

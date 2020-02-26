@@ -27,6 +27,7 @@
                         <div class="card-news">
                             <img class="img" [src]="imagePath.get(news.id)" alt="{{news.topic}}" />
                         </div>
+                        <mat-divider></mat-divider>
                         <div class="card-body">
                             <h4 class="card-title">{{news.topic}}</h4>
                             <p class="card-description">
@@ -48,13 +49,14 @@
                                 </mat-icon> {{news.start_time.toDate() | date}}
                             </p>
                         </div>
+                        <mat-divider></mat-divider>
                         <div class="card-body">
                             <div class="card-description">
                                 <button mat-raised-button class="btn-warning button-margin-right"
                                     (click)="openAddEditNewsDialog(news)">
                                     <mat-icon>edit</mat-icon> แก้ไขข้อมูลข่าว
                                 </button><button mat-raised-button class="btn-danger"
-                                    (click)="openDeleteNewsDialog(news.id)">
+                                    (click)="openDeleteNewsDialog(news)">
                                     <mat-icon>delete</mat-icon> ลบข้อมูลข่าว
                                 </button>
                             </div>

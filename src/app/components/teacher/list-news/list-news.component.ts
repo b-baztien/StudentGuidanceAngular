@@ -10,6 +10,8 @@ import { TeacherService } from 'src/app/services/teacher-service/teacher.service
 import { Teacher } from 'src/app/model/Teacher';
 import { Subscription } from 'rxjs';
 import { Notifications } from '../../util/notification';
+import { DocumentReference } from '@angular/fire/firestore';
+import { ConfirmDialogComponent } from '../../util/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-list-news',
@@ -74,7 +76,7 @@ export class ListNewsComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(AddEditNewsDialogComponent, {
       width: '90%',
       height: '90%',
-      data: news,
+      data: {news: news, school: this.teacher.ref.parent.parent.id},
     });
 
     dialogRef.afterClosed().subscribe(async result => {
@@ -93,8 +95,22 @@ export class ListNewsComponent implements OnInit, OnDestroy {
     });
   }
 
-  openDeleteNewsDialog(newsId: string) {
-    this.newsService.deleteNews(newsId);
+  openDeleteNewsDialog(news: News) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: 'auto',
+      data: `คุณต้องการลบข่าว ${news.topic} ใช่ หรือ ไม่ ?`,
+    });
+
+    dialogRef.afterClosed().subscribe(async result => {
+      try {
+        if (result) {
+          this.newsService.deleteNews(news);
+          new Notifications().showNotification('done', 'top', 'right', 'ลบข้อมูลข่าวสำเร็จแล้ว', 'success', 'สำเร็จ !');
+        }
+      } catch (error) {
+        new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'ลบข้อมูลล้มเหลว !');
+      }
+    });
   }
 
   onNewsClick(news_id: string) {

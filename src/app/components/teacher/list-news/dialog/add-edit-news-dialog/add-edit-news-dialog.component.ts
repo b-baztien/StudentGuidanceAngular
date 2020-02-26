@@ -8,6 +8,9 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { News } from 'src/app/model/News';
 import { UniversityService } from 'src/app/services/university-service/university.service';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { TeacherService } from 'src/app/services/teacher-service/teacher.service';
+import { Login } from 'src/app/model/Login';
+import { Teacher } from 'src/app/model/Teacher';
 
 @Component({
   selector: 'app-add-edit-news-dialog',
@@ -16,8 +19,8 @@ import { AngularFireStorage } from '@angular/fire/storage';
 })
 export class AddEditNewsDialogComponent implements OnInit {
   newsForm = new FormGroup({
-    topic: new FormControl(this.data != null ? this.data.topic : null, [Validators.required]),
-    detail: new FormControl(this.data != null ? this.data.detail : null, [Validators.required]),
+    topic: new FormControl(this.data.news != null ? this.data.news.topic : null, [Validators.required]),
+    detail: new FormControl(this.data.news != null ? this.data.news.detail : null, [Validators.required]),
     university: new FormControl(null),
   });
 
@@ -41,13 +44,14 @@ export class AddEditNewsDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<AddMajorDialogComponent>,
     private universityService: UniversityService,
+    private teacherService: TeacherService,
     private afStorage: AngularFireStorage,
     private afirestore: AngularFirestore,
-    @Inject(MAT_DIALOG_DATA) public data: News | undefined,
+    @Inject(MAT_DIALOG_DATA) public data: { news: News | null, school: string },
   ) {
-    if (data !== null) {
+    if (data.news !== null) {
       this.mode = 'แก้ไข';
-      this.listUniversity_name = this.data.listUniversity_name;
+      this.listUniversity_name = this.data.news.listUniversity_name;
     } else {
       this.mode = 'เพิ่ม';
     }
@@ -56,8 +60,8 @@ export class AddEditNewsDialogComponent implements OnInit {
   ngOnInit() {
     this.getAllUniversity();
 
-    if (this.data !== null) {
-      this.afStorage.storage.ref(this.data.image).getDownloadURL().then(url => {
+    if (this.data.news !== null) {
+      this.afStorage.storage.ref(this.data.news.image).getDownloadURL().then(url => {
         this.imgURL = url;
       });
     }
@@ -140,6 +144,7 @@ export class AddEditNewsDialogComponent implements OnInit {
         news.detail = this.newsForm.get('detail').value;
         news.start_time = new Date() as any;
         news.listUniversity_name = this.listUniversity_name;
+        news.schoolName = this.data.school;
         let filePath = 'news';
         let fileLogo: any = document.getElementById('newsImage');
         if (fileLogo.files[0] !== undefined) {
@@ -147,6 +152,9 @@ export class AddEditNewsDialogComponent implements OnInit {
             return result;
           });
         }
+        const teacher = JSON.parse(localStorage.getItem('teacher')) as Teacher;
+
+        news.teacherName = `${teacher.firstname} ${teacher.lastname}`;
         this.dialogRef.close({ mode: this.mode, news: news });
       } catch (error) {
         console.error(error);

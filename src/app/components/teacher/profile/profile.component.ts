@@ -65,7 +65,7 @@ export class ProfileComponent implements OnInit {
         });
       }
 
-      this.teacherForm.get('school').setValue(this.teacher.school.id);
+      this.teacherForm.get('school').setValue(this.teacher.ref.parent.parent.id);
       this.teacherForm.get('firstname').setValue(this.teacher.firstname);
       this.teacherForm.get('lastname').setValue(this.teacher.lastname);
       this.teacherForm.get('phone_no').setValue(this.teacher.phone_no);

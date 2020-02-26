@@ -8,5 +8,7 @@ export class News {
     image: string;
     topic: string;
     start_time: firebase.firestore.Timestamp;
+    schoolName: string;
+    teacherName: string;
     listUniversity_name: string[];
 }

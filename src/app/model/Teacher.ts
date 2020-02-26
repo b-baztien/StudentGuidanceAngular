@@ -10,6 +10,4 @@ export class Teacher {
     phone_no: string;
     email: string;
     image: string = '';
-    school: DocumentReference;
-    login: DocumentReference;
 }

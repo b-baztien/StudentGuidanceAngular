@@ -216,17 +216,19 @@ export class AddUserDialogComponent implements OnInit {
       let schoolName: string = this.userForm.get('school').value;
 
       if (this.userForm.get('userType').value === 'teacher') {
+        let teacher = new Teacher();
         if (this.teacherForm.valid) {
-          let teacher = new Teacher();
           teacher.firstname = this.teacherForm.get('firstname').value;
           teacher.lastname = this.teacherForm.get('lastname').value;
           teacher.phone_no = this.teacherForm.get('phone_no').value;
+          teacher.position = this.teacherForm.get('position').value;
           teacher.email = this.teacherForm.get('email').value;
           let files: any = document.getElementById('inputImage');
           if (files.files.length !== 0) {
             await this.upload(files, 'teacher');
           }
           await this.teacherService.addTeacher(schoolName, login, teacher);
+          new Notifications().showNotification('close', 'top', 'right', 'เพิ่มข้อมูลสำเร็จ', 'success', 'เพิ่มข้อมูลครูสำเร็จ !');
           this.dialogRef.close({
             userType: this.userForm.controls.userType.value,
           });
@@ -243,10 +245,10 @@ export class AddUserDialogComponent implements OnInit {
             await this.upload(files, 'student');
           }
           await this.studentService.addStudent(schoolName, login, student);
+          new Notifications().showNotification('close', 'top', 'right', 'เพิ่มข้อมูลสำเร็จ', 'success', 'เพิ่มข้อมูลนักเรียนสำเร็จ !');
           this.dialogRef.close();
         }
       }
-      new Notifications().showNotification('close', 'top', 'right', 'เพิ่มข้อมูลสำเร็จ', 'success', 'เพิ่มข้อมูลผู้ใช้งานสำเร็จ !');
     } catch (error) {
       new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'เกิดข้อผิดพลาด !');
     }
