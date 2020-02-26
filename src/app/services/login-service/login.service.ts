@@ -25,10 +25,12 @@ export class LoginService {
           throw new ReferenceError('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้งภายหลัง');
         } else {
           this.userLogin = response.docs[0].data() as Login;
-          await this.firestore.doc(response.docs[0].ref.parent.parent).get().toPromise().then(teacherDoc => {
-            const teacher = { id: teacherDoc.id, ...teacherDoc.data() } as Teacher;
-            localStorage.setItem('teacher', JSON.stringify(teacher));
-          });
+          if (this.userLogin.type === 'teacher') {
+            await this.firestore.doc(response.docs[0].ref.parent.parent).get().toPromise().then(teacherDoc => {
+              const teacher = { id: teacherDoc.id, ...teacherDoc.data() } as Teacher;
+              localStorage.setItem('teacher', JSON.stringify(teacher));
+            });
+          }
           return this.userLogin.type;
         }
       }).catch((error) => {
