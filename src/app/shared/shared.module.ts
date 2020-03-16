@@ -1,7 +1,8 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { PhonePipe } from '../pipe/phone.pipe';
-import { UserTypePipe } from '../pipe/user-type.pipe';
+import { MatProgressButtonsModule } from "mat-progress-buttons";
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { PhonePipe } from "../pipe/phone.pipe";
+import { UserTypePipe } from "../pipe/user-type.pipe";
 import {
   MatButtonModule,
   MatInputModule,
@@ -26,15 +27,11 @@ import {
   MatListModule,
   MatTreeModule,
   MatDividerModule
-} from '@angular/material';
-
-
+} from "@angular/material";
 
 @NgModule({
   declarations: [PhonePipe, UserTypePipe],
-  imports: [
-    CommonModule,
-  ],
+  imports: [CommonModule],
   exports: [
     PhonePipe,
     UserTypePipe,
@@ -60,7 +57,8 @@ import {
     MatDialogModule,
     MatListModule,
     MatTreeModule,
-    MatDividerModule
+    MatDividerModule,
+    MatProgressButtonsModule
   ]
 })
-export class SharedModule { }
+export class SharedModule {}
