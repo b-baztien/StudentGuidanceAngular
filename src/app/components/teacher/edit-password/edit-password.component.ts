@@ -17,7 +17,7 @@ import { Router } from "@angular/router";
   templateUrl: "./edit-password.component.html",
   styleUrls: ["./edit-password.component.css"]
 })
-export class EditPasswordComponent implements OnInit, AfterViewInit {
+export class EditPasswordComponent implements OnInit {
   userForm: FormGroup;
 
   login: Login = new Login();
