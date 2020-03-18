@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
 import { Teacher } from 'src/app/model/Teacher';
 import { School } from 'src/app/model/School';
@@ -13,7 +13,7 @@ import { AlumniService } from 'src/app/services/alumni-service/alumni.service';
 @Component({
   selector: 'app-list-student',
   templateUrl: './list-student.component.html',
-  styleUrls: ['./list-student.component.css']
+  styleUrls: ['./list-student.component.css'],
 })
 export class ListStudentComponent implements OnInit, AfterViewInit {
   studentList: MatTableDataSource<Student> = new MatTableDataSource<Student>();

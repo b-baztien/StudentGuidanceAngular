@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-list-university',
   templateUrl: './list-university.component.html',
-  styleUrls: ['./list-university.component.css']
+  styleUrls: ['./list-university.component.css'],
 })
 export class ListUniversityTeacherComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['university_name', 'phone_no', 'url', 'view', 'province', 'zone'];

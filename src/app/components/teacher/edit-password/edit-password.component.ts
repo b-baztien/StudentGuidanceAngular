@@ -46,9 +46,7 @@ export class EditPasswordComponent implements OnInit, AfterViewInit {
     );
   }
 
-  ngOnInit() {}
-
-  ngAfterViewInit() {
+  ngOnInit() {
     this.login = JSON.parse(localStorage.getItem("userData"));
     this.userForm.get("username").setValue(this.login.username);
     this.showData = true;
@@ -104,7 +102,7 @@ export class EditPasswordComponent implements OnInit, AfterViewInit {
           "success",
           "สำเร็จ !"
         );
-        this.router.navigate(["/admin"]);
+        this.router.navigate(["/teacher"]);
       }
     } catch (error) {
       console.error(error);
