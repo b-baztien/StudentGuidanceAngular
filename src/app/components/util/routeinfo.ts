@@ -42,15 +42,15 @@ export const ADMINROUTES: RouteInfo[] = [
 
 export const TEACHERROUTES: RouteInfo[] = [
   {
-    path: "/teacher/list-student",
-    title: "รายชื่อนักเรียนในโรงเรียน",
-    icon: "person",
-    class: ""
-  },
-  {
     path: "/teacher/list-entrance-exam-result",
     title: "ข้อมูลการสอบติด",
     icon: "account_box",
+    class: ""
+  },
+  {
+    path: "/teacher/list-student",
+    title: "รายชื่อนักเรียนในโรงเรียน",
+    icon: "person",
     class: ""
   },
   {

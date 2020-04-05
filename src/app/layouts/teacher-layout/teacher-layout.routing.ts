@@ -9,15 +9,15 @@ import { ProfileComponent } from "src/app/components/teacher/profile/profile.com
 import { ListEntranceExamResultComponent } from "src/app/components/teacher/list-entrance-exam-result/list-entrance-exam-result/list-entrance-exam-result.component";
 
 export const TeacherLayoutRoutes: Routes = [
-  { path: "", redirectTo: "list-student", pathMatch: "full" },
-  {
-    path: "list-student",
-    component: ListStudentComponent,
-    canActivate: [TeacherGuard]
-  },
+  { path: "", redirectTo: "list-entrance-exam-result", pathMatch: "full" },
   {
     path: "list-entrance-exam-result",
     component: ListEntranceExamResultComponent,
+    canActivate: [TeacherGuard]
+  },
+  {
+    path: "list-student",
+    component: ListStudentComponent,
     canActivate: [TeacherGuard]
   },
   {
