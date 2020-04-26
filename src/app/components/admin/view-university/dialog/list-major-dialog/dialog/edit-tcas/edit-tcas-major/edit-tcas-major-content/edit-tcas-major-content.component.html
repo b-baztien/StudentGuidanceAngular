@@ -1,0 +1,84 @@
+<form [formGroup]="majorForm">
+  <div class="container">
+    <mat-dialog-content>
+      <mat-panel-description>
+        <h4><mat-icon>how_to_reg</mat-icon> ข้อมูลการรับเข้า</h4>
+      </mat-panel-description>
+      <mat-form-field>
+        <input
+          matInput
+          placeholder="วันที่รับสมัคร"
+          [satDatepicker]="picker"
+          (focus)="picker.open()"
+          readonly
+          formControlName="date"
+        />
+        <sat-datepicker #picker [rangeMode]="true"> </sat-datepicker>
+        <sat-datepicker-toggle matSuffix [for]="picker"></sat-datepicker-toggle>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>จำนวนที่รับ</mat-label>
+        <input type="number" matInput />
+        <span matSuffix>ที่นั่ง</span>
+      </mat-form-field>
+      <hr />
+      <mat-panel-description>
+        <h4><mat-icon>post_add</mat-icon> คะแนนขั้นต่ำ</h4>
+      </mat-panel-description>
+      <div class="row">
+        <div class="col-8">
+          <mat-form-field>
+            <mat-label>ชื่อคะแนน</mat-label>
+            <input matInput />
+          </mat-form-field>
+        </div>
+        <div class="col-3">
+          <mat-form-field>
+            <mat-label>คะแนนที่ใช้</mat-label>
+            <input class="right-align" type="number" matInput />
+            <span matSuffix>%</span>
+          </mat-form-field>
+        </div>
+        <div class="col-1">
+          <button
+            mat-raised-button
+            matTooltip="ลบรายการคะแนนนี้"
+            [matTooltipPosition]="'above'"
+            class="btn-danger"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        <div class="col-12">
+          <button mat-raised-button class="btn-info max-width">
+            <mat-icon>add</mat-icon> เพิ่มรายการคะแนน
+          </button>
+        </div>
+      </div>
+      <hr />
+      <mat-form-field>
+        <mat-label>ค่าใช้จ่ายทั้งหมดในการสมัครสอบ</mat-label>
+        <input type="number" matInput />
+        <span matSuffix>บาท</span>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>คนที่สมัครได้</mat-label>
+        <textarea matInput></textarea>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>หมายเหตุ</mat-label>
+        <textarea matInput></textarea>
+      </mat-form-field>
+      <hr />
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button
+        mat-raised-button
+        class="btn-success max-width"
+        (click)="onSubmit()"
+      >
+        <mat-icon>add</mat-icon> บันทึกข้อมูล
+      </button>
+    </mat-dialog-actions>
+  </div>
+</form>

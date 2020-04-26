@@ -1,0 +1,10 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h1 mat-dialog-title><mat-icon>edit</mat-icon> จัดการข้อมูล TCAS สาขา</h1>
+  </div>
+</div>
+<mat-tab-group mat-stretch-tabs>
+  <mat-tab *ngFor="let round of tcasTabLabel" label="รอบที่ {{ round }}">
+    <app-edit-tcas-major-content></app-edit-tcas-major-content>
+  </mat-tab>
+</mat-tab-group>

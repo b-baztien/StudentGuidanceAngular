@@ -1,16 +1,17 @@
 <div class="main-content">
   <div class="container-fluid">
-    <!-- Entrance Exam Result Table -->
     <div class="row">
+      <!-- select year -->
       <div class="col-lg-12 col-md-12">
         <div class="card">
-          <div class="card-header card-header-success">
+          <div class="card-header card-header-info">
             <div class="row">
               <div class="col-sm-12">
-                <h4 class="card-title">รายชื่อผลการสอบติด</h4>
+                <h4 class="card-title">เลือกปีการศึกษา</h4>
                 <p class="card-category">
-                  นี่คือรายชื่อผลการสอบติดทั้งหมดที่พบในระบบ คุณสามารถตรวจสอบ
-                  หรือจัดการ รานละเอียดต่างๆ ของผลการสอบติดนั้นๆ ได้
+                  เลือกปีการศึกษาเพื่อตรวจสอบข้อมูลรายละเอียดต่างๆ
+                  เกี่ยวกับการสอบติด และ การเข้าศึกษาต่อในมหาวิทยาลัย
+                  ของนักเรียนในโรงเรียน
                 </p>
               </div>
             </div>
@@ -29,9 +30,56 @@
                 </mat-option>
               </mat-select>
               <mat-error *ngIf="yearControl.hasError('required')"
-                >กรุณาเลือกปีการศึกษา</mat-error
-              >
+                >กรุณาเลือกปีการศึกษา
+              </mat-error>
             </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <!-- Entrance Exam Result -->
+      <div class="col-lg-12 col-md-12">
+        <div class="card">
+          <div class="card-header card-header-success">
+            <div class="row">
+              <div class="col-sm-12">
+                <h4 class="card-title">รายชื่อผลการสอบติด</h4>
+                <p class="card-category">
+                  นี่คือรายชื่อผลการสอบติดทั้งหมดที่พบในระบบ คุณสามารถตรวจสอบ
+                  หรือจัดการ รานละเอียดต่างๆ ของผลการสอบติดนั้นๆ ได้
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12 col-lg-4">
+                <canvas id="uniChart" height="300"></canvas>
+              </div>
+              <div class="col-12 col-lg-4">
+                <canvas id="facChart" height="300"></canvas>
+              </div>
+              <div class="col-12 col-lg-4">
+                <canvas id="majorChart" height="300"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Entrance Major -->
+      <div class="col-lg-12 col-md-12">
+        <div class="card">
+          <div class="card-header card-header-success">
+            <div class="row">
+              <div class="col-sm-12">
+                <h4 class="card-title">รายชื่อผลการสอบติด</h4>
+                <p class="card-category">
+                  นี่คือรายชื่อผลการสอบติดทั้งหมดที่พบในระบบ คุณสามารถตรวจสอบ
+                  หรือจัดการ รานละเอียดต่างๆ ของผลการสอบติดนั้นๆ ได้
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
             <div class="row">
               <div class="col-12 col-lg-4">
                 <canvas id="uniChart" height="300"></canvas>

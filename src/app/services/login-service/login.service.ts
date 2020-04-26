@@ -3,14 +3,13 @@ import {
   AngularFirestore,
   DocumentReference,
   QueryFn,
-  QueryDocumentSnapshot
 } from "@angular/fire/firestore";
-import { Login } from "../../model/Login";
 import { map } from "rxjs/operators";
 import { Teacher } from "src/app/model/Teacher";
+import { Login } from "../../model/Login";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class LoginService {
   private userLogin: Login;
@@ -21,16 +20,16 @@ export class LoginService {
     this.userLogin = new Login();
   }
 
-  async Login(login: Login) {
+  async login(login: Login) {
     return await this.firestore
-      .collectionGroup("Login", query =>
+      .collectionGroup("Login", (query) =>
         query
           .where("username", "==", login.username)
           .where("password", "==", login.password)
       )
       .get()
       .toPromise()
-      .then(async response => {
+      .then(async (response) => {
         if (response.size === 0) {
           throw new ReferenceError(
             "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้งภายหลัง"
@@ -42,10 +41,10 @@ export class LoginService {
               .doc(response.docs[0].ref.parent.parent)
               .get()
               .toPromise()
-              .then(teacherDoc => {
+              .then((teacherDoc) => {
                 const teacher = {
                   id: teacherDoc.id,
-                  ...teacherDoc.data()
+                  ...teacherDoc.data(),
                 } as Teacher;
                 localStorage.setItem("teacher", JSON.stringify(teacher));
                 localStorage.setItem("school", teacherDoc.ref.parent.parent.id);
@@ -54,7 +53,7 @@ export class LoginService {
           return this.userLogin.type;
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error((error as Error).stack);
         if (error.code === "unavailable") {
           throw new Error(
@@ -75,25 +74,19 @@ export class LoginService {
         .collection("Teacher")
         .ref.where("login", "==", login)
         .get()
-        .then(teacherRef => {
+        .then((teacherRef) => {
           if (teacherRef.docs[0].exists) {
             let teacher = teacherRef.docs[0];
             this.firestore
               .collection("News")
               .ref.where("teacher", "==", teacher)
               .get()
-              .then(listNewsRef => {
-                listNewsRef.docs.forEach(newsRef => {
-                  this.firestore
-                    .collection("News")
-                    .doc(newsRef.id)
-                    .delete();
+              .then((listNewsRef) => {
+                listNewsRef.docs.forEach((newsRef) => {
+                  this.firestore.collection("News").doc(newsRef.id).delete();
                 });
               });
-            this.firestore
-              .collection("Teacher")
-              .doc(teacher.id)
-              .delete();
+            this.firestore.collection("Teacher").doc(teacher.id).delete();
           }
         });
     } else if (user.type === "student") {
@@ -101,30 +94,24 @@ export class LoginService {
         .collection("Student")
         .ref.where("login", "==", login)
         .get()
-        .then(studentRef => {
+        .then((studentRef) => {
           if (studentRef.docs[0].exists) {
             let student = studentRef.docs[0];
-            this.firestore
-              .collection("Student")
-              .doc(student.id)
-              .delete();
+            this.firestore.collection("Student").doc(student.id).delete();
           }
         });
     }
-    this.firestore
-      .collection("Login")
-      .doc(user.username)
-      .delete();
+    this.firestore.collection("Login").doc(user.username).delete();
   }
 
   async updateLogin(login: Login) {
     return await this.firestore
-      .collectionGroup("Login", query =>
+      .collectionGroup("Login", (query) =>
         query.where("username", "==", login.username)
       )
       .get()
       .toPromise()
-      .then(doc => {
+      .then((doc) => {
         this.firestore
           .doc(doc.docs[0].ref.path)
           .update(Object.assign({}, login));
@@ -138,13 +125,13 @@ export class LoginService {
       .collectionGroup("Login")
       .snapshotChanges()
       .pipe(
-        map(result =>
-          result.map(item => {
+        map((result) =>
+          result.map((item) => {
             const doc = item.payload.doc;
             return {
               id: doc.id,
               ref: doc.ref,
-              ...(doc.data() as Login)
+              ...(doc.data() as Login),
             } as Login;
           })
         )

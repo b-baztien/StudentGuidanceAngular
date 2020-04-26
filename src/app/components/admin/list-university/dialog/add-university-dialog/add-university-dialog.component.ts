@@ -41,7 +41,7 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
       Validators.pattern('^[0-9]{5}$')])),
   });
 
-  listProvince: Array<[]>;
+  listProvince: Array<any>;
 
   university: University;
   universityId;

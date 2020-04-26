@@ -34,6 +34,8 @@ import { TeacherLayoutComponent } from "./layouts/teacher-layout/teacher-layout.
 import { UserLayoutComponent } from "./layouts/user-layout/user-layout.component";
 import { LoginService } from "./services/login-service/login.service";
 import { SharedModule } from "./shared/shared.module";
+import { EditTcasMajorComponent } from './components/admin/view-university/dialog/list-major-dialog/dialog/edit-tcas/edit-tcas-major/edit-tcas-major.component';
+import { EditTcasMajorContentComponent } from './components/admin/view-university/dialog/list-major-dialog/dialog/edit-tcas/edit-tcas-major/edit-tcas-major-content/edit-tcas-major-content.component';
 
 registerLocaleData(localeTh, "th-TH", localeThExtra);
 @NgModule({
@@ -54,7 +56,9 @@ registerLocaleData(localeTh, "th-TH", localeThExtra);
     ConfirmDialogComponent,
     AddStudentDialogComponent,
     EditMajorComponent,
-    AddEditCareerDialogComponent
+    AddEditCareerDialogComponent,
+    EditTcasMajorComponent,
+    EditTcasMajorContentComponent
   ],
   entryComponents: [
     AddEditFacultyDialogComponent,
@@ -68,7 +72,8 @@ registerLocaleData(localeTh, "th-TH", localeThExtra);
     ConfirmDialogComponent,
     AddStudentDialogComponent,
     EditMajorComponent,
-    AddEditCareerDialogComponent
+    AddEditCareerDialogComponent,
+    EditTcasMajorComponent
   ],
   imports: [
     BrowserModule,

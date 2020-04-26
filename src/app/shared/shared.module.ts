@@ -28,8 +28,10 @@ import {
   MatDialogModule,
   MatListModule,
   MatTreeModule,
-  MatDividerModule
+  MatDividerModule,
+  MatTabsModule,
 } from "@angular/material";
+import { SatNativeDateModule, SatDatepickerModule } from "saturn-datepicker";
 
 @NgModule({
   declarations: [PhonePipe, UserTypePipe, ThaiYearPipe],
@@ -61,8 +63,11 @@ import {
     MatTreeModule,
     MatDividerModule,
     MatProgressButtonsModule,
+    MatTabsModule,
+    SatDatepickerModule,
+    SatNativeDateModule,
     ChartModule,
-    ThaiYearPipe
-  ]
+    ThaiYearPipe,
+  ],
 })
 export class SharedModule {}

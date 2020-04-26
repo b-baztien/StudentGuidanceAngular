@@ -6,7 +6,7 @@ export class Major {
     ref?: DocumentReference;
     majorName: string;
     url: string;
-    tcasEntranceRound: Tcas[];
+    tcasEntranceRound: any;
     certificate: string;
     courseDuration: string;
     tuitionFee: string;

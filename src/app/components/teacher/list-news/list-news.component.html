@@ -1,82 +1,101 @@
 <div class="main-content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="card card-plain">
-                <div class="card-header card-header-info">
-                    <div class="row">
-                        <div class="col-sm-8">
-                            <h4 class="card-title">ข่าวสาร</h4>
-                            <p class="card-category">
-                                นี่คือรายการข่าวสารที่คุณได้เพิ่มในระบบ คุณสามารถตรวจสอบ
-                                หรือจัดการ
-                                รานละเอียดต่างๆ ของข่าวสารนั้นๆ ได้
-                            </p>
-                        </div>
-                        <div class="col-sm-4 card-button-right">
-                            <button mat-raised-button class="btn-success" (click)="openAddEditNewsDialog(null)">
-                                <mat-icon>add</mat-icon> เพิ่มข้อมูลข่าวสาร
-                            </button>
-                        </div>
-                    </div>
-                </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="card card-plain">
+        <div class="card-header card-header-info">
+          <div class="row">
+            <div class="col-sm-8">
+              <h4 class="card-title">ข่าวสาร</h4>
+              <p class="card-category">
+                นี่คือรายการข่าวสารที่คุณได้เพิ่มในระบบ คุณสามารถตรวจสอบ
+                หรือจัดการ รานละเอียดต่างๆ ของข่าวสารนั้นๆ ได้
+              </p>
             </div>
-            <ng-container *ngIf="showContent; then cardNewsTemplate; else notFoundTemplate"></ng-container>
-            <ng-template #cardNewsTemplate>
-                <div class="col-sm-12 col-md-6 col-lg-4" *ngFor="let news of newsList">
-                    <div class="card card-profile">
-                        <div class="card-news">
-                            <img class="img" [src]="imagePath.get(news.id)" alt="{{news.topic}}" />
-                        </div>
-                        <mat-divider></mat-divider>
-                        <div class="card-body">
-                            <h4 class="card-title">{{news.topic}}</h4>
-                            <p class="card-description">
-                                {{news.detail}}
-                            </p>
-                        </div>
-                        <div class="card-footer" *ngIf="news">
-                            <mat-chip-list>
-                                <mat-chip color="primary" selected matTooltip="มหาวิทยาลัยที่เกี่ยวข้อง"
-                                    [matTooltipPosition]="'below'"
-                                    *ngFor="let university_name of news.listUniversity_name">
-                                    {{university_name}}
-                                </mat-chip>
-                            </mat-chip-list>
-                        </div>
-                        <div class="card-footer">
-                            <p class="card-description">
-                                <mat-icon matTooltip="วันที่เผยแพร่">visibility
-                                </mat-icon> {{news.start_time.toDate() | date}}
-                            </p>
-                        </div>
-                        <mat-divider></mat-divider>
-                        <div class="card-body">
-                            <div class="card-description">
-                                <button mat-raised-button class="btn-warning button-margin-right"
-                                    (click)="openAddEditNewsDialog(news)">
-                                    <mat-icon>edit</mat-icon> แก้ไขข้อมูลข่าว
-                                </button><button mat-raised-button class="btn-danger"
-                                    (click)="openDeleteNewsDialog(news)">
-                                    <mat-icon>delete</mat-icon> ลบข้อมูลข่าว
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </ng-template>
-            <ng-template #notFoundTemplate>
-                <div class="col-lg-12">
-                    <div class=" card-profile">
-                        <div class="card-body">
-                            <mat-icon class="card-title">highlight_off</mat-icon>
-                            <h4 class="card-title">ไม่พบข้อมูลข่าว</h4>
-                            <p class="card-description">
-                                ไม่พบข้อมูลข่าวในระบบ กรุณาเพิ่มข้อมูลข่าว
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </ng-template>
+            <div class="col-sm-4 card-button-right">
+              <button
+                mat-raised-button
+                class="btn-success"
+                (click)="openAddEditNewsDialog(null)"
+              >
+                <mat-icon>add</mat-icon> เพิ่มข้อมูลข่าวสาร
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
+      <ng-container
+        *ngIf="showContent; then cardNewsTemplate; else notFoundTemplate"
+      ></ng-container>
+      <ng-template #cardNewsTemplate>
+        <div class="col-sm-12 col-md-6 col-lg-6" *ngFor="let news of newsList">
+          <div class="card card-profile">
+            <div class="card-news">
+              <img
+                class="img"
+                [src]="imagePath.get(news.id)"
+                alt="{{ news.topic }}"
+              />
+            </div>
+            <mat-divider></mat-divider>
+            <div class="card-body">
+              <h4 class="card-title">{{ news.topic }}</h4>
+              <p class="card-description">
+                {{ news.detail }}
+              </p>
+            </div>
+            <div class="card-footer" *ngIf="news">
+              <mat-chip-list>
+                <mat-chip
+                  color="primary"
+                  selected
+                  matTooltip="มหาวิทยาลัยที่เกี่ยวข้อง"
+                  [matTooltipPosition]="'below'"
+                  *ngFor="let university_name of news.listUniversity_name"
+                >
+                  {{ university_name }}
+                </mat-chip>
+              </mat-chip-list>
+            </div>
+            <div class="card-footer">
+              <p class="card-description">
+                <mat-icon matTooltip="วันที่เผยแพร่">visibility </mat-icon>
+                {{ news.start_time.toDate() | date }}
+              </p>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="card-body">
+              <div class="card-description">
+                <button
+                  mat-raised-button
+                  class="btn-warning button-margin-right"
+                  (click)="openAddEditNewsDialog(news)"
+                >
+                  <mat-icon>edit</mat-icon> แก้ไขข้อมูลข่าว</button
+                ><button
+                  mat-raised-button
+                  class="btn-danger"
+                  (click)="openDeleteNewsDialog(news)"
+                >
+                  <mat-icon>delete</mat-icon> ลบข้อมูลข่าว
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template #notFoundTemplate>
+        <div class="col-lg-12">
+          <div class="card-profile">
+            <div class="card-body">
+              <mat-icon class="card-title">highlight_off</mat-icon>
+              <h4 class="card-title">ไม่พบข้อมูลข่าว</h4>
+              <p class="card-description">
+                ไม่พบข้อมูลข่าวในระบบ กรุณาเพิ่มข้อมูลข่าว
+              </p>
+            </div>
+          </div>
+        </div>
+      </ng-template>
     </div>
+  </div>
 </div>
