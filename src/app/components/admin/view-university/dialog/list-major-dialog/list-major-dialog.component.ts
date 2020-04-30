@@ -1,3 +1,5 @@
+import { Tcas } from "./../../../../../model/Tcas";
+import { TcasService } from "./../../../../../services/tcas-service/tcas.service";
 import { EditTcasMajorComponent } from "./dialog/edit-tcas/edit-tcas-major/edit-tcas-major.component";
 import { Component, OnInit, Inject, OnDestroy } from "@angular/core";
 import { MajorService } from "src/app/services/major-service/major.service";
@@ -23,23 +25,24 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
 
   constructor(
     private majorService: MajorService,
+    private tcasService: TcasService,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<ListMajorAdminDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DocumentReference
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.majorSub = this.majorService
       .getMajorByFacultyReference(this.data)
       .subscribe((majorDocs) => {
         this.listMajor = majorDocs.map((docs) => {
           return { id: docs.id, ref: docs.ref, ...(docs.data() as Major) };
         });
+
         if (this.listMajor === undefined || this.listMajor.length === 0) {
           this.showData = false;
           this.dialogRef.updateSize("90%", "auto");
         } else {
-          
           this.showData = true;
           this.dialogRef.updateSize("90%", "90%");
         }
@@ -87,15 +90,34 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
       height: "auto",
       data: major,
     });
-    dialogRef.afterClosed().subscribe(async (newMajor) => {
-      // try {
-      //   if (!newMajor) return;
-      //   await this.majorService.updateMajor(major.ref, newMajor);
-      //   new Notifications().showNotification('done', 'top', 'right', 'แก้ไขข้อมูลสาขาสำเร็จแล้ว', 'success', 'สำเร็จ !');
-      // } catch (error) {
-      //   new Notifications().showNotification('close', 'top', 'right', error.message, 'danger', 'แก้ไขข้อมูลล้มเหลว !');
-      // }
-    });
+    dialogRef
+      .afterClosed()
+      .subscribe(async (result: { tcas: Tcas; mode: string }) => {
+        try {
+          if (result.mode === "add") {
+            await this.tcasService.addTcas(major.ref, result.tcas);
+          } else if (result.mode === "update") {
+            this.tcasService.updateTcas(result.tcas.ref, result.tcas);
+          }
+          new Notifications().showNotification(
+            "done",
+            "top",
+            "right",
+            "บันทึกข้อมูลสาขาสำเร็จแล้ว",
+            "success",
+            "สำเร็จ !"
+          );
+        } catch (error) {
+          new Notifications().showNotification(
+            "close",
+            "top",
+            "right",
+            error.message,
+            "danger",
+            "บันทึกข้อมูลล้มเหลว !"
+          );
+        }
+      });
   }
 
   onDelete(major: Major) {

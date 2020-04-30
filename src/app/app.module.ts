@@ -22,6 +22,9 @@ import { AddEditFacultyDialogComponent } from "./components/admin/view-universit
 import { AddMajorDialogComponent } from "./components/admin/view-university/dialog/add-major-dialog/add-major-dialog.component";
 import { EditUniversityDialogComponent } from "./components/admin/view-university/dialog/edit-university-dialog/edit-university-dialog.component";
 import { EditMajorComponent } from "./components/admin/view-university/dialog/list-major-dialog/dialog/edit-major/edit-major.component";
+import { EditTcasMajorContentComponent } from "./components/admin/view-university/dialog/list-major-dialog/dialog/edit-tcas/edit-tcas-major/edit-tcas-major-content/edit-tcas-major-content.component";
+import { EditTcasMajorComponent } from "./components/admin/view-university/dialog/list-major-dialog/dialog/edit-tcas/edit-tcas-major/edit-tcas-major.component";
+import { ListMajorTcasComponent } from "./components/admin/view-university/dialog/list-major-dialog/dialog/list-tcas/list-major-tcas/list-major-tcas.component";
 import { ListMajorAdminDialogComponent } from "./components/admin/view-university/dialog/list-major-dialog/list-major-dialog.component";
 import { LogoutComponent } from "./components/logout/logout.component";
 import { ComponentsModule } from "./components/navigation/components.module";
@@ -34,8 +37,7 @@ import { TeacherLayoutComponent } from "./layouts/teacher-layout/teacher-layout.
 import { UserLayoutComponent } from "./layouts/user-layout/user-layout.component";
 import { LoginService } from "./services/login-service/login.service";
 import { SharedModule } from "./shared/shared.module";
-import { EditTcasMajorComponent } from './components/admin/view-university/dialog/list-major-dialog/dialog/edit-tcas/edit-tcas-major/edit-tcas-major.component';
-import { EditTcasMajorContentComponent } from './components/admin/view-university/dialog/list-major-dialog/dialog/edit-tcas/edit-tcas-major/edit-tcas-major-content/edit-tcas-major-content.component';
+import { ViewMajorTcasComponent } from "./components/admin/view-university/dialog/list-major-dialog/dialog/list-tcas/list-major-tcas/dialog/view-tcas/view-major-tcas/view-major-tcas.component";
 
 registerLocaleData(localeTh, "th-TH", localeThExtra);
 @NgModule({
@@ -58,7 +60,9 @@ registerLocaleData(localeTh, "th-TH", localeThExtra);
     EditMajorComponent,
     AddEditCareerDialogComponent,
     EditTcasMajorComponent,
-    EditTcasMajorContentComponent
+    EditTcasMajorContentComponent,
+    ListMajorTcasComponent,
+    ViewMajorTcasComponent,
   ],
   entryComponents: [
     AddEditFacultyDialogComponent,
@@ -73,7 +77,9 @@ registerLocaleData(localeTh, "th-TH", localeThExtra);
     AddStudentDialogComponent,
     EditMajorComponent,
     AddEditCareerDialogComponent,
-    EditTcasMajorComponent
+    EditTcasMajorComponent,
+    ListMajorTcasComponent,
+    ViewMajorTcasComponent,
   ],
   imports: [
     BrowserModule,
@@ -89,10 +95,10 @@ registerLocaleData(localeTh, "th-TH", localeThExtra);
     ComponentsModule,
     HttpClientModule,
     SharedModule,
-    MatProgressBarModule
+    MatProgressBarModule,
   ],
   providers: [LoginService, { provide: LOCALE_ID, useValue: "th-TH" }],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule {}

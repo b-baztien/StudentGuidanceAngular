@@ -9,6 +9,13 @@ import { Injectable } from "@angular/core";
 export class TcasService {
   constructor(private firestore: AngularFirestore) {}
 
+  getAllTcas() {
+    return this.firestore
+      .collectionGroup("Tcas", (query) => query.orderBy("round"))
+      .snapshotChanges()
+      .pipe(map((docs) => docs.map((item) => item.payload.doc)));
+  }
+
   getTcasByMajorReference(majorRef: DocumentReference) {
     return this.firestore
       .collection(majorRef.parent.path)
@@ -19,6 +26,8 @@ export class TcasService {
   }
 
   async addTcas(majorRef: DocumentReference, tcas: Tcas) {
+    delete tcas.id;
+    delete tcas.ref;
     try {
       await this.firestore
         .collection(majorRef.parent)
@@ -46,7 +55,9 @@ export class TcasService {
     }
   }
 
-  async updateMajor(tcasRef: DocumentReference, tcas: Tcas) {
+  async updateTcas(tcasRef: DocumentReference, tcas: Tcas) {
+    delete tcas.id;
+    delete tcas.ref;
     try {
       return await this.firestore
         .collection(tcasRef.parent)

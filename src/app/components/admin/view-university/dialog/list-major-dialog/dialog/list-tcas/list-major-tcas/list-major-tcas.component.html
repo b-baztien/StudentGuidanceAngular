@@ -1,0 +1,13 @@
+<mat-panel-title>
+  <button
+    mat-mini-fab
+    class="button-space"
+    [matTooltip]="'คลิกดูรายละเอียด'"
+    [matTooltipPosition]="'above'"
+    *ngFor="let btnTcasData of listButtonTcas"
+    [color]="btnTcasData.color"
+    (click)="openTcasDialog(btnTcasData.tcas)"
+  >
+    {{ btnTcasData.label }}
+  </button>
+</mat-panel-title>

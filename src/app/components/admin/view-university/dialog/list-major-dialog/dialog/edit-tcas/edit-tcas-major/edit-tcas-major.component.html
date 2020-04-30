@@ -4,7 +4,14 @@
   </div>
 </div>
 <mat-tab-group mat-stretch-tabs>
-  <mat-tab *ngFor="let round of tcasTabLabel" label="รอบที่ {{ round }}">
-    <app-edit-tcas-major-content></app-edit-tcas-major-content>
+  <mat-tab
+    *ngFor="let round of tcasTabLabel; index as i"
+    label="รอบที่ {{ round }}"
+  >
+    <app-edit-tcas-major-content
+      [tcas]="listTcas[i]"
+      [round]="round"
+      (submitBtn)="onSubmit($event)"
+    ></app-edit-tcas-major-content>
   </mat-tab>
 </mat-tab-group>
