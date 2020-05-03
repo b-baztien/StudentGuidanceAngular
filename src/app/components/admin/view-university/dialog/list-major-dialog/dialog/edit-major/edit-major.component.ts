@@ -1,8 +1,27 @@
+import { AngularFireStorage } from "@angular/fire/storage";
 import { ENTER } from "@angular/cdk/keycodes";
-import { Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
-import { DocumentSnapshot } from "@angular/fire/firestore";
-import { FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from "@angular/forms";
-import { MatAutocomplete, MatAutocompleteSelectedEvent, MatChipInputEvent, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
+import { DocumentSnapshot, AngularFirestore } from "@angular/fire/firestore";
+import {
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  NgForm,
+  Validators,
+} from "@angular/forms";
+import {
+  MatAutocomplete,
+  MatAutocompleteSelectedEvent,
+  MatChipInputEvent,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material";
 import { Observable } from "rxjs";
 import { map, startWith } from "rxjs/operators";
 import { Career } from "src/app/model/Career";
@@ -31,6 +50,14 @@ export class EditMajorComponent implements OnInit {
   listAllCareerName: string[] = new Array<string>();
   filteredCareer: Observable<string[]>;
 
+  albumUrl: any[] = [
+    "assets/img/no-photo-available.png",
+    "assets/img/no-photo-available.png",
+    "assets/img/no-photo-available.png",
+    "assets/img/no-photo-available.png",
+    "assets/img/no-photo-available.png",
+  ];
+
   loadData = false;
 
   selectable = true;
@@ -46,6 +73,8 @@ export class EditMajorComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<EditMajorComponent>,
     private careerService: CareerService,
+    private afStorage: AngularFireStorage,
+    private afirestore: AngularFirestore,
     @Inject(MAT_DIALOG_DATA) public data: Major
   ) {}
 
@@ -56,6 +85,17 @@ export class EditMajorComponent implements OnInit {
     this.majorForm.get("courseDuration").setValue(this.data.courseDuration);
     this.majorForm.get("career").setValue(this.data.listCareerName);
     this.selectedCareer = this.data.listCareerName;
+
+    if (this.data.albumImage) {
+      for (let i = 0; i < this.data.albumImage.length; i++) {
+        this.afStorage.storage
+          .ref(this.data.albumImage[i])
+          .getDownloadURL()
+          .then((url) => {
+            this.albumUrl[i] = url;
+          });
+      }
+    }
 
     this.careerService.getAllCareer().subscribe((listCareerRes) => {
       listCareerRes.forEach((careerRes) => {
@@ -72,7 +112,35 @@ export class EditMajorComponent implements OnInit {
     );
   }
 
-  ngAfterViewInit() {}
+  async upload(file, filePath) {
+    const metadata = {
+      contentType: "image/jpeg",
+    };
+
+    const fileName = this.afirestore.createId();
+    if (file.type.split("/")[0] == "image") {
+      return await this.afStorage
+        .upload(`${filePath}/${fileName}`, file, metadata)
+        .then(async (result) => {
+          return result.ref.fullPath;
+        });
+    }
+    return "";
+  }
+
+  previewAlbum(event) {
+    for (let i = 0; i < 5; i++) {
+      if (event.target.files[i] !== undefined) {
+        let reader = new FileReader();
+        reader.readAsDataURL(event.target.files[i]);
+        reader.onload = (_event) => {
+          this.albumUrl[i] = reader.result;
+        };
+      } else {
+        this.albumUrl[i] = "assets/img/no-photo-available.png";
+      }
+    }
+  }
 
   isErrorState(
     control: FormControl | null,
@@ -131,6 +199,28 @@ export class EditMajorComponent implements OnInit {
     major.certificate = this.majorForm.get("certificate").value;
     major.courseDuration = this.majorForm.get("courseDuration").value;
     major.listCareerName = this.selectedCareer;
+
+    let filePath = `major/`;
+    let fileAlbum: any = document.getElementById("albumImage");
+    major.albumImage =
+      major.albumImage === undefined ? new Array<string>() : major.albumImage;
+    for (let i = 0; i < fileAlbum.files.length; i++) {
+      if (major.albumImage[i] !== undefined) {
+        await this.afStorage.storage.ref(major.albumImage[i]).delete();
+        major.albumImage[i] = await this.upload(
+          fileAlbum.files[i],
+          filePath
+        ).then((result) => {
+          return result;
+        });
+      } else {
+        major.albumImage.push(
+          await this.upload(fileAlbum.files[i], filePath).then((result) => {
+            return result;
+          })
+        );
+      }
+    }
 
     this.dialogRef.close(major);
   }

@@ -24,6 +24,7 @@
     "@angular/platform-browser": "^8.2.14",
     "@angular/platform-browser-dynamic": "^8.2.14",
     "@angular/router": "^8.2.14",
+    "@ngmodule/material-carousel": "^0.6.0",
     "@types/googlemaps": "^3.39.1",
     "angular-validation-match": "^1.9.0",
     "angular2-chartjs": "^0.5.1",

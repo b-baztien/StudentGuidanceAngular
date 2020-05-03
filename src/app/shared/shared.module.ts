@@ -1,3 +1,4 @@
+import { MatCarouselModule } from "@ngmodule/material-carousel";
 import { ThaiYearPipe } from "./../pipe/thai-year.pipe";
 import { MatProgressButtonsModule } from "mat-progress-buttons";
 import { NgModule } from "@angular/core";
@@ -66,6 +67,7 @@ import { SatNativeDateModule, SatDatepickerModule } from "saturn-datepicker";
     MatTabsModule,
     SatDatepickerModule,
     SatNativeDateModule,
+    MatCarouselModule,
     ChartModule,
     ThaiYearPipe,
   ],

@@ -16,6 +16,80 @@
         กรุณากรอกชื่อสาขา
       </mat-error>
     </mat-form-field>
+    <div class="input-image-content">
+      <label class="label-input-image"
+        >รูปภาพเกี่ยวกับสาขา (เพิ่มได้สูงสุด 5 รูป)</label
+      >
+      <label class="hoverable" for="albumImage">
+        <img
+          class="input-image"
+          alt="รูปภาพเกี่ยวกับสาขา"
+          [src]="albumUrl[0]"
+        />
+        <div class="hover-text">เลือกรูปภาพ..</div>
+        <div class="background"></div>
+      </label>
+      <label
+        class="hoverable"
+        for="albumImage"
+        *ngIf="albumUrl[1] != 'assets/img/no-photo-available.png'"
+      >
+        <img
+          class="input-image"
+          alt="รูปภาพเกี่ยวกับสาขา"
+          [src]="albumUrl[1]"
+        />
+        <div class="hover-text">เลือกรูปภาพ..</div>
+        <div class="background"></div>
+      </label>
+      <label
+        class="hoverable"
+        for="albumImage"
+        *ngIf="albumUrl[2] != 'assets/img/no-photo-available.png'"
+      >
+        <img
+          class="input-image"
+          alt="รูปภาพเกี่ยวกับสาขา"
+          [src]="albumUrl[2]"
+        />
+        <div class="hover-text">เลือกรูปภาพ..</div>
+        <div class="background"></div>
+      </label>
+      <label
+        class="hoverable"
+        for="albumImage"
+        *ngIf="albumUrl[3] != 'assets/img/no-photo-available.png'"
+      >
+        <img
+          class="input-image"
+          alt="รูปภาพเกี่ยวกับสาขา"
+          [src]="albumUrl[3]"
+        />
+        <div class="hover-text">เลือกรูปภาพ..</div>
+        <div class="background"></div>
+      </label>
+      <label
+        class="hoverable"
+        for="albumImage"
+        *ngIf="albumUrl[4] != 'assets/img/no-photo-available.png'"
+      >
+        <img
+          class="input-image"
+          alt="รูปภาพเกี่ยวกับสาขา"
+          [src]="albumUrl[4]"
+        />
+        <div class="hover-text">เลือกรูปภาพ..</div>
+        <div class="background"></div>
+      </label>
+      <input
+        type="file"
+        class="inputImage"
+        multiple
+        id="albumImage"
+        (change)="previewAlbum($event)"
+        accept=".png,.jpg"
+      />
+    </div>
     <mat-form-field>
       <input
         matInput

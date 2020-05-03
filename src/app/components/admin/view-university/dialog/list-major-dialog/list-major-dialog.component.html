@@ -11,7 +11,23 @@
           <h4><mat-icon>school</mat-icon> {{ major.majorName }}</h4>
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <hr class="no-margin" />
+      <hr class="no-margin-top" />
+      <mat-panel-description>
+        <h4><mat-icon>image</mat-icon> รูปภาพสาขา</h4>
+      </mat-panel-description>
+      <mat-panel-title>
+        <ng-container
+          *ngIf="major.albumImage; then imageTemplate; else imgNotFoundTemplate"
+        ></ng-container>
+        <ng-template #imageTemplate>
+          <app-list-major-image [listImageLocal]="major.albumImage">
+          </app-list-major-image>
+        </ng-template>
+        <ng-template #imgNotFoundTemplate>
+          ไม่พบรูปภาพเกี่ยวกับสาขา
+        </ng-template>
+      </mat-panel-title>
+      <hr />
       <mat-panel-description>
         <h4><mat-icon>language</mat-icon> ที่อยู่เว็บไซต์</h4>
       </mat-panel-description>

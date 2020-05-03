@@ -1,0 +1,11 @@
+<div class="input-image-content" *ngIf="listImageLocal">
+  <label
+    class="hoverable"
+    for="albumImage"
+    *ngFor="let img of listImageUrl"
+    (click)="goToLink(img)"
+  >
+    <img class="input-image" alt="รูปภาพเกี่ยวกับสาขา" [src]="img" />
+    <div class="background"></div>
+  </label>
+</div>

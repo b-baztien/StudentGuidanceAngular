@@ -38,6 +38,7 @@ import { UserLayoutComponent } from "./layouts/user-layout/user-layout.component
 import { LoginService } from "./services/login-service/login.service";
 import { SharedModule } from "./shared/shared.module";
 import { ViewMajorTcasComponent } from "./components/admin/view-university/dialog/list-major-dialog/dialog/list-tcas/list-major-tcas/dialog/view-tcas/view-major-tcas/view-major-tcas.component";
+import { ListMajorImageComponent } from "./components/admin/view-university/dialog/list-major-dialog/dialog/list-image/list-major-image/list-major-image.component";
 
 registerLocaleData(localeTh, "th-TH", localeThExtra);
 @NgModule({
@@ -63,6 +64,7 @@ registerLocaleData(localeTh, "th-TH", localeThExtra);
     EditTcasMajorContentComponent,
     ListMajorTcasComponent,
     ViewMajorTcasComponent,
+    ListMajorImageComponent,
   ],
   entryComponents: [
     AddEditFacultyDialogComponent,
@@ -80,6 +82,7 @@ registerLocaleData(localeTh, "th-TH", localeThExtra);
     EditTcasMajorComponent,
     ListMajorTcasComponent,
     ViewMajorTcasComponent,
+    ListMajorImageComponent,
   ],
   imports: [
     BrowserModule,

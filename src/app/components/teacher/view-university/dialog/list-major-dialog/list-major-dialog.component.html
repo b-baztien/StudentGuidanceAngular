@@ -1,85 +1,90 @@
 <div class="row">
-    <div class="col-12">
-        <h1 mat-dialog-title>
-            <mat-icon>info</mat-icon> ข้อมูลสาขาในคณะ
-        </h1>
-    </div>
+  <div class="col-12">
+    <h1 mat-dialog-title><mat-icon>info</mat-icon> ข้อมูลสาขาในคณะ</h1>
+  </div>
 </div>
 <div *ngIf="showData">
-    <mat-accordion>
-        <mat-expansion-panel *ngFor="let major of listMajor">
-            <mat-expansion-panel-header>
-                <mat-panel-title color="primary">
-                    <h4>
-                        <mat-icon>school</mat-icon> {{major.majorName}}
-                    </h4>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <hr />
-            <mat-panel-description>
-                <h4>
-                    <mat-icon>language</mat-icon> ที่อยู่เว็บไซต์
-                </h4>
-            </mat-panel-description>
-            <mat-panel-title>
-                <a href="{{major.url}}">{{major.url}}</a>
-            </mat-panel-title>
-            <hr />
-            <mat-panel-description>
-                <h4>
-                    <mat-icon>assignment_turned_in</mat-icon> วุฒิหลังสำเร็จการศึกษา
-                </h4>
-            </mat-panel-description>
-            <mat-panel-title>
-                {{major.certificate}}
-            </mat-panel-title>
-            <hr />
-            <mat-panel-description>
-                <h4>
-                    <mat-icon>monetization_on</mat-icon> ค่าเทอม
-                </h4>
-            </mat-panel-description>
-            <mat-panel-title>
-                {{major.tuitionFee}} บาท / ภาคเรียน
-            </mat-panel-title>
-            <hr />
-            <mat-panel-description>
-                <h4>
-                    <mat-icon>post_add</mat-icon> ข้อมูลการศึกษาต่อ (TCAS)
-                </h4>
-            </mat-panel-description>
-            <mat-panel-title>
-                <mat-chip-list *ngFor="let tcas of major.tcasEntranceRound">
-                    <mat-chip color="accent" selected>
-                        รอบ {{tcas.description}}
-                    </mat-chip>
-                </mat-chip-list>
-            </mat-panel-title>
-            <hr />
-            <mat-panel-description>
-                <h4>
-                    <mat-icon>build</mat-icon> อาชีพเมื่อสำเร็จการศึกษา
-                </h4>
-            </mat-panel-description>
-            <mat-panel-title>
-                <p *ngIf="major.listCareerName === undefined">
-                    -
-                </p>
-                <mat-chip-list>
-                    <mat-chip color="primary" selected *ngFor="let careerName of major.listCareerName">
-                        {{careerName}}
-                    </mat-chip>
-                </mat-chip-list>
-            </mat-panel-title>
-        </mat-expansion-panel>
-    </mat-accordion>
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let major of listMajor">
+      <mat-expansion-panel-header>
+        <mat-panel-title color="primary">
+          <h4><mat-icon>school</mat-icon> {{ major.majorName }}</h4>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <hr class="no-margin-top" />
+      <mat-panel-description>
+        <h4><mat-icon>image</mat-icon> รูปภาพสาขา</h4>
+      </mat-panel-description>
+      <mat-panel-title>
+        <ng-container
+          *ngIf="major.albumImage; then imageTemplate; else imgNotFoundTemplate"
+        ></ng-container>
+        <ng-template #imageTemplate>
+          <app-list-major-image [listImageLocal]="major.albumImage">
+          </app-list-major-image>
+        </ng-template>
+        <ng-template #imgNotFoundTemplate>
+          ไม่พบรูปภาพเกี่ยวกับสาขา
+        </ng-template>
+      </mat-panel-title>
+      <mat-panel-description>
+        <h4><mat-icon>language</mat-icon> ที่อยู่เว็บไซต์</h4>
+      </mat-panel-description>
+      <mat-panel-title>
+        <a href="{{ major.url }}">{{ major.url }}</a>
+      </mat-panel-title>
+      <hr />
+      <mat-panel-description>
+        <h4>
+          <mat-icon>assignment_turned_in</mat-icon> วุฒิหลังสำเร็จการศึกษา
+        </h4>
+      </mat-panel-description>
+      <mat-panel-title>
+        {{ major.certificate }}
+      </mat-panel-title>
+      <hr />
+      <mat-panel-description>
+        <h4><mat-icon>monetization_on</mat-icon> ค่าเทอม</h4>
+      </mat-panel-description>
+      <mat-panel-title> {{ major.tuitionFee }} บาท / ภาคเรียน </mat-panel-title>
+      <hr />
+      <mat-panel-description>
+        <h4><mat-icon>post_add</mat-icon> ข้อมูลการศึกษาต่อ (TCAS)</h4>
+      </mat-panel-description>
+      <mat-panel-title>
+        <mat-chip-list *ngFor="let tcas of major.tcasEntranceRound">
+          <mat-chip color="accent" selected>
+            รอบ {{ tcas.description }}
+          </mat-chip>
+        </mat-chip-list>
+      </mat-panel-title>
+      <hr />
+      <mat-panel-description>
+        <h4><mat-icon>build</mat-icon> อาชีพเมื่อสำเร็จการศึกษา</h4>
+      </mat-panel-description>
+      <mat-panel-title>
+        <p *ngIf="major.listCareerName === undefined">
+          -
+        </p>
+        <mat-chip-list>
+          <mat-chip
+            color="primary"
+            selected
+            *ngFor="let careerName of major.listCareerName"
+          >
+            {{ careerName }}
+          </mat-chip>
+        </mat-chip-list>
+      </mat-panel-title>
+    </mat-expansion-panel>
+  </mat-accordion>
 </div>
 <div class="card-profile no-margin align-middle" *ngIf="!showData">
-    <div class="card-body">
-        <mat-icon class="card-title">block</mat-icon>
-        <h4 class="card-description">ไม่พบข้อมูลสาขา</h4>
-        <p class="card-description">
-            ไม่พบข้อมูลสาขาภายในคณะ กรุณาเพิ่มข้อมูลคณะก่อนดำเนินการอีกครั้ง
-        </p>
-    </div>
+  <div class="card-body">
+    <mat-icon class="card-title">block</mat-icon>
+    <h4 class="card-description">ไม่พบข้อมูลสาขา</h4>
+    <p class="card-description">
+      ไม่พบข้อมูลสาขาภายในคณะ กรุณาเพิ่มข้อมูลคณะก่อนดำเนินการอีกครั้ง
+    </p>
+  </div>
 </div>

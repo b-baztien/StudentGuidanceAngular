@@ -1,3 +1,4 @@
+import { AngularFireStorage } from "@angular/fire/storage";
 import { ENTER, SPACE } from "@angular/cdk/keycodes";
 import {
   AfterViewInit,
@@ -7,7 +8,7 @@ import {
   OnInit,
   ViewChild,
 } from "@angular/core";
-import { DocumentReference } from "@angular/fire/firestore";
+import { DocumentReference, AngularFirestore } from "@angular/fire/firestore";
 import {
   FormControl,
   FormGroup,
@@ -55,6 +56,14 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
   listAllCareer: string[] = new Array<string>();
   filteredCareer: Observable<string[]>;
 
+  albumUrl: any[] = [
+    "assets/img/no-photo-available.png",
+    "assets/img/no-photo-available.png",
+    "assets/img/no-photo-available.png",
+    "assets/img/no-photo-available.png",
+    "assets/img/no-photo-available.png",
+  ];
+
   loadData = false;
 
   selectable = true;
@@ -71,6 +80,8 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
     public dialogRef: MatDialogRef<AddMajorDialogComponent>,
     private majorService: MajorService,
     private careerService: CareerService,
+    private afStorage: AngularFireStorage,
+    private afirestore: AngularFirestore,
     @Inject(MAT_DIALOG_DATA) public data: DocumentReference
   ) {}
 
@@ -102,6 +113,36 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
       control.invalid &&
       (control.dirty || control.touched || isSubmitted)
     );
+  }
+
+  async upload(file, filePath) {
+    const metadata = {
+      contentType: "image/jpeg",
+    };
+
+    const fileName = this.afirestore.createId();
+    if (file.type.split("/")[0] == "image") {
+      return await this.afStorage
+        .upload(`${filePath}/${fileName}`, file, metadata)
+        .then(async (result) => {
+          return result.ref.fullPath;
+        });
+    }
+    return "";
+  }
+
+  previewAlbum(event) {
+    for (let i = 0; i < 5; i++) {
+      if (event.target.files[i] !== undefined) {
+        let reader = new FileReader();
+        reader.readAsDataURL(event.target.files[i]);
+        reader.onload = (_event) => {
+          this.albumUrl[i] = reader.result;
+        };
+      } else {
+        this.albumUrl[i] = "assets/img/no-photo-available.png";
+      }
+    }
   }
 
   addCareer(event: MatChipInputEvent): void {
@@ -155,6 +196,29 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
           return career;
         })
       );
+
+      let filePath = `major/`;
+      let fileAlbum: any = document.getElementById("albumImage");
+      major.albumImage =
+        major.albumImage === undefined ? new Array<string>() : major.albumImage;
+      for (let i = 0; i < fileAlbum.files.length; i++) {
+        if (major.albumImage[i] !== undefined) {
+          await this.afStorage.storage.ref(major.albumImage[i]).delete();
+          major.albumImage[i] = await this.upload(
+            fileAlbum.files[i],
+            filePath
+          ).then((result) => {
+            return result;
+          });
+        } else {
+          major.albumImage.push(
+            await this.upload(fileAlbum.files[i], filePath).then((result) => {
+              return result;
+            })
+          );
+        }
+      }
+
       await this.majorService.addMajor(this.data, major);
       new Notifications().showNotification(
         "done",
