@@ -22,36 +22,6 @@ import { StudentService } from 'src/app/services/student-service/student.service
   styleUrls: ['./add-user-dialog.component.css']
 })
 export class AddUserDialogComponent implements OnInit {
-  // userForm = new FormGroup({
-  //   userType: new FormControl('teacher', [
-  //     Validators.required]),
-  //   school: new FormControl('โรงเรียนทดสอบ', [
-  //     Validators.required]),
-  //   username: new FormControl('teacher2', [
-  //     Validators.required]),
-  //   password: new FormControl('1234', [
-  //     Validators.required]),
-  //   confirmPassword: new FormControl('1234', [
-  //     Validators.required]),
-  // });
-
-  // teacherForm = new FormGroup({
-  //   firstname: new FormControl('สมศักดิ์', [
-  //     Validators.required]),
-  //   lastname: new FormControl('ใจเย็น', [
-  //     Validators.required]),
-  //   position: new FormControl('ครูคณิตศาสตร์', [
-  //     Validators.required]),
-  //   phone_no: new FormControl('0812345678', Validators.compose([
-  //     Validators.required,
-  //     Validators.pattern('^[0-9]*$')])),
-  //   email: new FormControl('somsak@test.com', Validators.compose([
-  //     Validators.required,
-  //     Validators.email
-  //   ])),
-  // });
-
-
   userForm: FormGroup;
 
   teacherForm = new FormGroup({

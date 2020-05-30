@@ -49,10 +49,6 @@ export class FacultyService {
     }
   }
 
-  getAllFaculty() {
-    return this.firestore.collection('Faculty', query => query.orderBy('faculty_name')).snapshotChanges();
-  }
-
   getFacultyByUniversityId(universityId: string) {
     return this.firestore.collection('University', query => query.orderBy('faculty_name'))
       .doc(universityId).collection('Faculty').snapshotChanges()

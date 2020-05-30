@@ -42,7 +42,7 @@ export class AddEditNewsDialogComponent implements OnInit {
   @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
 
   constructor(
-    public dialogRef: MatDialogRef<AddMajorDialogComponent>,
+    public dialogRef: MatDialogRef<AddEditNewsDialogComponent>,
     private universityService: UniversityService,
     private teacherService: TeacherService,
     private afStorage: AngularFireStorage,

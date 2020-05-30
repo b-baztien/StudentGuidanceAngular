@@ -8,7 +8,7 @@ import { EntranceExamResultService } from "src/app/services/entrance-exam-result
 @Component({
   selector: "app-list-entrance-exam-result",
   templateUrl: "./list-entrance-exam-result.component.html",
-  styleUrls: ["./list-entrance-exam-result.component.css"]
+  styleUrls: ["./list-entrance-exam-result.component.css"],
 })
 export class ListEntranceExamResultComponent implements OnInit {
   lineChart: Chart;
@@ -29,7 +29,6 @@ export class ListEntranceExamResultComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private router: Router,
     private entranceExamResuleService: EntranceExamResultService
   ) {}
 
@@ -37,9 +36,9 @@ export class ListEntranceExamResultComponent implements OnInit {
     const school = localStorage.getItem("school");
     this.entranceExamResuleService
       .getAllExamResultBySchoolName(school)
-      .subscribe(result => {
-        this.setYear = new Set(result.map(exam => exam.year));
-        result.forEach(exam => {
+      .subscribe((result) => {
+        this.setYear = new Set(result.map((exam) => exam.year));
+        result.forEach((exam) => {
           //set university chart data
           if (this.chartUniData.has(exam.year)) {
             if (this.chartUniData.get(exam.year).has(exam.university)) {
@@ -105,7 +104,7 @@ export class ListEntranceExamResultComponent implements OnInit {
     if (this.yearControl.valid) {
       //generate university chart
       let uniCount = new Array();
-      this.chartUniData.get(this.yearControl.value).forEach(count => {
+      this.chartUniData.get(this.yearControl.value).forEach((count) => {
         uniCount.push(count);
       });
 
@@ -121,33 +120,33 @@ export class ListEntranceExamResultComponent implements OnInit {
                 "#55B559",
                 "#F55145",
                 "#A72ABD",
-                "#FF9E0F"
-              ]
-            }
-          ]
+                "#FF9E0F",
+              ],
+            },
+          ],
         },
         options: {
           title: {
             text: "จำนวนผลการสอบติดใน มหาวิทยาลัย",
             fontFamily: "Kanit",
             fontSize: "15",
-            display: true
-          }
+            display: true,
+          },
         },
         scales: {
           yAxes: [
             {
               ticks: {
-                beginAtZero: true
-              }
-            }
-          ]
-        }
+                beginAtZero: true,
+              },
+            },
+          ],
+        },
       });
 
       //generate faculty chart
       let facCount = new Array();
-      this.chartFacData.get(this.yearControl.value).forEach(count => {
+      this.chartFacData.get(this.yearControl.value).forEach((count) => {
         facCount.push(count);
       });
 
@@ -163,33 +162,33 @@ export class ListEntranceExamResultComponent implements OnInit {
                 "#55B559",
                 "#F55145",
                 "#A72ABD",
-                "#FF9E0F"
-              ]
-            }
-          ]
+                "#FF9E0F",
+              ],
+            },
+          ],
         },
         options: {
           title: {
             text: "จำนวนผลการสอบติดใน คณะ",
             fontFamily: "Kanit",
             fontSize: "15",
-            display: true
-          }
+            display: true,
+          },
         },
         scales: {
           yAxes: [
             {
               ticks: {
-                beginAtZero: true
-              }
-            }
-          ]
-        }
+                beginAtZero: true,
+              },
+            },
+          ],
+        },
       });
 
       //generate major chart
       let majorCount = new Array();
-      this.chartMajorData.get(this.yearControl.value).forEach(count => {
+      this.chartMajorData.get(this.yearControl.value).forEach((count) => {
         majorCount.push(count);
       });
 
@@ -205,28 +204,28 @@ export class ListEntranceExamResultComponent implements OnInit {
                 "#55B559",
                 "#F55145",
                 "#A72ABD",
-                "#FF9E0F"
-              ]
-            }
-          ]
+                "#FF9E0F",
+              ],
+            },
+          ],
         },
         options: {
           title: {
-            text: "จำนวนผลการสอบติดใน มหาวิทยาลัย",
+            text: "จำนวนผลการสอบติดใน สาขา",
             fontFamily: "Kanit",
             fontSize: "15",
-            display: true
-          }
+            display: true,
+          },
         },
         scales: {
           yAxes: [
             {
               ticks: {
-                beginAtZero: true
-              }
-            }
-          ]
-        }
+                beginAtZero: true,
+              },
+            },
+          ],
+        },
       });
     }
   }
