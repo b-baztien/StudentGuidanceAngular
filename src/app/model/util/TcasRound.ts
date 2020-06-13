@@ -1,4 +1,3 @@
-import { Tcas } from "../Tcas";
 
 export class TcasRound {
   public static allTcasRound = [

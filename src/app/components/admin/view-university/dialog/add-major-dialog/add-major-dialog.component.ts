@@ -30,6 +30,7 @@ import { Career } from "src/app/model/Career";
 import { Major } from "src/app/model/Major";
 import { CareerService } from "src/app/services/career-service/career.service";
 import { MajorService } from "src/app/services/major-service/major.service";
+import { RegularExpressionUtil } from 'src/app/model/util/RegularExpressionUtil';
 
 @Component({
   selector: "app-add-major-dialog",
@@ -39,15 +40,21 @@ import { MajorService } from "src/app/services/major-service/major.service";
 export class AddMajorDialogComponent implements OnInit, AfterViewInit {
   majorForm = new FormGroup({
     majorName: new FormControl(null, [Validators.required]),
-    url: new FormControl(null, [Validators.required]),
+    url: new FormControl(null, [
+      Validators.required,
+      Validators.pattern(RegularExpressionUtil.urlReg),
+    ]),
     certificate: new FormControl(null, [Validators.required]),
     tuitionFee: new FormControl(null, [
       Validators.required,
-      Validators.pattern("^[0-9]*$"),
+      Validators.pattern(RegularExpressionUtil.numberReg),
     ]),
     courseDuration: new FormControl(
       null,
-      Validators.compose([Validators.required, Validators.pattern("^[0-9]*$")])
+      Validators.compose([
+        Validators.required,
+        Validators.pattern(RegularExpressionUtil.numberReg),
+      ])
     ),
     career: new FormControl(null),
   });

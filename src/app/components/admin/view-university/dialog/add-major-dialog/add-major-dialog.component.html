@@ -101,6 +101,9 @@
       <mat-error *ngIf="majorForm.controls.url.hasError('required')">
         กรุณากรอกที่อยู่เว็บไซต์
       </mat-error>
+      <mat-error *ngIf="majorForm.controls.url.hasError('pattern')">
+        กรุณากรอกที่อยู่เว็บไซต์ที่ถูกต้อง
+      </mat-error>
     </mat-form-field>
     <mat-form-field>
       <input

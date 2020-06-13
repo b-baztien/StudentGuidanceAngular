@@ -21,8 +21,8 @@ export class TcasService {
       .collection(majorRef.parent.path)
       .doc(majorRef.id)
       .collection("Tcas", (query) => query.orderBy("round"))
-      .snapshotChanges()
-      .pipe(map((docs) => docs.map((item) => item.payload.doc)));
+      .get()
+      .pipe(map((docs) => docs.docs.map((item) => item)));
   }
 
   async addTcas(majorRef: DocumentReference, tcas: Tcas) {
@@ -64,6 +64,7 @@ export class TcasService {
         .doc(tcasRef.id)
         .update(Object.assign({}, tcas));
     } catch (error) {
+      console.error(error);
       throw new Error("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง");
     }
   }

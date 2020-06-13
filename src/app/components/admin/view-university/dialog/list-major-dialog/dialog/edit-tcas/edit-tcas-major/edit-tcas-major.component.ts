@@ -1,13 +1,10 @@
-import { Subscription } from "rxjs";
-import { isNullOrUndefined } from "util";
-import { Validators } from "@angular/forms";
-import { FormControl } from "@angular/forms";
-import { FormGroup } from "@angular/forms";
-import { Major } from "./../../../../../../../../model/Major";
+import { Component, Inject, OnInit } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
-import { Component, OnInit, Inject } from "@angular/core";
-import { TcasService } from "src/app/services/tcas-service/tcas.service";
+import { Subscription } from "rxjs";
 import { Tcas } from "src/app/model/Tcas";
+import { TcasService } from "src/app/services/tcas-service/tcas.service";
+import { isNullOrUndefined } from "util";
+import { Major } from "./../../../../../../../../model/Major";
 
 @Component({
   selector: "app-edit-tcas-major",
@@ -46,14 +43,10 @@ export class EditTcasMajorComponent implements OnInit {
   }
 
   onNoClick(): void {
-    this.dialogRef.close(null);
+    this.dialogRef.close();
   }
 
-  async onSubmit(tcas: Tcas) {
-    if (isNullOrUndefined(tcas)) {
-      this.dialogRef.close({ tcas: tcas, mode: "add" });
-    } else {
-      this.dialogRef.close({ tcas: tcas, mode: "update" });
-    }
+  async onSubmit(result: { tcas: Tcas; mode: string }) {
+    this.dialogRef.close({ tcas: result.tcas, mode: result.mode });
   }
 }

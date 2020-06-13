@@ -91,6 +91,13 @@
       />
     </div>
     <mat-form-field>
+      <textarea
+        matInput
+        placeholder="รายละเอียดสาขา"
+        formControlName="detail"
+      ></textarea>
+    </mat-form-field>
+    <mat-form-field>
       <input
         matInput
         placeholder="ที่อยู่เว็บไซต์"
@@ -100,6 +107,9 @@
       <mat-hint>เช่น http://www.xxxx.xxx</mat-hint>
       <mat-error *ngIf="majorForm.controls.url.hasError('required')">
         กรุณากรอกที่อยู่เว็บไซต์
+      </mat-error>
+      <mat-error *ngIf="majorForm.controls.url.hasError('pattern')">
+        กรุณากรอกที่อยู่เว็บไซต์ที่ถูกต้อง
       </mat-error>
     </mat-form-field>
     <mat-form-field>
@@ -115,20 +125,15 @@
       </mat-error>
     </mat-form-field>
     <mat-form-field>
-      <input
-        matInput
-        placeholder="ระยะเวลาการศึกษาตามหลักสูตร (ปี)"
-        required
-        maxlength="2"
-        formControlName="courseDuration"
-      />
-      <mat-error *ngIf="majorForm.controls.courseDuration.hasError('required')">
-        กรุณากรอกระยะเวลาการศึกษา
-      </mat-error>
-      <mat-error *ngIf="majorForm.controls.courseDuration.hasError('pattern')">
-        ระยะเวลาการศึกษาต้องเป็นตัวเลขเท่านั้น
-      </mat-error>
-      <mat-hint>เช่น 4 ปี</mat-hint>
+      <mat-label>ระดับปริญญา</mat-label>
+      <mat-select formControlName="degree" required>
+        <mat-option *ngFor="let degree of listDegree" value="{{ degree }}">{{
+          degree
+        }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="majorForm.controls.degree.hasError('required')"
+        >กรุณาเลือกระดับปริญญา</mat-error
+      >
     </mat-form-field>
     <mat-form-field>
       <mat-chip-list #chipList aria-label="Career">

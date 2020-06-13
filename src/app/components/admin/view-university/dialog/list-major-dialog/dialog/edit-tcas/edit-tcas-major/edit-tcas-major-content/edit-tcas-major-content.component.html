@@ -15,74 +15,30 @@
         />
         <sat-datepicker #picker [rangeMode]="true"> </sat-datepicker>
         <sat-datepicker-toggle matSuffix [for]="picker"></sat-datepicker-toggle>
+        <mat-error *ngIf="tcasForm.controls.date.hasError('required')">
+          กรุณากรอกวันที่สมัคร
+        </mat-error>
       </mat-form-field>
       <mat-form-field>
         <mat-label>จำนวนที่รับ</mat-label>
         <input type="number" matInput formControlName="entranceAmount" />
         <span matSuffix>ที่นั่ง</span>
-      </mat-form-field>
-      <hr />
-      <mat-panel-description>
-        <h4><mat-icon>post_add</mat-icon> คะแนนขั้นต่ำ</h4>
-      </mat-panel-description>
-      <div class="row" *ngFor="let tcasScore of tcas.score; index as i">
-        <div class="col-8">
-          <mat-form-field>
-            <mat-label>ชื่อคะแนน</mat-label>
-            <input matInput />
-          </mat-form-field>
-        </div>
-        <div class="col-3">
-          <mat-form-field>
-            <mat-label>คะแนนที่ใช้</mat-label>
-            <input
-              class="right-align"
-              type="number"
-              matInput
-              max="100"
-              min="0"
-            />
-            <span matSuffix>%</span>
-          </mat-form-field>
-        </div>
-        <div class="col-1">
-          <button
-            mat-raised-button
-            matTooltip="ลบรายการคะแนนนี้"
-            [matTooltipPosition]="'above'"
-            class="btn-danger"
-            (click)="onDeleteTcasScore(i)"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-12">
-          <button
-            mat-raised-button
-            class="btn-info max-width"
-            (click)="onAddTcasScore()"
-          >
-            <mat-icon>add</mat-icon> เพิ่มรายการคะแนน
-          </button>
-        </div>
-      </div>
-      <hr />
-      <mat-form-field>
-        <mat-label>ค่าใช้จ่ายทั้งหมดในการสมัครสอบ</mat-label>
-        <input type="number" matInput formControlName="examFee" />
-        <span matSuffix>บาท</span>
+        <mat-error
+          *ngIf="tcasForm.controls.entranceAmount.hasError('required')"
+        >
+          กรุณากรอกจำนวนที่รับ
+        </mat-error>
       </mat-form-field>
       <mat-form-field>
-        <mat-label>คนที่สมัครได้</mat-label>
-        <textarea matInput formControlName="registerPropertie"></textarea>
+        <mat-label>ที่อยู่เว็บไซต์ TCAS</mat-label>
+        <input matInput formControlName="url" />
+        <mat-error *ngIf="tcasForm.controls.url.hasError('required')">
+          กรุณากรอกที่อยู่เว็บไซต์ TCAS
+        </mat-error>
+        <mat-error *ngIf="tcasForm.controls.url.hasError('pattern')">
+          กรุณากรอกที่อยู่เว็บไซต์ที่ถูกต้อง
+        </mat-error>
       </mat-form-field>
-      <mat-form-field>
-        <mat-label>หมายเหตุ</mat-label>
-        <textarea matInput formControlName="remark"></textarea>
-      </mat-form-field>
-      <hr />
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-raised-button class="btn-success" (click)="onSubmit()">

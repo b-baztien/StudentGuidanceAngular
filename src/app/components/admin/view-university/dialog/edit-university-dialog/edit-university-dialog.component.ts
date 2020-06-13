@@ -3,21 +3,21 @@ import {
   OnInit,
   Inject,
   ElementRef,
-  ViewChild
+  ViewChild,
 } from "@angular/core";
 import {
   FormGroup,
   FormControl,
   Validators,
   FormGroupDirective,
-  NgForm
+  NgForm,
 } from "@angular/forms";
 import {
   MatDialogRef,
   MAT_DIALOG_DATA,
   MatAutocomplete,
   MatAutocompleteSelectedEvent,
-  MatChipInputEvent
+  MatChipInputEvent,
 } from "@angular/material";
 import { University } from "src/app/model/University";
 import { Observable } from "rxjs";
@@ -29,41 +29,45 @@ import { AngularFirestore } from "@angular/fire/firestore";
 import { Notifications } from "src/app/components/util/notification";
 import { ENTER } from "@angular/cdk/keycodes";
 import { startWith, map } from "rxjs/operators";
+import { RegularExpressionUtil } from 'src/app/model/util/RegularExpressionUtil';
 
 @Component({
   selector: "app-edit-university-dialog",
   templateUrl: "./edit-university-dialog.component.html",
-  styleUrls: ["./edit-university-dialog.component.css"]
+  styleUrls: ["./edit-university-dialog.component.css"],
 })
 export class EditUniversityDialogComponent implements OnInit {
   universityDetailForm = new FormGroup({
     university_name: new FormControl(this.data.university.university_name, [
-      Validators.required
+      Validators.required,
     ]),
     url: new FormControl(this.data.university.url, [Validators.required]),
     phone_no: new FormControl(
       this.data.university.phone_no,
-      Validators.compose([Validators.required, Validators.pattern("^[0-9]*$")])
+      Validators.compose([
+        Validators.required,
+        Validators.pattern(RegularExpressionUtil.numberReg),
+      ])
     ),
-    university_detail: new FormControl(this.data.university.university_detail)
+    university_detail: new FormControl(this.data.university.university_detail),
   });
 
   universityAddressForm = new FormGroup({
     address: new FormControl(this.data.university.address, [
-      Validators.required
+      Validators.required,
     ]),
     tambon: new FormControl(this.data.university.tambon, [Validators.required]),
     amphur: new FormControl(this.data.university.amphur, [Validators.required]),
     province: new FormControl(this.data.university.province, [
-      Validators.required
+      Validators.required,
     ]),
     zipcode: new FormControl(
       this.data.university.zipcode,
       Validators.compose([
         Validators.required,
-        Validators.pattern("^[0-9]{5}$")
+        Validators.pattern("^[0-9]{5}$"),
       ])
-    )
+    ),
   });
 
   listProvince;
@@ -77,7 +81,7 @@ export class EditUniversityDialogComponent implements OnInit {
     "assets/img/no-photo-available.png",
     "assets/img/no-photo-available.png",
     "assets/img/no-photo-available.png",
-    "assets/img/no-photo-available.png"
+    "assets/img/no-photo-available.png",
   ];
 
   selectable = true;
@@ -110,7 +114,7 @@ export class EditUniversityDialogComponent implements OnInit {
 
   ngOnInit() {
     this.listProvince = new Array<[any]>();
-    this.getProvinceJSON().subscribe(data => {
+    this.getProvinceJSON().subscribe((data) => {
       this.listProvince = data;
     });
 
@@ -118,7 +122,7 @@ export class EditUniversityDialogComponent implements OnInit {
       this.afStorage.storage
         .ref(this.university.image)
         .getDownloadURL()
-        .then(url => {
+        .then((url) => {
           this.imgURL = url;
         });
     }
@@ -128,7 +132,7 @@ export class EditUniversityDialogComponent implements OnInit {
         this.afStorage.storage
           .ref(this.university.albumImage[i])
           .getDownloadURL()
-          .then(url => {
+          .then((url) => {
             this.albumUrl[i] = url;
           });
       }
@@ -137,14 +141,14 @@ export class EditUniversityDialogComponent implements OnInit {
 
   async upload(file, filePath) {
     const metadata = {
-      contentType: "image/jpeg"
+      contentType: "image/jpeg",
     };
 
     const fileName = this.afirestore.createId();
     if (file.type.split("/")[0] == "image") {
       return await this.afStorage
         .upload(`${filePath}/${fileName}`, file, metadata)
-        .then(async result => {
+        .then(async (result) => {
           return result.ref.fullPath;
         });
     }
@@ -155,14 +159,14 @@ export class EditUniversityDialogComponent implements OnInit {
     if (event.target.files[0] !== undefined) {
       let reader = new FileReader();
       reader.readAsDataURL(event.target.files[0]);
-      reader.onload = _event => {
+      reader.onload = (_event) => {
         this.imgURL = reader.result;
       };
     } else {
       this.afStorage.storage
         .ref(this.university.image)
         .getDownloadURL()
-        .then(url => {
+        .then((url) => {
           this.imgURL = url;
         });
     }
@@ -173,7 +177,7 @@ export class EditUniversityDialogComponent implements OnInit {
       if (event.target.files[i] !== undefined) {
         let reader = new FileReader();
         reader.readAsDataURL(event.target.files[i]);
-        reader.onload = _event => {
+        reader.onload = (_event) => {
           this.albumUrl[i] = reader.result;
         };
       } else {
@@ -225,7 +229,7 @@ export class EditUniversityDialogComponent implements OnInit {
         this.university.university_detail = this.universityDetailForm.get(
           "university_detail"
         ).value;
-        this.listProvince.forEach(provinceRes => {
+        this.listProvince.forEach((provinceRes) => {
           if (this.university.province == provinceRes.province_name) {
             this.university.zone = provinceRes.zone;
           }
@@ -239,7 +243,7 @@ export class EditUniversityDialogComponent implements OnInit {
           this.university.image = await this.upload(
             fileLogo.files[0],
             filePath
-          ).then(async result => {
+          ).then(async (result) => {
             return await result;
           });
         }
@@ -256,12 +260,12 @@ export class EditUniversityDialogComponent implements OnInit {
             this.university.albumImage[i] = await this.upload(
               fileAlbum.files[i],
               filePath
-            ).then(result => {
+            ).then((result) => {
               return result;
             });
           } else {
             this.university.albumImage.push(
-              await this.upload(fileAlbum.files[i], filePath).then(result => {
+              await this.upload(fileAlbum.files[i], filePath).then((result) => {
                 return result;
               })
             );

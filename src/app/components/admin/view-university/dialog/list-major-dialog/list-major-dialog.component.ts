@@ -1,7 +1,13 @@
 import { Tcas } from "./../../../../../model/Tcas";
 import { TcasService } from "./../../../../../services/tcas-service/tcas.service";
 import { EditTcasMajorComponent } from "./dialog/edit-tcas/edit-tcas-major/edit-tcas-major.component";
-import { Component, OnInit, Inject, OnDestroy } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Inject,
+  OnDestroy,
+  AfterViewChecked,
+} from "@angular/core";
 import { MajorService } from "src/app/services/major-service/major.service";
 import { Major } from "src/app/model/Major";
 import { EditMajorComponent } from "./dialog/edit-major/edit-major.component";
@@ -36,6 +42,7 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
       .getMajorByFacultyReference(this.data)
       .subscribe((majorDocs) => {
         this.listMajor = majorDocs.map((docs) => {
+          console.log(docs.data());
           return { id: docs.id, ref: docs.ref, ...(docs.data() as Major) };
         });
 
@@ -62,6 +69,7 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(async (newMajor) => {
       try {
         if (!newMajor) return;
+        this.majorSub.unsubscribe();
         await this.majorService.updateMajor(major.ref, newMajor);
         new Notifications().showNotification(
           "done",
@@ -72,6 +80,7 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
           "สำเร็จ !"
         );
       } catch (error) {
+        this.majorSub.unsubscribe();
         new Notifications().showNotification(
           "close",
           "top",
@@ -94,7 +103,9 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
       .afterClosed()
       .subscribe(async (result: { tcas: Tcas; mode: string }) => {
         try {
-          if (result.mode === "add") {
+          if (!result) {
+            return;
+          } else if (result.mode === "add") {
             await this.tcasService.addTcas(major.ref, result.tcas);
           } else if (result.mode === "update") {
             this.tcasService.updateTcas(result.tcas.ref, result.tcas);

@@ -1,11 +1,8 @@
-import { MatDialogRef } from "@angular/material";
-import { TcasScore } from "./../../../../../../../../../model/util/TcasScore";
-import { Component, Input, OnInit, Output, EventEmitter } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Tcas } from "src/app/model/Tcas";
 import { isNullOrUndefined } from "util";
-import { TcasService } from "src/app/services/tcas-service/tcas.service";
-import { Major } from "src/app/model/Major";
+import { RegularExpressionUtil } from "src/app/model/util/RegularExpressionUtil";
 
 @Component({
   selector: "app-edit-tcas-major-content",
@@ -16,59 +13,55 @@ export class EditTcasMajorContentComponent implements OnInit {
   @Input() tcas: Tcas;
   @Input() round: number;
   @Output() submitBtn = new EventEmitter();
+  @Output() cancelBtn = new EventEmitter();
 
-  tcasForm = new FormGroup({
-    date: new FormControl(
-      isNullOrUndefined(this.tcas)
-        ? null
-        : { begin: this.tcas.startDate, end: this.tcas.endDate }
-    ),
-    entranceAmount: new FormControl(
-      isNullOrUndefined(this.tcas) ? null : this.tcas.entranceAmount
-    ),
-    examFee: new FormControl(
-      isNullOrUndefined(this.tcas) ? null : this.tcas.examFee
-    ),
-    registerPropertie: new FormControl(
-      isNullOrUndefined(this.tcas) ? null : this.tcas.registerPropertie
-    ),
-    remark: new FormControl(
-      isNullOrUndefined(this.tcas) ? null : this.tcas.remark
-    ),
-  });
+  tcasForm: FormGroup;
+
+  mode: string = "edit";
 
   constructor() {}
 
   ngOnInit() {
+    this.tcasForm = new FormGroup({
+      date: new FormControl(
+        isNullOrUndefined(this.tcas)
+          ? null
+          : {
+              begin: this.tcas.startDate.toDate(),
+              end: this.tcas.endDate.toDate(),
+            },
+        [Validators.required]
+      ),
+      entranceAmount: new FormControl(
+        isNullOrUndefined(this.tcas) ? null : this.tcas.entranceAmount,
+        [Validators.required]
+      ),
+      url: new FormControl(
+        isNullOrUndefined(this.tcas) ? null : this.tcas.url,
+        [Validators.required, Validators.pattern(RegularExpressionUtil.urlReg)]
+      ),
+    });
     if (isNullOrUndefined(this.tcas)) {
+      this.mode = "add";
       this.tcas = new Tcas();
     }
   }
 
-  onAddTcasScore() {
-    let score: TcasScore = { scoreName: "", scorePercent: 0 };
-    this.tcas.score.push(score);
-  }
-
-  onDeleteTcasScore(index: number) {
-    this.tcas.score.splice(index, 1);
-  }
-
   async onSubmit() {
     if (this.tcasForm.valid) {
-      this.tcas.startDate = this.tcasForm.get("date").value.begin;
-      this.tcas.endDate = this.tcasForm.get("date").value.end;
-      this.tcas.entranceAmount = this.tcasForm.get("entranceAmount").value;
-      this.tcas.examFee = this.tcasForm.get("examFee").value;
-      this.tcas.registerPropertie = this.tcasForm.get(
-        "registerPropertie"
-      ).value;
-      this.tcas.remark = this.tcasForm.get("remark").value;
       this.tcas.round = this.round.toString();
+      this.tcas.startDate = new Date(
+        this.tcasForm.get("date").value.begin
+      ) as any;
+      this.tcas.endDate = new Date(this.tcasForm.get("date").value.end) as any;
+      this.tcas.entranceAmount = this.tcasForm.get("entranceAmount").value;
+      this.tcas.url = this.tcasForm.get("url").value;
 
-      this.submitBtn.emit(this.tcas);
+      this.submitBtn.emit({ tcas: this.tcas, mode: this.mode });
     }
   }
 
-  onNoClick(): void {}
+  onNoClick(): void {
+    this.cancelBtn.emit();
+  }
 }

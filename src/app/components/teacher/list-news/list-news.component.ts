@@ -1,17 +1,16 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatPaginator, MatDialog } from '@angular/material';
-import { Router } from '@angular/router';
-import { NewsService } from 'src/app/services/news-service/news.service';
-import { AddEditNewsDialogComponent } from './dialog/add-edit-news-dialog/add-edit-news-dialog.component';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { News } from 'src/app/model/News';
-import { Login } from 'src/app/model/Login';
-import { TeacherService } from 'src/app/services/teacher-service/teacher.service';
-import { Teacher } from 'src/app/model/Teacher';
+import { MatDialog, MatPaginator } from '@angular/material';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Notifications } from '../../util/notification';
-import { DocumentReference } from '@angular/fire/firestore';
+import { Login } from 'src/app/model/Login';
+import { News } from 'src/app/model/News';
+import { Teacher } from 'src/app/model/Teacher';
+import { NewsService } from 'src/app/services/news-service/news.service';
+import { TeacherService } from 'src/app/services/teacher-service/teacher.service';
 import { ConfirmDialogComponent } from '../../util/confirm-dialog/confirm-dialog.component';
+import { Notifications } from '../../util/notification';
+import { AddEditNewsDialogComponent } from './dialog/add-edit-news-dialog/add-edit-news-dialog.component';
 
 @Component({
   selector: 'app-list-news',

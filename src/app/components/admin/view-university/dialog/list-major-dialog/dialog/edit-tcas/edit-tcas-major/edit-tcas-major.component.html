@@ -3,7 +3,7 @@
     <h1 mat-dialog-title><mat-icon>edit</mat-icon> จัดการข้อมูล TCAS สาขา</h1>
   </div>
 </div>
-<mat-tab-group mat-stretch-tabs>
+<mat-tab-group mat-stretch-tabs *ngIf="loadData">
   <mat-tab
     *ngFor="let round of tcasTabLabel; index as i"
     label="รอบที่ {{ round }}"
@@ -12,6 +12,7 @@
       [tcas]="listTcas[i]"
       [round]="round"
       (submitBtn)="onSubmit($event)"
+      (cancelBtn)="onNoClick()"
     ></app-edit-tcas-major-content>
   </mat-tab>
 </mat-tab-group>

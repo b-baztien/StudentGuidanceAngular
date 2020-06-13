@@ -27,6 +27,7 @@ import { map, startWith } from "rxjs/operators";
 import { Career } from "src/app/model/Career";
 import { Major } from "src/app/model/Major";
 import { CareerService } from "src/app/services/career-service/career.service";
+import { RegularExpressionUtil } from "src/app/model/util/RegularExpressionUtil";
 
 @Component({
   selector: "app-edit-major",
@@ -36,14 +37,17 @@ import { CareerService } from "src/app/services/career-service/career.service";
 export class EditMajorComponent implements OnInit {
   majorForm = new FormGroup({
     majorName: new FormControl(null, [Validators.required]),
-    url: new FormControl(null, [Validators.required]),
+    detail: new FormControl(null),
+    url: new FormControl(null, [
+      Validators.required,
+      Validators.pattern(RegularExpressionUtil.urlReg),
+    ]),
     certificate: new FormControl(null, [Validators.required]),
-    courseDuration: new FormControl(
-      null,
-      Validators.compose([Validators.required, Validators.pattern("^[0-9]*$")])
-    ),
+    degree: new FormControl(null, [Validators.required]),
     career: new FormControl(null),
   });
+
+  listDegree = ["ปริญญาตรี", "ปริญญาโท", "ปริญญาเอก"];
 
   majorDoc: DocumentSnapshot<unknown>;
   selectedCareer: string[] = new Array<string>();
@@ -80,9 +84,10 @@ export class EditMajorComponent implements OnInit {
 
   ngOnInit() {
     this.majorForm.get("majorName").setValue(this.data.majorName);
+    this.majorForm.get("detail").setValue(this.data.detail);
     this.majorForm.get("url").setValue(this.data.url);
     this.majorForm.get("certificate").setValue(this.data.certificate);
-    this.majorForm.get("courseDuration").setValue(this.data.courseDuration);
+    this.majorForm.get("degree").setValue(this.data.degree);
     this.majorForm.get("career").setValue(this.data.listCareerName);
     this.selectedCareer = this.data.listCareerName;
 
@@ -195,15 +200,18 @@ export class EditMajorComponent implements OnInit {
     let major = new Major();
     if (this.majorForm.invalid && this.selectedCareer.length === 0) return;
     major.majorName = this.majorForm.get("majorName").value;
+    major.detail = this.majorForm.get("detail").value;
     major.url = this.majorForm.get("url").value;
     major.certificate = this.majorForm.get("certificate").value;
-    major.courseDuration = this.majorForm.get("courseDuration").value;
+    major.degree = this.majorForm.get("degree").value;
     major.listCareerName = this.selectedCareer;
 
     let filePath = `major/`;
     let fileAlbum: any = document.getElementById("albumImage");
     major.albumImage =
-      major.albumImage === undefined ? new Array<string>() : major.albumImage;
+      this.data.albumImage === undefined
+        ? new Array<string>()
+        : this.data.albumImage;
     for (let i = 0; i < fileAlbum.files.length; i++) {
       if (major.albumImage[i] !== undefined) {
         await this.afStorage.storage.ref(major.albumImage[i]).delete();

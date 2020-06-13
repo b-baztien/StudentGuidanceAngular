@@ -29,16 +29,18 @@
       </mat-panel-title>
       <hr />
       <mat-panel-description>
+        <h4><mat-icon>subtitles</mat-icon> รายละเอียดสาขา</h4>
+      </mat-panel-description>
+      <mat-panel-title>
+        {{ major.detail }}
+      </mat-panel-title>
+      <hr />
+      <mat-panel-description>
         <h4><mat-icon>language</mat-icon> ที่อยู่เว็บไซต์</h4>
       </mat-panel-description>
       <mat-panel-title>
         <a href="{{ major.url }}">{{ major.url }}</a>
       </mat-panel-title>
-      <hr />
-      <mat-panel-description>
-        <h4><mat-icon>access_time</mat-icon> ระยะเวลาการศึกษาตามหลักสูตร</h4>
-      </mat-panel-description>
-      <mat-panel-title> {{ major.courseDuration }} ปี </mat-panel-title>
       <hr />
       <mat-panel-description>
         <h4>
@@ -50,16 +52,10 @@
       </mat-panel-title>
       <hr />
       <mat-panel-description>
-        <h4><mat-icon>monetization_on</mat-icon> รอบ TCAS สาขาที่เปิดรับ</h4>
+        <h4><mat-icon>how_to_reg</mat-icon> รอบ TCAS สาขาที่เปิดรับ</h4>
       </mat-panel-description>
+
       <app-list-major-tcas [majorRef]="major.ref"></app-list-major-tcas>
-      <hr />
-      <mat-panel-description>
-        <h4><mat-icon>monetization_on</mat-icon> ค่าเทอม</h4>
-      </mat-panel-description>
-      <mat-panel-title>
-        {{ major.tuitionFee | currency: "THB":"":"0.0" }} บาท / ภาคเรียน
-      </mat-panel-title>
       <hr />
       <mat-panel-description>
         <h4><mat-icon>build</mat-icon> อาชีพเมื่อสำเร็จการศึกษา</h4>
