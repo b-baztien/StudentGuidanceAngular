@@ -113,6 +113,17 @@
       </mat-error>
     </mat-form-field>
     <mat-form-field>
+      <mat-label>ระดับปริญญา</mat-label>
+      <mat-select formControlName="degree" required>
+        <mat-option *ngFor="let degree of listDegree" value="{{ degree }}">{{
+          degree
+        }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="majorForm.controls.degree.hasError('required')"
+        >กรุณาเลือกระดับปริญญา</mat-error
+      >
+    </mat-form-field>
+    <mat-form-field>
       <input
         matInput
         placeholder="วุฒิการศึกษาที่ได้รับ หลังสำเร็จการศึกษา"
@@ -123,17 +134,6 @@
       <mat-error *ngIf="majorForm.controls.certificate.hasError('required')">
         กรุณากรอกวุฒิการศึกษา
       </mat-error>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>ระดับปริญญา</mat-label>
-      <mat-select formControlName="degree" required>
-        <mat-option *ngFor="let degree of listDegree" value="{{ degree }}">{{
-          degree
-        }}</mat-option>
-      </mat-select>
-      <mat-error *ngIf="majorForm.controls.degree.hasError('required')"
-        >กรุณาเลือกระดับปริญญา</mat-error
-      >
     </mat-form-field>
     <mat-form-field>
       <mat-chip-list #chipList aria-label="Career">

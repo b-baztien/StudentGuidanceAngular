@@ -30,7 +30,7 @@ import { Career } from "src/app/model/Career";
 import { Major } from "src/app/model/Major";
 import { CareerService } from "src/app/services/career-service/career.service";
 import { MajorService } from "src/app/services/major-service/major.service";
-import { RegularExpressionUtil } from 'src/app/model/util/RegularExpressionUtil';
+import { RegularExpressionUtil } from "src/app/model/util/RegularExpressionUtil";
 
 @Component({
   selector: "app-add-major-dialog",
@@ -38,6 +38,8 @@ import { RegularExpressionUtil } from 'src/app/model/util/RegularExpressionUtil'
   styleUrls: ["./add-major-dialog.component.css"],
 })
 export class AddMajorDialogComponent implements OnInit, AfterViewInit {
+  listDegree = ["ปริญญาตรี", "ปริญญาโท", "ปริญญาเอก"];
+
   majorForm = new FormGroup({
     majorName: new FormControl(null, [Validators.required]),
     url: new FormControl(null, [
@@ -45,17 +47,7 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
       Validators.pattern(RegularExpressionUtil.urlReg),
     ]),
     certificate: new FormControl(null, [Validators.required]),
-    tuitionFee: new FormControl(null, [
-      Validators.required,
-      Validators.pattern(RegularExpressionUtil.numberReg),
-    ]),
-    courseDuration: new FormControl(
-      null,
-      Validators.compose([
-        Validators.required,
-        Validators.pattern(RegularExpressionUtil.numberReg),
-      ])
-    ),
+    degree: new FormControl(null, [Validators.required]),
     career: new FormControl(null),
   });
 
@@ -192,8 +184,7 @@ export class AddMajorDialogComponent implements OnInit, AfterViewInit {
       major.majorName = this.majorForm.get("majorName").value;
       major.url = this.majorForm.get("url").value;
       major.certificate = this.majorForm.get("certificate").value;
-      major.courseDuration = this.majorForm.get("courseDuration").value;
-      major.tuitionFee = this.majorForm.get("tuitionFee").value;
+      major.degree = this.majorForm.get("degree").value;
       major.listCareerName = this.selectedCareer;
 
       await this.careerService.addAllCareer(

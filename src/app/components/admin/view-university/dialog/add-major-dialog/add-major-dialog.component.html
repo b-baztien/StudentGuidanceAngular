@@ -106,6 +106,17 @@
       </mat-error>
     </mat-form-field>
     <mat-form-field>
+      <mat-label>ระดับปริญญา</mat-label>
+      <mat-select formControlName="degree" required>
+        <mat-option *ngFor="let degree of listDegree" value="{{ degree }}">{{
+          degree
+        }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="majorForm.controls.degree.hasError('required')"
+        >กรุณาเลือกระดับปริญญา</mat-error
+      >
+    </mat-form-field>
+    <mat-form-field>
       <input
         matInput
         placeholder="วุฒิการศึกษาที่ได้รับ หลังสำเร็จการศึกษา"
@@ -115,38 +126,6 @@
       <mat-hint>เช่น วิทยาศาสตร์บัณฑิต</mat-hint>
       <mat-error *ngIf="majorForm.controls.certificate.hasError('required')">
         กรุณากรอกวุฒิการศึกษา
-      </mat-error>
-    </mat-form-field>
-    <mat-form-field>
-      <input
-        type="number"
-        matInput
-        placeholder="ระยะเวลาการศึกษาตามหลักสูตร (ปี)"
-        required
-        maxlength="2"
-        formControlName="courseDuration"
-      />
-      <mat-error *ngIf="majorForm.controls.courseDuration.hasError('required')">
-        กรุณากรอกระยะเวลาการศึกษา
-      </mat-error>
-      <mat-error *ngIf="majorForm.controls.courseDuration.hasError('pattern')">
-        ระยะเวลาการศึกษาต้องเป็นตัวเลขเท่านั้น
-      </mat-error>
-      <mat-hint>เช่น 4 ปี</mat-hint>
-    </mat-form-field>
-    <mat-form-field>
-      <input
-        type="number"
-        matInput
-        placeholder="ค่าเทอม"
-        formControlName="tuitionFee"
-      />
-      <span matSuffix>บาท / ภาคเรียน</span>
-      <mat-error *ngIf="majorForm.controls.tuitionFee.hasError('required')">
-        กรุณากรอกค่าเทอม
-      </mat-error>
-      <mat-error *ngIf="majorForm.controls.tuitionFee.hasError('pattern')">
-        ค่าเทอมต้องเป็นตัวเลขเท่านั้น
       </mat-error>
     </mat-form-field>
     <mat-form-field>
