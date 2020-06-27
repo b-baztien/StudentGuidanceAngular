@@ -54,12 +54,16 @@ export class MajorService {
         .get()
         .toPromise()
         .then(async (result) => {
-          if (!result.empty) throw new Error("มีสาขานี้อยู่ในระบบแล้ว");
+          if (!result.empty) {
+            throw new Error("มีสาขานี้อยู่ในระบบแล้ว");
+          }
+
           await this.firestore
             .collection(facultyRef.parent)
             .doc(facultyRef.id)
             .collection("Major")
-            .add(Object.assign({}, major));
+            .doc(major.majorName)
+            .set(Object.assign({}, major));
         });
     } catch (error) {
       console.error(error);

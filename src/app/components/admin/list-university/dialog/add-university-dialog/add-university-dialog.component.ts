@@ -19,7 +19,7 @@ import { AngularFireStorage } from "@angular/fire/storage";
 import { AngularFirestore } from "@angular/fire/firestore";
 import { Notifications } from "src/app/components/util/notification";
 import { ENTER } from "@angular/cdk/keycodes";
-import { RegularExpressionUtil } from 'src/app/model/util/RegularExpressionUtil';
+import { RegularExpressionUtil } from "src/app/model/util/RegularExpressionUtil";
 
 @Component({
   selector: "app-add-university-dialog",
@@ -57,7 +57,6 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
   listProvince: Array<any>;
 
   university: University;
-  universityId;
 
   imgURL: any = "assets/img/no-photo-available.png";
   albumUrl: any[] = [
@@ -158,7 +157,6 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
 
   async onSubmit() {
     this.university = new University();
-    this.universityId = this.afirestore.createId();
     try {
       if (!this.universityDetailForm.valid) return;
       this.university.university_name = this.universityDetailForm.get(
@@ -182,7 +180,7 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
         "province"
       ).value.zone;
       this.university.view = 0;
-      let filePath = `university/${this.universityId}`;
+      let filePath = `university/${this.university.university_name}`;
       let fileLogo: any = document.getElementById("logoImage");
       if (fileLogo.files.length != 0) {
         this.university.image = await this.upload(
@@ -201,8 +199,7 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
           })
         );
       }
-      this.universityId = await this.universityService.addUniversity(
-        this.universityId,
+      await this.universityService.addUniversity(
         this.university
       );
       new Notifications().showNotification(
@@ -213,7 +210,7 @@ export class AddUniversityDialogComponent implements OnInit, ErrorStateMatcher {
         "success",
         "สำเร็จ !"
       );
-      this.dialogRef.close(this.universityId);
+      this.dialogRef.close(this.university.university_name);
     } catch (error) {
       new Notifications().showNotification(
         "close",

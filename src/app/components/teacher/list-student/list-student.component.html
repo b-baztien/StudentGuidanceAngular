@@ -108,7 +108,7 @@
                 <td mat-cell *matCellDef="let student">
                   <button
                     mat-raised-button
-                    class=" btn-info"
+                    class="btn-info"
                     *ngIf="!selection.hasValue()"
                     (click)="onChangeStudentStatus(student)"
                   >
@@ -119,7 +119,6 @@
               </ng-container>
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
               <tr
-                class="row-hover"
                 mat-row
                 *matRowDef="let row; columns: displayedColumns"
                 (click)="onStudentClick(row)"
@@ -222,7 +221,6 @@
               </ng-container>
               <tr mat-header-row *matHeaderRowDef="displayedAlumniColumns"></tr>
               <tr
-                class="row-hover"
                 mat-row
                 *matRowDef="let row; columns: displayedAlumniColumns"
               ></tr>

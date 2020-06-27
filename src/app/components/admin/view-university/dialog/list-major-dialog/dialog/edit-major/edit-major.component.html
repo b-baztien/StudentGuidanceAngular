@@ -154,6 +154,8 @@
           [matChipInputFor]="chipList"
           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
           [matChipInputAddOnBlur]="addOnBlur"
+          (blur)="clearInputCareer()"
+          onfocusout="this.value=''"
           (matChipInputTokenEnd)="addCareer($event)"
         />
         <mat-error

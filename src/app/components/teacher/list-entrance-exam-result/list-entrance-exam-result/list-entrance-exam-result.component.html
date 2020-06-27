@@ -36,13 +36,89 @@
           </div>
         </div>
       </div>
+
+      <!-- นักเรียนทั้งหมด -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+          <div class="card-header card-header-warning card-header-icon">
+            <div class="card-icon">
+              <em class="fas fa-users"></em>
+            </div>
+            <p class="card-category">จำนวนนักเรียนที่จบการศึกษาทั้งหมด</p>
+            <h3 class="card-title">{{ totalStudent }} คน</h3>
+          </div>
+          <div class="card-footer">
+            <div class="stats"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- เรียนต่อ -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+          <div class="card-header card-header-success card-header-icon">
+            <div class="card-icon">
+              <em class="fas fa-user-graduate"></em>
+            </div>
+            <p class="card-category">
+              จำนวนนักเรียนที่ศึกษาต่อในระดับอุดมศึกษา
+            </p>
+            <h3 class="card-title">{{ totalStudent }} คน</h3>
+          </div>
+          <div class="card-footer">
+            <div class="stats"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ประกอบอาชีพ -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+          <div class="card-header card-header-danger card-header-icon">
+            <div class="card-icon">
+              <em class="fas fa-briefcase"></em>
+            </div>
+            <p class="card-category">
+              จำนวนนักเรียนทั้งหมด ที่ประกอบอาชีพต่อ
+            </p>
+            <h3 class="card-title">{{ totalStudent }} คน</h3>
+          </div>
+          <div class="card-footer">
+            <div class="stats"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ไม่ได้กรอกข้อมูล -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+          <div class="card-header card-header-info card-header-icon">
+            <div class="card-icon">
+              <em class="fas fa-info-circle"></em>
+            </div>
+            <p class="card-category">
+              อื่นๆ
+            </p>
+            <h3 class="card-title">{{ totalStudent }} คน</h3>
+          </div>
+          <div class="card-footer">
+            <div class="stats">
+              <em class="material-icons">help_outline</em>
+              ข้อมูลมาจากนักเรียนที่ยังไม่ได้กรอกข้อมูล หรือศึกษาต่อในระดับอื่น
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Entrance Exam Result -->
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-header card-header-success">
             <div class="row">
               <div class="col-sm-12">
-                <h4 class="card-title">รายชื่อผลการสอบติด</h4>
+                <h4 class="card-title">
+                  รายชื่อผลการสอบติด TCAS ยอดนิยม 5 อันดับ
+                </h4>
                 <p class="card-category">
                   นี่คือรายชื่อผลการสอบติดทั้งหมดที่พบในระบบ คุณสามารถตรวจสอบ
                   หรือจัดการ รานละเอียดต่างๆ ของผลการสอบติดนั้นๆ ได้

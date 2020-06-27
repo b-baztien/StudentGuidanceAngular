@@ -27,15 +27,19 @@ export class ListEntranceExamResultComponent implements OnInit {
     Map<string, number>
   >();
 
+  totalStudent: number = 0;
+
+  school: string;
+
   constructor(
     public dialog: MatDialog,
     private entranceExamResuleService: EntranceExamResultService
   ) {}
 
   ngOnInit() {
-    const school = localStorage.getItem("school");
+    this.school = localStorage.getItem("school");
     this.entranceExamResuleService
-      .getAllExamResultBySchoolName(school)
+      .getAllExamResultBySchoolName(this.school)
       .subscribe((result) => {
         this.setYear = new Set(result.map((exam) => exam.year));
         result.forEach((exam) => {
@@ -48,7 +52,6 @@ export class ListEntranceExamResultComponent implements OnInit {
                   exam.university,
                   this.chartUniData.get(exam.year).get(exam.university) + 1
                 );
-              console.log(this.chartUniData);
             } else {
               this.chartUniData.get(exam.year).set(exam.university, 1);
             }
@@ -101,6 +104,28 @@ export class ListEntranceExamResultComponent implements OnInit {
   }
 
   onYearChange() {
+    this.entranceExamResuleService
+      .getCountExamResultBySchoolNameAndYear(
+        this.school,
+        this.yearControl.value
+      )
+      .subscribe((result) => {
+        this.totalStudent = result;
+      });
+
+    let tooltip = {
+      callbacks: {
+        label: (tooltipItem, data) => {
+          return (
+            data["labels"][tooltipItem["index"]] +
+            " : " +
+            data["datasets"][0]["data"][tooltipItem["index"]] +
+            " คน"
+          );
+        },
+      },
+    };
+
     if (this.yearControl.valid) {
       //generate university chart
       let uniCount = new Array();
@@ -131,6 +156,21 @@ export class ListEntranceExamResultComponent implements OnInit {
             fontFamily: "Kanit",
             fontSize: "15",
             display: true,
+          },
+          tooltips: tooltip,
+          plugins: {
+            datalabels: {
+              formatter: (value, ctx) => {
+                let sum = 0;
+                let dataArr = ctx.chart.data.datasets[0].data;
+                dataArr.map((data) => {
+                  sum += data;
+                });
+                let percentage = ((value * 100) / sum).toFixed(2) + "%";
+                return percentage;
+              },
+              color: "#fff",
+            },
           },
         },
         scales: {
@@ -174,6 +214,7 @@ export class ListEntranceExamResultComponent implements OnInit {
             fontSize: "15",
             display: true,
           },
+          tooltips: tooltip,
         },
         scales: {
           yAxes: [
@@ -216,6 +257,7 @@ export class ListEntranceExamResultComponent implements OnInit {
             fontSize: "15",
             display: true,
           },
+          tooltips: tooltip,
         },
         scales: {
           yAxes: [

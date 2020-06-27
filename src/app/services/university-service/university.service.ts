@@ -5,7 +5,7 @@ import { AngularFireStorage } from "@angular/fire/storage";
 import { map } from "rxjs/operators";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class UniversityService {
   constructor(
@@ -15,7 +15,7 @@ export class UniversityService {
 
   ngOnInit() {}
 
-  async addUniversity(universityId: string, university: University) {
+  async addUniversity(university: University) {
     const firestoreCol = this.firestore.collection("University");
     try {
       if (
@@ -27,8 +27,9 @@ export class UniversityService {
       ) {
         throw new Error("มีข้อมูลมหาวิทยาลัยนี้อยู่ในระบบแล้ว");
       }
-      await firestoreCol.doc(universityId).set(Object.assign({}, university));
-      return universityId;
+      await firestoreCol
+        .doc(university.university_name)
+        .set(Object.assign({}, university));
     } catch (error) {
       console.error(error);
       if (error.message === "มีข้อมูลมหาวิทยาลัยนี้อยู่ในระบบแล้ว") {
@@ -59,8 +60,8 @@ export class UniversityService {
         .collection("University")
         .doc(universityId)
         .snapshotChanges()
-        .pipe(map(docs => docs.payload.data()))
-        .subscribe(async result => {
+        .pipe(map((docs) => docs.payload.data()))
+        .subscribe(async (result) => {
           const university = result as University;
           if (university.image || university.albumImage) {
             (
@@ -68,14 +69,11 @@ export class UniversityService {
                 .ref("university")
                 .child(universityId)
                 .listAll()
-            ).items.forEach(file => {
+            ).items.forEach((file) => {
               file.delete();
             });
           }
-          this.firestore
-            .collection("University")
-            .doc(universityId)
-            .delete();
+          this.firestore.collection("University").doc(universityId).delete();
         });
     } catch (error) {
       console.error(error);
@@ -85,16 +83,16 @@ export class UniversityService {
 
   getAllUniversity() {
     return this.firestore
-      .collection("University", query => query.orderBy("university_name"))
+      .collection("University", (query) => query.orderBy("university_name"))
       .snapshotChanges()
       .pipe(
-        map(result =>
-          result.map(item => {
+        map((result) =>
+          result.map((item) => {
             const doc = item.payload.doc;
             return {
               id: doc.id,
               ref: doc.ref,
-              ...(doc.data() as University)
+              ...(doc.data() as University),
             } as University;
           })
         )
@@ -110,10 +108,10 @@ export class UniversityService {
 
   getUniversityByUniversityName(university_name: string) {
     return this.firestore
-      .collection("University", query =>
+      .collection("University", (query) =>
         query.where("university_name", "==", university_name)
       )
       .snapshotChanges()
-      .pipe(map(result => result.map(item => item.payload.doc)));
+      .pipe(map((result) => result.map((item) => item.payload.doc)));
   }
 }

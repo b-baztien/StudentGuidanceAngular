@@ -65,9 +65,9 @@ export class EditMajorComponent implements OnInit {
   loadData = false;
 
   selectable = true;
-  addOnBlur = true;
+  addOnBlur = false;
   removable = true;
-  separatorKeysCodes: number[] = [ENTER];
+  separatorKeysCodes: number[] = [];
 
   @ViewChild("careerInput", { static: false }) careerInput: ElementRef<
     HTMLInputElement
@@ -88,8 +88,8 @@ export class EditMajorComponent implements OnInit {
     this.majorForm.get("url").setValue(this.data.url);
     this.majorForm.get("certificate").setValue(this.data.certificate);
     this.majorForm.get("degree").setValue(this.data.degree);
-    this.majorForm.get("career").setValue(this.data.listCareerName);
-    this.selectedCareer = this.data.listCareerName;
+    this.majorForm.get("career").setValue([...this.data.listCareerName]);
+    this.selectedCareer = [...this.data.listCareerName];
 
     if (this.data.albumImage) {
       for (let i = 0; i < this.data.albumImage.length; i++) {
@@ -178,6 +178,10 @@ export class EditMajorComponent implements OnInit {
 
       this.majorForm.get("career").setValue(null);
     }
+  }
+
+  clearInputCareer(): void {
+    this.majorForm.get("career").setValue(null);
   }
 
   removeCareer(career: string): void {
