@@ -1,12 +1,14 @@
 import { Pipe, PipeTransform } from "@angular/core";
 
 @Pipe({
-  name: "thaiYear"
+  name: "thaiYear",
 })
 export class ThaiYearPipe implements PipeTransform {
   transform(year: string): string {
     try {
-      return (+year + 543).toString();
+      return new Date().getFullYear() - +year === 0
+        ? (+year + 543).toString()
+        : year;
     } catch (error) {
       return year;
     }
