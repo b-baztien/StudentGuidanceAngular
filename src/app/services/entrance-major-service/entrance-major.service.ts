@@ -1,7 +1,7 @@
-import { EntranceMajor } from "./../../model/EntranceMajor";
-import { AngularFirestore } from "@angular/fire/firestore";
 import { Injectable } from "@angular/core";
-import { combineLatest, map } from "rxjs/operators";
+import { AngularFirestore } from "@angular/fire/firestore";
+import { map } from "rxjs/operators";
+import { EntranceMajor } from "./../../model/EntranceMajor";
 
 @Injectable({
   providedIn: "root",
