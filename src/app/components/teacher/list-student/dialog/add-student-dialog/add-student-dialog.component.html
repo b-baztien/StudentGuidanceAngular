@@ -1,95 +1,133 @@
 <div class="row">
-    <div class="col-sm-12">
-        <h1 mat-dialog-title>เพิ่มข้อมูลนักเรียน</h1>
-    </div>
+  <div class="col-sm-12">
+    <h1 mat-dialog-title>เพิ่มข้อมูลนักเรียน</h1>
+  </div>
 </div>
 <div class="container">
-    <div mat-dialog-content>
-        <form [formGroup]="userForm">
-            <div align="center">
-                <div class="row">
-                    <div class="col-sm-9">
-                        <mat-form-field>
-                            <input matInput placeholder="ชื่อผู้ใช้" required formControlName="username">
-                            <mat-error *ngIf="userForm.controls.username.hasError('required')">
-                                กรุณากรอกชื่อผู้ใช้
-                            </mat-error>
-                        </mat-form-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <mat-checkbox formControlName="isCreateId" (change)="onCreateUsername()">
-                            สร้างชื่อผู้ใช้งานอัตโนมัติ
-                        </mat-checkbox>
-                    </div>
-                </div>
-                <mat-form-field>
-                    <input matInput type="password" placeholder="รหัสผ่าน" required formControlName="password">
-                    <mat-error *ngIf="userForm.controls.password.hasError('required')">
-                        กรุณากรอกรหัสผ่าน
-                    </mat-error>
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput type="password" placeholder="ยืนยันรหัสผ่าน" required formControlName="conPassword">
-                    <mat-error *ngIf="userForm.controls.conPassword.hasError('required')">
-                        กรุณากรอกยืนยันรหัสผ่าน
-                    </mat-error>
-                    <mat-error
-                        *ngIf="userForm.controls.password.value !== userForm.controls.conPassword.value">
-                        กรุณากรอกรหัสผ่านให้ตรงกัน
-                    </mat-error>
-                </mat-form-field>
-                <p>
-                    <mat-checkbox formControlName="requestData">เพิ่มข้อมูลส่วนตัว</mat-checkbox>
-                </p>
-            </div>
-        </form>
-        <div *ngIf="userForm.get('requestData').value">
-            <!-- student form -->
-            <form [formGroup]="studentForm">
-                <div class="input-image-content">
-                    <label class="label-input-image">รูปภาพนักเรียน</label>
-                    <label class="hoverable" for="inputImage">
-                        <img class="input-image" [src]="imgURL">
-                        <div class="hover-text">เลือกรูปภาพ..</div>
-                        <div class="background"></div>
-                    </label>
-                    <input type="file" class="inputImage" id="inputImage" (change)="preview($event)"
-                        accept=".png,.jpg" />
-                </div>
-                <mat-form-field>
-                    <input matInput placeholder="ชื่อ" required formControlName="firstname">
-                    <mat-error *ngIf="studentForm.controls.firstname.hasError('required')">
-                        กรุณากรอกเบอร์โทรศัพท์
-                    </mat-error>
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="นามสกุล" required formControlName="lastname">
-                    <mat-error *ngIf="studentForm.controls.lastname.hasError('required')">
-                        กรุณากรอกเบอร์โทรศัพท์
-                    </mat-error>
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput type="tel" placeholder="เบอร์โทรศัพท์" required formControlName="phone_no">
-                    <mat-error *ngIf="studentForm.controls.phone_no.hasError('required')">
-                        กรุณากรอกเบอร์โทรศัพท์
-                    </mat-error>
-                    <mat-error *ngIf="studentForm.controls.phone_no.hasError('pattern')">
-                        เบอร์โทรศัพท์ต้องเป็นตัวเลขเท่านั้น
-                    </mat-error>
-                </mat-form-field>
-                <mat-form-field>
-                    <input type="email" matInput placeholder="ที่อยู่เว็บไซต์" required formControlName="email">
-                    <mat-error *ngIf="studentForm.controls.email.hasError('required')">
-                        กรุณากรอกที่อยู่เว็บไซต์
-                    </mat-error>
-                </mat-form-field>
-            </form>
-        </div>
+  <div mat-dialog-content>
+    <!-- student form -->
+    <form [formGroup]="studentForm">
+      <div class="input-image-content">
+        <label class="label-input-image">รูปภาพนักเรียน</label>
+        <label class="hoverable" for="inputImage">
+          <img class="input-image" alt="รูปภาพนักเรียน" [src]="imgURL" />
+          <div class="hover-text">เลือกรูปภาพ..</div>
+          <div class="background"></div>
+        </label>
+        <input
+          type="file"
+          class="inputImage"
+          id="inputImage"
+          (change)="preview($event)"
+          accept=".png,.jpg"
+        />
+      </div>
+      <mat-form-field>
+        <input
+          matInput
+          placeholder="ชื่อ"
+          required
+          formControlName="firstname"
+        />
+        <mat-error *ngIf="studentForm.controls.firstname.hasError('required')">
+          กรุณากรอกเบอร์โทรศัพท์
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          matInput
+          placeholder="นามสกุล"
+          required
+          formControlName="lastname"
+        />
+        <mat-error *ngIf="studentForm.controls.lastname.hasError('required')">
+          กรุณากรอกเบอร์โทรศัพท์
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          matInput
+          type="tel"
+          placeholder="เบอร์โทรศัพท์"
+          required
+          formControlName="phone_no"
+        />
+        <mat-error *ngIf="studentForm.controls.phone_no.hasError('required')">
+          กรุณากรอกเบอร์โทรศัพท์
+        </mat-error>
+        <mat-error *ngIf="studentForm.controls.phone_no.hasError('pattern')">
+          เบอร์โทรศัพท์ต้องเป็นตัวเลขเท่านั้น
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          type="email"
+          matInput
+          placeholder="อีเมล์"
+          required
+          formControlName="email"
+        />
+        <mat-error *ngIf="studentForm.controls.email.hasError('required')">
+          กรุณากรอกที่อีเมล์
+        </mat-error>
+      </mat-form-field>
+    </form>
+    <form [formGroup]="userForm">
+      <div align="center">
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="ชื่อผู้ใช้"
+            required
+            formControlName="username"
+          />
+          <mat-error *ngIf="userForm.controls.username.hasError('required')">
+            กรุณากรอกชื่อผู้ใช้
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input
+            matInput
+            type="password"
+            placeholder="รหัสผ่าน"
+            required
+            formControlName="password"
+          />
+          <mat-error *ngIf="userForm.controls.password.hasError('required')">
+            กรุณากรอกรหัสผ่าน
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input
+            matInput
+            type="password"
+            placeholder="ยืนยันรหัสผ่าน"
+            required
+            formControlName="conPassword"
+          />
+          <mat-error *ngIf="userForm.controls.conPassword.hasError('required')">
+            กรุณากรอกยืนยันรหัสผ่าน
+          </mat-error>
+          <mat-error
+            *ngIf="
+              userForm.controls.password.value !==
+              userForm.controls.conPassword.value
+            "
+          >
+            กรุณากรอกรหัสผ่านให้ตรงกัน
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+  <mat-dialog-actions align="end">
+    <div style="margin-top: 1vw;">
+      <button mat-raised-button class="btn-secondary" (click)="onNoClick()">
+        ยกเลิก
+      </button>
+      <button mat-raised-button class="btn-success" (click)="onSubmit()">
+        เพิ่มข้อมูล
+      </button>
     </div>
-    <mat-dialog-actions align="end">
-        <div style="margin-top: 1vw;">
-            <button mat-raised-button class="btn-secondary" (click)="onNoClick()">ยกเลิก</button>
-            <button mat-raised-button class="btn-success" (click)="onSubmit()">เพิ่มข้อมูล</button>
-        </div>
-    </mat-dialog-actions>
+  </mat-dialog-actions>
 </div>

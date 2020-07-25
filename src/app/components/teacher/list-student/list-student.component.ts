@@ -1,32 +1,48 @@
-import { Component, OnInit, ViewChild, AfterViewInit, ViewEncapsulation } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
-import { Teacher } from 'src/app/model/Teacher';
-import { School } from 'src/app/model/School';
-import { SchoolService } from 'src/app/services/school-service/school.service';
-import { TeacherService } from 'src/app/services/teacher-service/teacher.service';
-import { StudentService } from 'src/app/services/student-service/student.service';
-import { SelectionModel } from '@angular/cdk/collections';
-import { Student } from 'src/app/model/Student';
-import { Login } from 'src/app/model/Login';
-import { AlumniService } from 'src/app/services/alumni-service/alumni.service';
+import { SelectionModel } from "@angular/cdk/collections";
+import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
+import { MatDialog, MatPaginator, MatTableDataSource } from "@angular/material";
+import { Login } from "src/app/model/Login";
+import { School } from "src/app/model/School";
+import { Student } from "src/app/model/Student";
+import { Teacher } from "src/app/model/Teacher";
+import { AlumniService } from "src/app/services/alumni-service/alumni.service";
+import { SchoolService } from "src/app/services/school-service/school.service";
+import { StudentService } from "src/app/services/student-service/student.service";
+import { TeacherService } from "src/app/services/teacher-service/teacher.service";
+import { AddStudentDialogComponent } from "./dialog/add-student-dialog/add-student-dialog.component";
 
 @Component({
-  selector: 'app-list-student',
-  templateUrl: './list-student.component.html',
-  styleUrls: ['./list-student.component.css'],
+  selector: "app-list-student",
+  templateUrl: "./list-student.component.html",
+  styleUrls: ["./list-student.component.css"],
 })
 export class ListStudentComponent implements OnInit, AfterViewInit {
   studentList: MatTableDataSource<Student> = new MatTableDataSource<Student>();
   alumniList: MatTableDataSource<Student> = new MatTableDataSource<Student>();
 
-  displayedColumns: string[] = ['select', 'fullname', 'email', 'phone_no', 'gender', 'entry_year', 'manage'];
-  displayedAlumniColumns: string[] = ['fullname', 'email', 'phone_no', 'gender', 'entry_year'];
+  displayedColumns: string[] = [
+    "select",
+    "fullname",
+    "email",
+    "phone_no",
+    "gender",
+    "entry_year",
+    "manage",
+  ];
+  displayedAlumniColumns: string[] = [
+    "fullname",
+    "email",
+    "phone_no",
+    "gender",
+    "entry_year",
+    "manage",
+  ];
 
   resultsLength = 0;
   isLoadingResults = true;
 
-  @ViewChild('stdPaginator', { static: false }) stdPaginator: MatPaginator;
-  @ViewChild('alnPaginator', { static: false }) alnPaginator: MatPaginator;
+  @ViewChild("stdPaginator", { static: false }) stdPaginator: MatPaginator;
+  @ViewChild("alnPaginator", { static: false }) alnPaginator: MatPaginator;
 
   showContent = false;
   school: School = new School();
@@ -40,47 +56,55 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
     private studentService: StudentService,
     private alumniService: AlumniService,
     private schoolService: SchoolService,
-    private teacherService: TeacherService,
-  ) { }
+    private teacherService: TeacherService
+  ) {}
 
   ngOnInit() {
-    let login: Login = JSON.parse(localStorage.getItem('userData')) as Login;
-    this.teacherService.getTeacherByUsername(login.username).subscribe(resultTeacher => {
-      this.showContent = true;
-      let teacher: Teacher = resultTeacher;
-      this.schoolService.getSchool(teacher.ref.parent.parent.id).subscribe(resultSchool => {
-        this.school = resultSchool;
+    let login: Login = JSON.parse(localStorage.getItem("userData")) as Login;
+    this.teacherService
+      .getTeacherByUsername(login.username)
+      .subscribe((resultTeacher) => {
         this.showContent = true;
-        this.getStudentData(this.school);
-        this.getAlumniData(this.school);
+        let teacher: Teacher = resultTeacher;
+        this.schoolService
+          .getSchool(teacher.ref.parent.parent.id)
+          .subscribe((resultSchool) => {
+            this.school = resultSchool;
+            this.showContent = true;
+            this.getStudentData(this.school);
+            this.getAlumniData(this.school);
+          });
       });
-    });
   }
 
-  ngAfterViewInit(): void { }
+  ngAfterViewInit(): void {}
 
   private getStudentData(school: School) {
-    this.studentService.getStudentBySchoolReference(school.ref).subscribe(students => {
-      this.studentList.data = students;
-      this.studentList.paginator = this.stdPaginator;
-      if (this.studentList.data.length === 0) {
-        this.showStudentTable = false;
-      } else {
-        this.showStudentTable = true;
-      }
-    });
+    this.studentService
+      .getStudentBySchoolReference(school.ref)
+      .subscribe((students) => {
+        this.studentList.data = students;
+        this.studentList.paginator = this.stdPaginator;
+        if (this.studentList.data.length === 0) {
+          this.showStudentTable = false;
+        } else {
+          this.showStudentTable = true;
+        }
+      });
   }
 
   private getAlumniData(school: School) {
-    this.alumniService.getAlumniBySchoolReference(school.ref).subscribe(alumnies => {
-      this.alumniList.data = alumnies;
-      this.alumniList.paginator = this.alnPaginator;
-      if (this.alumniList.data.length === 0) {
-        this.showAlumniTable = false;
-      } else {
-        this.showAlumniTable = true;
-      }
-    });
+    this.alumniService
+      .getAlumniBySchoolReference(school.ref)
+      .subscribe((alumnies) => {
+        this.alumniList.data = alumnies;
+        this.alumniList.paginator = this.alnPaginator;
+        if (this.alumniList.data.length === 0) {
+          this.showAlumniTable = false;
+        } else {
+          this.showAlumniTable = true;
+        }
+      });
   }
 
   applyStudentFilter(filterValue: string) {
@@ -91,20 +115,29 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
     this.alumniList.filter = filterValue.trim().toLowerCase();
   }
 
-  openAddStudentDialog(): void { }
+  openAddStudentDialog(): void {
+    const dialogRef = this.dialog.open(AddStudentDialogComponent, {
+      width: "90%",
+      height: "90%",
+      maxHeight: "90%",
+    });
 
-  onStudentClick(student: Student) {
+    dialogRef.afterClosed().subscribe((result) => {});
   }
+
+  onStudentClick(student: Student) {}
 
   onChangeStudentStatus(student?: Student) {
     if (student) {
       this.selection.toggle(student);
     }
-    this.selection.selected.forEach(() => {
-      let std = student;
-      std.student_status = 'สำเร็จการศึกษา';
-      this.studentService.updateStudent(student.ref, std);
+    this.selection.selected.forEach(async (std) => {
+      std.student_status =
+        std.student_status == "กำลังศึกษา" ? "สำเร็จการศึกษา" : "กำลังศึกษา";
+      await this.studentService.updateStudent(std.ref, std);
     });
+
+    this.selection.clear();
   }
 
   isAllSelected() {
@@ -114,15 +147,17 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
   }
 
   masterToggle() {
-    this.isAllSelected() ?
-      this.selection.clear() :
-      this.studentList.data.forEach(row => this.selection.select(row));
+    this.isAllSelected()
+      ? this.selection.clear()
+      : this.studentList.data.forEach((row) => this.selection.select(row));
   }
 
   checkboxLabel(row?: Student): string {
     if (!row) {
-      return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+      return `${this.isAllSelected() ? "select" : "deselect"} all`;
     }
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row}`;
+    return `${
+      this.selection.isSelected(row) ? "deselect" : "select"
+    } row ${row}`;
   }
 }

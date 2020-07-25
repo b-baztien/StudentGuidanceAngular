@@ -29,7 +29,8 @@
                   (click)="onChangeStudentStatus()"
                   *ngIf="selection.hasValue()"
                 >
-                  <mat-icon>done</mat-icon> เปลี่ยนสถานะนักเรียนที่เลือก
+                  <mat-icon>done</mat-icon>
+                  เปลี่ยนสถานะนักเรียนที่เลือกเป็นศิษย์เก่า
                 </button>
               </div>
             </div>
@@ -112,7 +113,7 @@
                     *ngIf="!selection.hasValue()"
                     (click)="onChangeStudentStatus(student)"
                   >
-                    <mat-icon>done</mat-icon> เปลี่ยนสถานะนักเรียน
+                    <mat-icon>done</mat-icon> เปลี่ยนสถานะเป็นศิษย์เก่า
                   </button>
                   <p *ngIf="selection.hasValue()">-</p>
                 </td>
@@ -217,6 +218,22 @@
                 </th>
                 <td mat-cell *matCellDef="let student">
                   {{ student.entry_year }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="manage">
+                <th id="manage" mat-header-cell *matHeaderCellDef>
+                  จัดการสถานะนักเรียน
+                </th>
+                <td mat-cell *matCellDef="let student">
+                  <button
+                    mat-raised-button
+                    class="btn-info"
+                    *ngIf="!selection.hasValue()"
+                    (click)="onChangeStudentStatus(student)"
+                  >
+                    <mat-icon>done</mat-icon> เปลี่ยนสถานะเป็นนักเรียน
+                  </button>
+                  <p *ngIf="selection.hasValue()">-</p>
                 </td>
               </ng-container>
               <tr mat-header-row *matHeaderRowDef="displayedAlumniColumns"></tr>

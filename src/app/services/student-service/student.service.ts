@@ -1,8 +1,9 @@
+import { Alumni } from "./../../model/Alumni";
 import { Injectable } from "@angular/core";
 import {
   AngularFirestore,
   DocumentReference,
-  QueryGroupFn
+  QueryGroupFn,
 } from "@angular/fire/firestore";
 import { Student } from "src/app/model/Student";
 import { Login } from "src/app/model/Login";
@@ -10,7 +11,7 @@ import { map } from "rxjs/operators";
 import { LoginService } from "../login-service/login.service";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class StudentService {
   constructor(
@@ -22,21 +23,21 @@ export class StudentService {
     return this.angularFirestore
       .collection(school.parent.path)
       .doc(school.id)
-      .collection("Student", query => query.orderBy("firstname"))
+      .collection("Student", (query) => query.orderBy("firstname"))
       .snapshotChanges()
       .pipe(
-        map(result => {
+        map((result) => {
           return result
             .filter(
-              item =>
+              (item) =>
                 (item.payload.doc.data() as Student).student_status ===
                 "กำลังศึกษา"
             )
-            .map(item => {
+            .map((item) => {
               return {
                 id: item.payload.doc.id,
                 ref: item.payload.doc.ref,
-                ...item.payload.doc.data()
+                ...item.payload.doc.data(),
               } as Student;
             });
         })
@@ -56,8 +57,43 @@ export class StudentService {
       .snapshotChanges();
   }
 
-  updateStudent(studentRef: DocumentReference, student: Student) {
-    return this.angularFirestore
+  async updateStudent(studentRef: DocumentReference, student: Student) {
+    if (student.student_status == "สำเร็จการศึกษา") {
+      let isEmpty = (
+        await this.angularFirestore
+          .doc(studentRef.path)
+          .collection("Alumni")
+          .get()
+          .toPromise()
+      ).empty;
+
+      if (isEmpty) {
+        let alumni = new Alumni();
+        alumni.graduated_year = "" + (new Date().getFullYear() + 543);
+        alumni.schoolName = localStorage.getItem("school");
+        alumni.username = studentRef.id;
+
+        this.angularFirestore
+          .collection(studentRef.parent)
+          .doc(studentRef.id)
+          .collection("Alumni")
+          .add(Object.assign({}, alumni));
+      }
+    } else {
+      const snapshot = await this.angularFirestore
+        .doc(studentRef.path)
+        .collection("Alumni")
+        .get()
+        .toPromise();
+
+      const batch = this.angularFirestore.firestore.batch();
+      snapshot.docs.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+      await batch.commit();
+    }
+
+    this.angularFirestore
       .collection(studentRef.parent)
       .doc(studentRef.id)
       .update(Object.assign({}, student));
@@ -67,7 +103,7 @@ export class StudentService {
     if (
       !(
         await this.loginService
-          .getLoginByCondition(query =>
+          .getLoginByCondition((query) =>
             query.where("username", "==", login.username)
           )
           .toPromise()

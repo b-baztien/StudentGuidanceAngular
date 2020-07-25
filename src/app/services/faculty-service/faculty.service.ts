@@ -1,26 +1,13 @@
 import { Injectable } from "@angular/core";
-import {
-  AngularFirestore,
-  QueryDocumentSnapshot,
-  FieldPath,
-  DocumentReference,
-} from "@angular/fire/firestore";
-import { Faculty } from "src/app/model/Faculty";
-import { University } from "src/app/model/University";
-import { UniversityService } from "../university-service/university.service";
-import { Observable } from "rxjs";
-import { MajorService } from "../major-service/major.service";
+import { AngularFirestore, DocumentReference } from "@angular/fire/firestore";
 import { map } from "rxjs/operators";
+import { Faculty } from "src/app/model/Faculty";
 
 @Injectable({
   providedIn: "root",
 })
 export class FacultyService {
-  constructor(
-    private firestore: AngularFirestore,
-    private universityService: UniversityService,
-    private majorService: MajorService
-  ) {}
+  constructor(private firestore: AngularFirestore) {}
 
   async addFaculty(universityId: string, faculty: Faculty) {
     const firestoreCol = this.firestore
