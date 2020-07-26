@@ -1,0 +1,53 @@
+<form [formGroup]="tcasForm">
+    <div class="container">
+      <mat-dialog-content>
+        <mat-panel-description>
+          <h4><mat-icon>how_to_reg</mat-icon> ข้อมูลการรับเข้า</h4>
+        </mat-panel-description>
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="วันที่รับสมัคร"
+            [satDatepicker]="picker"
+            (focus)="picker.open()"
+            readonly
+            formControlName="date"
+          />
+          <sat-datepicker #picker [rangeMode]="true"> </sat-datepicker>
+          <sat-datepicker-toggle matSuffix [for]="picker"></sat-datepicker-toggle>
+          <mat-error *ngIf="tcasForm.controls.date.hasError('required')">
+            กรุณากรอกวันที่สมัคร
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>จำนวนที่รับ</mat-label>
+          <input type="number" matInput formControlName="entranceAmount" />
+          <span matSuffix>ที่นั่ง</span>
+          <mat-error
+            *ngIf="tcasForm.controls.entranceAmount.hasError('required')"
+          >
+            กรุณากรอกจำนวนที่รับ
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>ที่อยู่เว็บไซต์ TCAS</mat-label>
+          <input matInput formControlName="url" />
+          <mat-error *ngIf="tcasForm.controls.url.hasError('required')">
+            กรุณากรอกที่อยู่เว็บไซต์ TCAS
+          </mat-error>
+          <mat-error *ngIf="tcasForm.controls.url.hasError('pattern')">
+            กรุณากรอกที่อยู่เว็บไซต์ที่ถูกต้อง
+          </mat-error>
+        </mat-form-field>
+      </mat-dialog-content>
+      <mat-dialog-actions align="end">
+        <button mat-raised-button class="btn-success" (click)="onSubmit()">
+          <mat-icon>add</mat-icon> บันทึกข้อมูล
+        </button>
+        <button mat-raised-button class="btn-secondary" (click)="onNoClick()">
+          <mat-icon>close</mat-icon> ปิด
+        </button>
+      </mat-dialog-actions>
+    </div>
+  </form>
+  

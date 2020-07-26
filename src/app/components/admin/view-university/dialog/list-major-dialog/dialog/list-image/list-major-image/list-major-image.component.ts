@@ -14,7 +14,6 @@ export class ListMajorImageComponent implements OnInit {
   constructor(private afStorage: AngularFireStorage) {}
 
   ngOnInit() {
-    console.log(this.listImageLocal);
     this.listImageUrl = new Array(this.listImageLocal.length);
     if (this.listImageLocal) {
       for (let i = 0; i < this.listImageLocal.length; i++) {

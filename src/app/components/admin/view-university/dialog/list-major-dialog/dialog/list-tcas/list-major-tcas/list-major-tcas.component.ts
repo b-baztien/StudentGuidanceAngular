@@ -14,7 +14,6 @@ import { DocumentReference } from "@angular/fire/firestore";
 export class ListMajorTcasComponent implements OnInit, OnDestroy {
   @Input() majorRef: DocumentReference;
 
-  listTcas = new Array<Tcas>();
   tcasSub: Subscription;
   listButtonTcas = new Array<{
     label: string;
@@ -32,24 +31,18 @@ export class ListMajorTcasComponent implements OnInit, OnDestroy {
     this.tcasSub = this.tcasService
       .getTcasByMajorReference(this.majorRef)
       .subscribe((tcasDocs) => {
-        this.listTcas = tcasDocs.map((docs) => {
-          return { id: docs.id, ref: docs.ref, ...(docs.data() as Tcas) };
-        });
-        for (let index = 1; index <= 5; index++) {
-          let buttonColor: string;
-          let tcasData: Tcas;
-          tcasData = this.listTcas.find((tcas) => tcas.round == "" + index);
-          if (tcasData) {
-            buttonColor = "primary";
-          } else {
-            buttonColor = "basic";
-          }
+        tcasDocs.forEach((docs) => {
+          let tcasData: Tcas = {
+            id: docs.id,
+            ref: docs.ref,
+            ...(docs.data() as Tcas),
+          };
           this.listButtonTcas.push({
-            label: index.toString(),
-            color: buttonColor,
+            label: tcasData.round,
+            color: "primary",
             tcas: tcasData,
           });
-        }
+        });
       });
   }
 

@@ -1,3 +1,4 @@
+import { isNullOrUndefined } from "util";
 import { Tcas } from "src/app/model/Tcas";
 import { map } from "rxjs/operators";
 import { AngularFirestore, DocumentReference } from "@angular/fire/firestore";
@@ -14,6 +15,54 @@ export class TcasService {
       .collectionGroup("Tcas", (query) => query.orderBy("round"))
       .snapshotChanges()
       .pipe(map((docs) => docs.map((item) => item.payload.doc)));
+  }
+
+  async getAllTcasUniversity(universityRef: DocumentReference) {
+    let listTcas = new Array<Tcas>();
+    const facultySnapshot = await this.firestore
+      .doc(universityRef.path)
+      .collection("Faculty")
+      .get()
+      .toPromise();
+    facultySnapshot.docs.forEach(async (facDoc) => {
+      const majorSnapshot = await this.firestore
+        .doc(facDoc.ref.path)
+        .collection("Major")
+        .get()
+        .toPromise();
+      majorSnapshot.forEach(async (majorDoc) => {
+        const tcasSnapshot = await this.firestore
+          .doc(majorDoc.ref.path)
+          .collection("Tcas")
+          .get()
+          .toPromise();
+
+        if (tcasSnapshot.empty) {
+          return;
+        }
+
+        let listTcasData: Array<Tcas> = tcasSnapshot.docs.map((doc) => {
+          return { id: doc.id, ref: doc.ref, ...(doc.data() as Tcas) };
+        });
+
+        if (listTcas.length == 0) {
+          listTcas.push(...listTcasData);
+        } else {
+          let listTcasTemp = listTcasData.filter((tcasData) => {
+            let findTcas = listTcas.find(
+              (tcas) => tcas && tcas.round === tcasData.round
+            );
+
+            let round = findTcas ? findTcas.round : tcasData.round;
+
+            return tcasData.round !== round;
+          });
+
+          listTcas.push(...listTcasTemp);
+        }
+      });
+    });
+    return listTcas;
   }
 
   getTcasByMajorReference(majorRef: DocumentReference) {

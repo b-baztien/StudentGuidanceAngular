@@ -1,13 +1,17 @@
 <mat-panel-title>
-  <button
-    mat-mini-fab
-    class="button-space"
-    [matTooltip]="'คลิกดูรายละเอียด'"
-    [matTooltipPosition]="'above'"
-    *ngFor="let btnTcasData of listButtonTcas"
-    [color]="btnTcasData.color"
-    (click)="openTcasDialog(btnTcasData.tcas)"
-  >
-    {{ btnTcasData.label }}
-  </button>
+  <ng-container *ngIf="listButtonTcas.length == 0; else buttonTemplate">
+    <p>ไม่พบข้อมูล TCAS</p>
+  </ng-container>
+  <ng-template #buttonTemplate>
+    <button
+      style="cursor: default;"
+      mat-mini-fab
+      class="button-space"
+      *ngFor="let btnTcasData of listButtonTcas"
+      [color]="btnTcasData.color"
+      [disableRipple]="true"
+    >
+      {{ btnTcasData.label }}
+    </button>
+  </ng-template>
 </mat-panel-title>

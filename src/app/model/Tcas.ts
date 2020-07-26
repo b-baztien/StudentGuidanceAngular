@@ -7,4 +7,5 @@ export class Tcas {
   round: string = null;
   entranceAmount: number = null;
   url: string = null;
+  year: string = null;
 }

@@ -1,18 +1,53 @@
-<div class="row">
-  <div class="col-sm-12">
-    <h1 mat-dialog-title><mat-icon>edit</mat-icon> จัดการข้อมูล TCAS สาขา</h1>
-  </div>
+<div class="row col-sm-12">
+  <h1 mat-dialog-title><mat-icon>edit</mat-icon> จัดการข้อมูล TCAS สาขา</h1>
 </div>
-<mat-tab-group mat-stretch-tabs *ngIf="loadData">
-  <mat-tab
-    *ngFor="let round of tcasTabLabel; index as i"
-    label="รอบที่ {{ round }}"
-  >
-    <app-edit-tcas-major-content
-      [tcas]="listTcas[i]"
-      [round]="round"
-      (submitBtn)="onSubmit($event)"
-      (cancelBtn)="onNoClick()"
-    ></app-edit-tcas-major-content>
-  </mat-tab>
-</mat-tab-group>
+<mat-divider></mat-divider><br />
+<ng-container *ngIf="loadData">
+  <div class="row col-sm-12">
+    <h4>เพิ่มรอบ TCAS</h4>
+  </div>
+  <form [formGroup]="tcasRoundForm">
+    <div class="row col-sm-12">
+      <div class="col-sm-10">
+        <mat-form-field>
+          <input
+            matInput
+            type="number"
+            placeholder="รอบ TCAS"
+            formControlName="round"
+          />
+          <mat-error
+            *ngIf="tcasRoundForm.controls.round.hasError('alreadyRound')"
+          >
+            มีรอบ TCAS นี้แล้ว
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-2">
+        <button
+          mat-raised-button
+          class="btn-success"
+          (click)="onAddRoundClick()"
+        >
+          <mat-icon>add</mat-icon>
+          เพิ่มรอบ TCAS
+        </button>
+      </div>
+    </div>
+  </form>
+  <mat-divider></mat-divider><br />
+  <div class="row col-sm-12"><h4>จัดการรอบ TCAS</h4></div>
+  <mat-tab-group mat-stretch-tabs [selectedIndex]="selected.value">
+    <mat-tab
+      *ngFor="let round of tcasTabLabel; index as i"
+      label="รอบที่ {{ round }}"
+    >
+      <app-edit-tcas-major-content
+        [tcas]="listTcas[i]"
+        [round]="round"
+        (submitBtn)="onSubmit($event)"
+        (cancelBtn)="onNoClick()"
+      ></app-edit-tcas-major-content>
+    </mat-tab>
+  </mat-tab-group>
+</ng-container>

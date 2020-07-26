@@ -42,7 +42,6 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
       .getMajorByFacultyReference(this.data)
       .subscribe((majorDocs) => {
         this.listMajor = majorDocs.map((docs) => {
-          console.log(docs.data());
           return { id: docs.id, ref: docs.ref, ...(docs.data() as Major) };
         });
 
@@ -97,7 +96,7 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(EditTcasMajorComponent, {
       width: "90%",
       height: "auto",
-      data: major,
+      data: { major: major, universityRef: major.ref.parent.parent.parent.parent },
     });
     dialogRef
       .afterClosed()
