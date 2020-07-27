@@ -10,6 +10,7 @@ import { SchoolService } from "src/app/services/school-service/school.service";
 import { StudentService } from "src/app/services/student-service/student.service";
 import { TeacherService } from "src/app/services/teacher-service/teacher.service";
 import { AddStudentDialogComponent } from "./dialog/add-student-dialog/add-student-dialog.component";
+import { DocumentReference } from "@angular/fire/firestore";
 
 @Component({
   selector: "app-list-student",
@@ -122,7 +123,9 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
       maxHeight: "90%",
     });
 
-    dialogRef.afterClosed().subscribe((result) => {});
+    dialogRef.afterClosed().subscribe((result) => {
+      
+    });
   }
 
   onStudentClick(student: Student) {}
@@ -134,7 +137,11 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
     this.selection.selected.forEach(async (std) => {
       std.student_status =
         std.student_status == "กำลังศึกษา" ? "สำเร็จการศึกษา" : "กำลังศึกษา";
-      await this.studentService.updateStudent(std.ref, std);
+
+      const studentRef: DocumentReference = std.ref;
+      delete std.id;
+      delete std.ref;
+      await this.studentService.updateStudent(studentRef, std);
     });
 
     this.selection.clear();

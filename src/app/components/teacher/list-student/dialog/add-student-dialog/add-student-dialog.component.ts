@@ -35,12 +35,7 @@ export class AddStudentDialogComponent implements OnInit {
     ),
     email: new FormControl(
       null,
-      Validators.compose([
-        Validators.required,
-        Validators.pattern(
-          `^[a-zA-Z0-9.!#$%&'*+/=?^_{|}~-]+@[A-Z0-9.-]+\.[A-Z]{2,}$`
-        ),
-      ])
+      Validators.compose([Validators.required, Validators.email])
     ),
   });
 

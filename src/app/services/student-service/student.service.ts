@@ -58,6 +58,15 @@ export class StudentService {
   }
 
   async updateStudent(studentRef: DocumentReference, student: Student) {
+
+    let loginSnapshot = await this.angularFirestore
+      .doc(studentRef.path)
+      .collection("Login")
+      .get()
+      .toPromise();
+
+    let login = loginSnapshot.docs[0].data() as Login;
+
     if (student.student_status == "สำเร็จการศึกษา") {
       let isEmpty = (
         await this.angularFirestore
@@ -66,6 +75,8 @@ export class StudentService {
           .get()
           .toPromise()
       ).empty;
+
+      login.type = "Alumni";
 
       if (isEmpty) {
         let alumni = new Alumni();
@@ -86,12 +97,17 @@ export class StudentService {
         .get()
         .toPromise();
 
+      login.type = "Student";
+
       const batch = this.angularFirestore.firestore.batch();
       snapshot.docs.forEach((doc) => {
         batch.delete(doc.ref);
       });
+
       await batch.commit();
     }
+
+    loginSnapshot.docs[0].ref.update(Object.assign({}, login));
 
     this.angularFirestore
       .collection(studentRef.parent)
