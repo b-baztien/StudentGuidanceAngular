@@ -103,15 +103,15 @@
             type="password"
             placeholder="ยืนยันรหัสผ่าน"
             required
-            formControlName="conPassword"
+            formControlName="confirmPassword"
           />
-          <mat-error *ngIf="userForm.controls.conPassword.hasError('required')">
+          <mat-error *ngIf="userForm.controls.confirmPassword.hasError('required')">
             กรุณากรอกยืนยันรหัสผ่าน
           </mat-error>
           <mat-error
             *ngIf="
               userForm.controls.password.value !==
-              userForm.controls.conPassword.value
+              userForm.controls.confirmPassword.value
             "
           >
             กรุณากรอกรหัสผ่านให้ตรงกัน

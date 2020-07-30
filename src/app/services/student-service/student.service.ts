@@ -15,12 +15,12 @@ import { LoginService } from "../login-service/login.service";
 })
 export class StudentService {
   constructor(
-    private angularFirestore: AngularFirestore,
+    private firestore: AngularFirestore,
     private loginService: LoginService
   ) {}
 
   getStudentBySchoolReference(school: DocumentReference) {
-    return this.angularFirestore
+    return this.firestore
       .collection(school.parent.path)
       .doc(school.id)
       .collection("Student", (query) => query.orderBy("firstname"))
@@ -45,21 +45,20 @@ export class StudentService {
   }
 
   getStudentByStudentId(studentId: string) {
-    return this.angularFirestore
+    return this.firestore
       .collection("Student")
       .doc(studentId)
       .snapshotChanges();
   }
 
   getStudentByCondition(queryGroupFn: QueryGroupFn) {
-    return this.angularFirestore
+    return this.firestore
       .collectionGroup("Student", queryGroupFn)
       .snapshotChanges();
   }
 
   async updateStudent(studentRef: DocumentReference, student: Student) {
-
-    let loginSnapshot = await this.angularFirestore
+    let loginSnapshot = await this.firestore
       .doc(studentRef.path)
       .collection("Login")
       .get()
@@ -69,14 +68,14 @@ export class StudentService {
 
     if (student.student_status == "สำเร็จการศึกษา") {
       let isEmpty = (
-        await this.angularFirestore
+        await this.firestore
           .doc(studentRef.path)
           .collection("Alumni")
           .get()
           .toPromise()
       ).empty;
 
-      login.type = "Alumni";
+      login.type = "alumni";
 
       if (isEmpty) {
         let alumni = new Alumni();
@@ -84,22 +83,22 @@ export class StudentService {
         alumni.schoolName = localStorage.getItem("school");
         alumni.username = studentRef.id;
 
-        this.angularFirestore
+        this.firestore
           .collection(studentRef.parent)
           .doc(studentRef.id)
           .collection("Alumni")
           .add(Object.assign({}, alumni));
       }
     } else {
-      const snapshot = await this.angularFirestore
+      const snapshot = await this.firestore
         .doc(studentRef.path)
         .collection("Alumni")
         .get()
         .toPromise();
 
-      login.type = "Student";
+      login.type = "student";
 
-      const batch = this.angularFirestore.firestore.batch();
+      const batch = this.firestore.firestore.batch();
       snapshot.docs.forEach((doc) => {
         batch.delete(doc.ref);
       });
@@ -109,7 +108,7 @@ export class StudentService {
 
     loginSnapshot.docs[0].ref.update(Object.assign({}, login));
 
-    this.angularFirestore
+    this.firestore
       .collection(studentRef.parent)
       .doc(studentRef.id)
       .update(Object.assign({}, student));
@@ -126,14 +125,14 @@ export class StudentService {
       ).empty
     )
       throw new Error(`มีชื่อผู้ใช้ ${login.username} ในระบบแล้ว`);
-    await this.angularFirestore
+    await this.firestore
       .collection("School")
       .doc(schoolName)
       .collection("Student")
       .doc(login.username)
       .set(Object.assign({}, student))
       .then(() =>
-        this.angularFirestore
+        this.firestore
           .collection("School")
           .doc(schoolName)
           .collection("Student")
@@ -142,5 +141,9 @@ export class StudentService {
           .doc(login.username)
           .set(Object.assign({}, login))
       );
+  }
+
+  async removeStudent(student: Student) {
+    await this.firestore.doc(student.ref.path).delete();
   }
 }

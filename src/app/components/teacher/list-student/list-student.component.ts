@@ -11,6 +11,8 @@ import { StudentService } from "src/app/services/student-service/student.service
 import { TeacherService } from "src/app/services/teacher-service/teacher.service";
 import { AddStudentDialogComponent } from "./dialog/add-student-dialog/add-student-dialog.component";
 import { DocumentReference } from "@angular/fire/firestore";
+import { ConfirmDialogComponent } from "../../util/confirm-dialog/confirm-dialog.component";
+import { Notifications } from "../../util/notification";
 
 @Component({
   selector: "app-list-student",
@@ -121,10 +123,44 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
       width: "90%",
       height: "90%",
       maxHeight: "90%",
+      data: this.school.ref,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {});
+  }
+
+  deleteStudent(student: Student) {
+    const studentType: string =
+      student.student_status == "กำลังศึกษา" ? "นักเรียน" : "ศิษย์เก่า";
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: "auto",
+      maxHeight: "90%",
+      data: `คุณต้องการลบข้อมูล${studentType} ใช่ หรือ ไม่ ?`,
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      
+      try {
+        if (result) {
+          this.studentService.removeStudent(student);
+          new Notifications().showNotification(
+            "done",
+            "top",
+            "right",
+            "ลบข้อมูลสำเร็จแล้ว",
+            "success",
+            "สำเร็จ !"
+          );
+        }
+      } catch (error) {
+        new Notifications().showNotification(
+          "close",
+          "top",
+          "right",
+          error.message,
+          "danger",
+          "ลบข้อมูลล้มเหลว !"
+        );
+      }
     });
   }
 

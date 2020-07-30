@@ -20,11 +20,16 @@ import { Notifications } from "src/app/components/util/notification";
   styleUrls: ["./add-student-dialog.component.css"],
 })
 export class AddStudentDialogComponent implements OnInit {
-  userForm = new FormGroup({
-    username: new FormControl(null, [Validators.required]),
-    password: new FormControl(null, [Validators.required]),
-    conPassword: new FormControl(null, [Validators.required]),
-  });
+  userForm = new FormGroup(
+    {
+      username: new FormControl(null, [Validators.required]),
+      password: new FormControl(null, [Validators.required]),
+      confirmPassword: new FormControl(null, [Validators.required]),
+    },
+    {
+      validators: [this.matchPasswords],
+    }
+  );
 
   studentForm = new FormGroup({
     firstname: new FormControl(null, [Validators.required]),
@@ -61,6 +66,17 @@ export class AddStudentDialogComponent implements OnInit {
   }
 
   async ngOnInit() {}
+
+  private matchPasswords(group: FormGroup) {
+    let pass = group.get("password").value;
+    let confirmPass = group.get("confirmPassword").value;
+
+    if (pass != confirmPass) {
+      group.get("confirmPassword").setErrors({ notSame: true });
+    } else {
+      return null;
+    }
+  }
 
   isErrorState(
     control: FormControl | null,
@@ -122,11 +138,12 @@ export class AddStudentDialogComponent implements OnInit {
           if (files.files[0] !== undefined) {
             await this.upload(files);
           }
-          this.studentService.addStudent(
+          await this.studentService.addStudent(
             this.school.id,
             this.login,
             this.student
           );
+          new Notifications().showNotification('close', 'top', 'right', 'เพิ่มข้อมูลสำเร็จ', 'success', 'เพิ่มข้อมูลครูสำเร็จ !');
           this.dialogRef.close();
         }
       }
