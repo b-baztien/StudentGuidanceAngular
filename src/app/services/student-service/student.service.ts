@@ -9,6 +9,8 @@ import { Student } from "src/app/model/Student";
 import { Login } from "src/app/model/Login";
 import { map } from "rxjs/operators";
 import { LoginService } from "../login-service/login.service";
+import { SchoolService } from "../school-service/school.service";
+import { School } from "src/app/model/School";
 
 @Injectable({
   providedIn: "root",
@@ -16,6 +18,7 @@ import { LoginService } from "../login-service/login.service";
 export class StudentService {
   constructor(
     private firestore: AngularFirestore,
+    private schoolService: SchoolService,
     private loginService: LoginService
   ) {}
 
@@ -125,6 +128,10 @@ export class StudentService {
       ).empty
     )
       throw new Error(`มีชื่อผู้ใช้ ${login.username} ในระบบแล้ว`);
+
+    let school = new School();
+    school.school_name = schoolName;
+    this.schoolService.addSchool(school);
     await this.firestore
       .collection("School")
       .doc(schoolName)
@@ -144,6 +151,8 @@ export class StudentService {
   }
 
   async removeStudent(student: Student) {
-    await this.firestore.doc(student.ref.path).delete();
+    const batch = this.firestore.firestore.batch();
+    batch.delete(student.ref);
+    await batch.commit();
   }
 }

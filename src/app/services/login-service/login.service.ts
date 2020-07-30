@@ -68,40 +68,11 @@ export class LoginService {
     return this.firestore.collection("Login").add(Object.assign({}, user));
   }
 
-  removeUser(user: Login, login: DocumentReference) {
-    if (user.type === "teacher") {
-      this.firestore
-        .collection("Teacher")
-        .ref.where("login", "==", login)
-        .get()
-        .then((teacherRef) => {
-          if (teacherRef.docs[0].exists) {
-            let teacher = teacherRef.docs[0];
-            this.firestore
-              .collection("News")
-              .ref.where("teacher", "==", teacher)
-              .get()
-              .then((listNewsRef) => {
-                listNewsRef.docs.forEach((newsRef) => {
-                  this.firestore.collection("News").doc(newsRef.id).delete();
-                });
-              });
-            this.firestore.collection("Teacher").doc(teacher.id).delete();
-          }
-        });
-    } else if (user.type === "student") {
-      this.firestore
-        .collection("Student")
-        .ref.where("login", "==", login)
-        .get()
-        .then((studentRef) => {
-          if (studentRef.docs[0].exists) {
-            let student = studentRef.docs[0];
-            this.firestore.collection("Student").doc(student.id).delete();
-          }
-        });
-    }
-    this.firestore.collection("Login").doc(user.username).delete();
+  async removeUser(user: Login) {
+    const batch = this.firestore.firestore.batch();
+    batch.delete(user.ref);
+    batch.delete(user.ref.parent.parent);
+    await batch.commit();
   }
 
   async updateLogin(login: Login) {
