@@ -1,13 +1,19 @@
-import { EntranceMajorService } from "./../../../../services/entrance-major-service/entrance-major.service";
-import { EntranceMajor } from "./../../../../model/EntranceMajor";
-import { AlumniService } from "src/app/services/alumni-service/alumni.service";
+import { EntranceExamResult } from "./../../../../model/EntranceExamResult";
 import { Component, OnInit } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
-import { MatDialog } from "@angular/material";
-import { Router } from "@angular/router";
+import { MatDialog, MatTableDataSource } from "@angular/material";
 import { Chart } from "chart.js";
-import { EntranceExamResultService } from "src/app/services/entrance-exam-result-service/entrance-exam-result.service";
 import { Alumni } from "src/app/model/Alumni";
+import { AlumniService } from "src/app/services/alumni-service/alumni.service";
+import { EntranceExamResultService } from "src/app/services/entrance-exam-result-service/entrance-exam-result.service";
+import { EntranceMajorService } from "./../../../../services/entrance-major-service/entrance-major.service";
+import { EntranceMajor } from "src/app/model/EntranceMajor";
+
+interface SummaryData {
+  majorName: string;
+  countExam: number;
+  countEntrance: number;
+}
 
 @Component({
   selector: "app-list-entrance-exam-result",
@@ -17,6 +23,7 @@ import { Alumni } from "src/app/model/Alumni";
 export class ListEntranceExamResultComponent implements OnInit {
   lineChart: Chart;
   yearControl = new FormControl("", Validators.required);
+
   setYear: Set<string>;
 
   chartUniTCASData: Map<string, Map<string, number>> = new Map<
@@ -45,10 +52,24 @@ export class ListEntranceExamResultComponent implements OnInit {
     Map<string, number>
   >();
 
+  listEntranceMajor: EntranceMajor[];
+  listExamResult: EntranceExamResult[];
+
+  summaryList = new MatTableDataSource<SummaryData>();
+  displayedColumns: string[] = [
+    "majorName",
+    "countExam",
+    "countEntrance",
+    "sumPercent",
+  ];
+
   totalAlumni: number = 0;
   totalEntrance: number = 0;
   totalWork: number = 0;
   totalOther: number = 0;
+
+  isFoundExam = false;
+  isFoundEntrance = false;
 
   school: string;
 
@@ -80,6 +101,7 @@ export class ListEntranceExamResultComponent implements OnInit {
     this.entranceExamResuleService
       .getAllExamResultBySchoolName(this.school)
       .subscribe((result) => {
+        this.listExamResult = [...result];
         result.forEach((exam) => {
           this.setYear.add(exam.year);
         });
@@ -147,6 +169,7 @@ export class ListEntranceExamResultComponent implements OnInit {
     this.entranceMajorService
       .getAllEntranceMajorBySchoolName(this.school)
       .subscribe((result) => {
+        this.listEntranceMajor = [...result];
         result.forEach((entanceMajor) => {
           this.setYear.add(entanceMajor.entranceYear);
         });
@@ -239,8 +262,10 @@ export class ListEntranceExamResultComponent implements OnInit {
     this.getCountAlumniData();
 
     if (this.yearControl.valid) {
+      this.generateSummary(this.yearControl.value);
+
       //generate entrance university chart
-      this.generateChart(
+      this.isFoundEntrance = this.generateChart(
         this.chartUniEntranceData,
         "uniEntranceChart",
         "สรุปผลมหาวิทยาลัยที่ศึกษาต่อ"
@@ -261,7 +286,7 @@ export class ListEntranceExamResultComponent implements OnInit {
       );
 
       //generate TCAS university chart
-      this.generateChart(
+      this.isFoundExam = this.generateChart(
         this.chartUniTCASData,
         "uniChart",
         "จำนวนผลการสอบติดใน มหาวิทยาลัย"
@@ -280,7 +305,52 @@ export class ListEntranceExamResultComponent implements OnInit {
         "majorChart",
         "จำนวนผลการสอบติดใน สาขา"
       );
+
+      //generate summary
+    } else {
+      this.isFoundExam = false;
+      this.isFoundEntrance = false;
     }
+  }
+
+  generateSummary(year: string) {
+    let setMajorName: Set<string> = new Set();
+
+    this.listEntranceMajor.forEach((entranceMajor) => {
+      if (entranceMajor.entranceYear == year)
+        setMajorName.add(entranceMajor.majorName);
+    });
+
+    this.listExamResult.forEach((examResult) => {
+      if (examResult.year == year) setMajorName.add(examResult.major);
+    });
+
+    let listSummary: SummaryData[] = [];
+    setMajorName.forEach((majorName) => {
+      let setCountEntrance = new Set();
+      let setCountExam = new Set();
+      this.listEntranceMajor.forEach((entranceMajor) => {
+        if (entranceMajor.majorName == majorName)
+          setCountEntrance.add(entranceMajor.ref.parent.parent.id);
+      });
+
+      this.listExamResult.forEach((examResult) => {
+        if (examResult.major == majorName) {
+          setCountExam.add(examResult.ref.parent.parent.id);
+        }
+      });
+      const summaryData: SummaryData = {
+        majorName: majorName,
+        countExam: setCountExam.size,
+        countEntrance: setCountEntrance.size,
+      };
+
+      listSummary.push(summaryData);
+    });
+
+    console.log({ listSummary });
+
+    this.summaryList.data = listSummary;
   }
 
   getCountAlumniData() {
@@ -288,6 +358,7 @@ export class ListEntranceExamResultComponent implements OnInit {
       .getAlumniByGraduateYear(this.school, this.yearControl.value)
       .subscribe((result) => {
         let listAlumni: Alumni[] = [...result];
+        console.log({ listAlumni });
         this.totalAlumni = result.length;
         this.totalEntrance = listAlumni.filter(
           (alumni) => alumni.status === "ศึกษาต่อ"
@@ -348,5 +419,7 @@ export class ListEntranceExamResultComponent implements OnInit {
         ],
       },
     });
+
+    return true;
   }
 }

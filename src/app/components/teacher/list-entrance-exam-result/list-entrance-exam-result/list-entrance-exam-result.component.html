@@ -130,32 +130,146 @@
               <!-- Entrance Major -->
               <div class="col-lg-12 col-md-12">
                 <div class="card">
-                  <div class="card-header card-header-info">
+                  <div class="card-header card-header-danger">
                     <div class="row">
                       <div class="col-sm-12">
-                        <h4 class="card-title">รายชื่อผลการสอบติด</h4>
+                        <h4 class="card-title">
+                          สรุปผลข้อมูล จำนวนนักเรียนที่ศึกษาต่อ เทียบกับ
+                          จำนวนนักเรียนที่สอบติด TCAS
+                        </h4>
                         <p class="card-category">
-                          นี่คือรายชื่อผลการสอบติดทั้งหมดที่พบในระบบ
-                          คุณสามารถตรวจสอบ หรือจัดการ รานละเอียดต่างๆ
-                          ของผลการสอบติดนั้นๆ ได้
+                          นี่คือผลสรุปการศึกษาต่อของนักเรียน ภายในโรงเรียน
                         </p>
                       </div>
                     </div>
                   </div>
                   <div class="card-body">
-                    <div class="row">
-                      <div class="col-12 col-lg-4">
-                        <canvas id="uniEntranceChart" height="300"></canvas>
-                      </div>
-                      <div class="col-12 col-lg-4">
-                        <canvas id="facEntranceChart" height="300"></canvas>
-                      </div>
-                      <div class="col-12 col-lg-4">
-                        <canvas id="majorEntranceChart" height="300"></canvas>
+                    <div class="row" *ngIf="yearControl.valid">
+                      <table
+                        mat-table
+                        aria-describedby="summartTable"
+                        [dataSource]="summaryList"
+                        class="table table-hover"
+                      >
+                        <ng-container matColumnDef="majorName">
+                          <th mat-header-cell id="majorName" *matHeaderCellDef>
+                            ชื่อสาขา
+                          </th>
+                          <td mat-cell *matCellDef="let summary">
+                            {{ summary.majorName }}
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="countExam">
+                          <th mat-header-cell id="countExam" *matHeaderCellDef>
+                            จำนวนนักเรียนที่สอบติด TCAS สาขานี้
+                          </th>
+                          <td mat-cell *matCellDef="let summary">
+                            {{ summary.countExam }} คน
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="countEntrance">
+                          <th
+                            mat-header-cell
+                            id="countEntrance"
+                            *matHeaderCellDef
+                          >
+                            จำนวนนักเรียนที่ศึกษาต่อสาขานี้
+                          </th>
+                          <td mat-cell *matCellDef="let summary">
+                            {{ summary.countEntrance }} คน
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="sumPercent">
+                          <th mat-header-cell id="sumPercent" *matHeaderCellDef>
+                            คิดเป็น %
+                          </th>
+                          <td mat-cell *matCellDef="let summary">
+                            {{
+                              (summary.countEntrance * 100) / summary.countExam
+                                | number: "0.0-2"
+                            }}
+                            %
+                          </td>
+                        </ng-container>
+                        <tr
+                          mat-header-row
+                          *matHeaderRowDef="displayedColumns"
+                        ></tr>
+                        <tr
+                          mat-row
+                          *matRowDef="let row; columns: displayedColumns"
+                        ></tr>
+                      </table>
+                    </div>
+                    <div class="col-12 card-profile" *ngIf="!yearControl.valid">
+                      <div class="card-body">
+                        <mat-icon class="card-title">highlight_off</mat-icon>
+                        <h4 class="card-description">ไม่พบข้อมูลสรุปผล</h4>
+                        <p class="card-description">
+                          ไม่พบข้อมูลสรุปผลในระบบ
+                          กรุณารอการเพิ่มข้อมูลสรุปผลจากนักเรียน
+                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Entrance Major -->
+      <div class="col-lg-12 col-md-12">
+        <div class="card">
+          <div class="card-header card-header-info">
+            <div class="row">
+              <div class="col-sm-12">
+                <h4 class="card-title">รายชื่อผลการสอบติด</h4>
+                <p class="card-category">
+                  นี่คือรายชื่อผลการสอบติดทั้งหมดที่พบในระบบ คุณสามารถตรวจสอบ
+                  รายละเอียดต่างๆ ของผลการสอบติดนั้นๆ ได้
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12 col-lg-4">
+                <canvas
+                  [ngStyle]="{
+                    display: isFoundEntrance ? 'block' : 'none'
+                  }"
+                  id="uniEntranceChart"
+                  height="300"
+                ></canvas>
+              </div>
+              <div class="col-12 col-lg-4">
+                <canvas
+                  [ngStyle]="{
+                    display: isFoundEntrance ? 'block' : 'none'
+                  }"
+                  id="facEntranceChart"
+                  height="300"
+                ></canvas>
+              </div>
+              <div class="col-12 col-lg-4">
+                <canvas
+                  [ngStyle]="{
+                    display: isFoundEntrance ? 'block' : 'none'
+                  }"
+                  id="majorEntranceChart"
+                  height="300"
+                ></canvas>
+              </div>
+            </div>
+            <div class="col-12 card-profile" *ngIf="!isFoundEntrance">
+              <div class="card-body">
+                <mat-icon class="card-title">highlight_off</mat-icon>
+                <h4 class="card-description">ไม่พบข้อมูลสรุปผล</h4>
+                <p class="card-description">
+                  ไม่พบข้อมูลสรุปผลในระบบ กรุณารอการเพิ่มข้อมูลสรุปผลจากนักเรียน
+                </p>
               </div>
             </div>
           </div>
@@ -169,11 +283,11 @@
             <div class="row">
               <div class="col-sm-12">
                 <h4 class="card-title">
-                  สรุปผลการสอบติด TCAS ยอดนิยม 5 อันดับ
+                  สรุปผลการสอบติด TCAS ยอดนิยม
                 </h4>
                 <p class="card-category">
-                  นี่คือสรุปสอบติดทั้งหมดที่พบในระบบ คุณสามารถตรวจสอบ หรือจัดการ
-                  รานละเอียดต่างๆ ของผลการสอบติดนั้นๆ ได้
+                  นี่คือสรุปสอบติดทั้งหมดที่พบในระบบ คุณสามารถตรวจสอบ
+                  รายละเอียดต่างๆ ของผลการสอบติดนั้นๆ ได้
                 </p>
               </div>
             </div>
@@ -181,13 +295,41 @@
           <div class="card-body">
             <div class="row">
               <div class="col-12 col-lg-4">
-                <canvas id="uniChart" height="300"></canvas>
+                <canvas
+                  [ngStyle]="{
+                    display: isFoundExam ? 'block' : 'none'
+                  }"
+                  id="uniChart"
+                  height="300"
+                ></canvas>
               </div>
               <div class="col-12 col-lg-4">
-                <canvas id="facChart" height="300"></canvas>
+                <canvas
+                  [ngStyle]="{
+                    display: isFoundExam ? 'block' : 'none'
+                  }"
+                  id="facChart"
+                  height="300"
+                ></canvas>
               </div>
               <div class="col-12 col-lg-4">
-                <canvas id="majorChart" height="300"></canvas>
+                <canvas
+                  [ngStyle]="{
+                    display: isFoundExam ? 'block' : 'none'
+                  }"
+                  id="majorChart"
+                  height="300"
+                ></canvas>
+              </div>
+              <div class="col-12 card-profile" *ngIf="!isFoundExam">
+                <div class="card-body">
+                  <mat-icon class="card-title">highlight_off</mat-icon>
+                  <h4 class="card-description">ไม่พบข้อมูลสรุปผล</h4>
+                  <p class="card-description">
+                    ไม่พบข้อมูลสรุปผลในระบบ
+                    กรุณารอการเพิ่มข้อมูลสรุปผลจากนักเรียน
+                  </p>
+                </div>
               </div>
             </div>
           </div>

@@ -1,16 +1,16 @@
-import { Alumni } from "./../../model/Alumni";
 import { Injectable } from "@angular/core";
 import {
   AngularFirestore,
   DocumentReference,
   QueryGroupFn,
 } from "@angular/fire/firestore";
-import { Student } from "src/app/model/Student";
-import { Login } from "src/app/model/Login";
 import { map } from "rxjs/operators";
+import { Login } from "src/app/model/Login";
+import { School } from "src/app/model/School";
+import { Student } from "src/app/model/Student";
 import { LoginService } from "../login-service/login.service";
 import { SchoolService } from "../school-service/school.service";
-import { School } from "src/app/model/School";
+import { Alumni } from "./../../model/Alumni";
 
 @Injectable({
   providedIn: "root",
@@ -82,9 +82,10 @@ export class StudentService {
 
       if (isEmpty) {
         let alumni = new Alumni();
-        alumni.graduated_year = "" + (new Date().getFullYear() + 543);
+        alumni.graduate_year = "" + (new Date().getFullYear() + 543);
         alumni.schoolName = localStorage.getItem("school");
         alumni.username = studentRef.id;
+        alumni.status = "ไม่ระบุ";
 
         this.firestore
           .collection(studentRef.parent)
