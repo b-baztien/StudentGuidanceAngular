@@ -1,15 +1,18 @@
 import { EntranceExamResult } from "./../../../../model/EntranceExamResult";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
-import { MatDialog, MatTableDataSource } from "@angular/material";
-import { Chart } from "chart.js";
+import { MatDialog, MatTableDataSource, MatSort } from "@angular/material";
 import { Alumni } from "src/app/model/Alumni";
 import { AlumniService } from "src/app/services/alumni-service/alumni.service";
 import { EntranceExamResultService } from "src/app/services/entrance-exam-result-service/entrance-exam-result.service";
 import { EntranceMajorService } from "./../../../../services/entrance-major-service/entrance-major.service";
 import { EntranceMajor } from "src/app/model/EntranceMajor";
+import Chart from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
 interface SummaryData {
+  universityName: string;
+  facultyName: string;
   majorName: string;
   countExam: number;
   countEntrance: number;
@@ -55,8 +58,12 @@ export class ListEntranceExamResultComponent implements OnInit {
   listEntranceMajor: EntranceMajor[];
   listExamResult: EntranceExamResult[];
 
-  summaryList = new MatTableDataSource<SummaryData>();
+  summaryList: MatTableDataSource<SummaryData>;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+
   displayedColumns: string[] = [
+    "universityName",
+    "facultyName",
     "majorName",
     "countExam",
     "countEntrance",
@@ -80,7 +87,7 @@ export class ListEntranceExamResultComponent implements OnInit {
           data["labels"][tooltipItem["index"]] +
           " : " +
           data["datasets"][0]["data"][tooltipItem["index"]] +
-          " ครั้ง"
+          " คน"
         );
       },
     },
@@ -97,15 +104,43 @@ export class ListEntranceExamResultComponent implements OnInit {
     this.setYear = new Set();
     this.school = localStorage.getItem("school");
 
+    this.listExamResult = [];
+
     //generate TCAS data
     this.entranceExamResuleService
       .getAllExamResultBySchoolName(this.school)
       .subscribe((result) => {
-        this.listExamResult = [...result];
-        result.forEach((exam) => {
+        result.forEach((examResultData) => {
+          let isDup: boolean = false;
+          this.listExamResult.forEach((examResult) => {
+            //เช็คว่ามหาวิทยาลัย คณะ สาขา นี้มีใน list แล้วหรือยัง
+            if (
+              examResult.university == examResultData.university &&
+              examResult.faculty == examResultData.faculty &&
+              examResult.major == examResultData.major
+            ) {
+              //เช็ครอบ tcas นี้ เป็นของนักเรียนที่อยู่ใน list แล้วหรือยัง
+              if (
+                examResult.ref.parent.parent.id ==
+                examResultData.ref.parent.parent.id
+              ) {
+                //มีข้อมูลใน list แล้ว
+                isDup = true;
+              }
+            }
+          });
+
+          //เช็คว่าถ้ายังไม่มีข้อมูลใน list ให้ add ลง list
+          if (!isDup) {
+            this.listExamResult.push(examResultData);
+          }
+        });
+
+        this.listExamResult.forEach((exam) => {
           this.setYear.add(exam.year);
         });
-        result.forEach((exam) => {
+
+        this.listExamResult.forEach((exam) => {
           //set university chart data
           if (this.chartUniTCASData.has(exam.year)) {
             if (this.chartUniTCASData.get(exam.year).has(exam.university)) {
@@ -263,47 +298,38 @@ export class ListEntranceExamResultComponent implements OnInit {
 
     if (this.yearControl.valid) {
       this.generateSummary(this.yearControl.value);
+      let limitData = 5;
 
       //generate entrance university chart
       this.isFoundEntrance = this.generateChart(
         this.chartUniEntranceData,
         "uniEntranceChart",
-        "สรุปผลมหาวิทยาลัยที่ศึกษาต่อ"
+        "สรุปผลสอบติด TCAS ในมหาวิทยาลัย",
+        limitData
       );
 
       //generate entrance faculty chart
       this.generateChart(
         this.chartFacEntranceData,
         "facEntranceChart",
-        "สรุปผลคณะที่ศึกษาต่อ"
-      );
-
-      //generate entrance major chart
-      this.generateChart(
-        this.chartMajorEntranceData,
-        "majorEntranceChart",
-        "สรุปผลสาขาที่ศึกษาต่อ"
+        "สรุปผลสอบติด TCAS ในคณะ",
+        limitData
       );
 
       //generate TCAS university chart
       this.isFoundExam = this.generateChart(
         this.chartUniTCASData,
         "uniChart",
-        "จำนวนผลการสอบติดใน มหาวิทยาลัย"
+        "จำนวนผลการสอบติดใน มหาวิทยาลัย",
+        limitData
       );
 
       //generate TCAS faculty chart
       this.generateChart(
         this.chartFacTCASData,
         "facChart",
-        "จำนวนผลการสอบติดใน คณะ"
-      );
-
-      //generate TCAS major chart
-      this.generateChart(
-        this.chartMajorTCASData,
-        "majorChart",
-        "จำนวนผลการสอบติดใน สาขา"
+        "จำนวนผลการสอบติดใน คณะ",
+        limitData
       );
 
       //generate summary
@@ -314,33 +340,90 @@ export class ListEntranceExamResultComponent implements OnInit {
   }
 
   generateSummary(year: string) {
-    let setMajorName: Set<string> = new Set();
+    let listEducationName: {
+      universityName: string;
+      facultyName: string;
+      majorName: string;
+    }[] = [];
 
     this.listEntranceMajor.forEach((entranceMajor) => {
-      if (entranceMajor.entranceYear == year)
-        setMajorName.add(entranceMajor.majorName);
+      if (entranceMajor.entranceYear == year) {
+        const summaryData = {
+          universityName: entranceMajor.universityName,
+          facultyName: entranceMajor.facultyName,
+          majorName: entranceMajor.majorName,
+        };
+
+        let isDup: boolean = false;
+        listEducationName.forEach((educationName) => {
+          if (
+            educationName.universityName == summaryData.universityName &&
+            educationName.facultyName == summaryData.facultyName &&
+            educationName.majorName == summaryData.majorName
+          ) {
+            isDup = true;
+          }
+        });
+
+        if (!isDup) {
+          listEducationName.push(summaryData);
+        }
+      }
     });
 
     this.listExamResult.forEach((examResult) => {
-      if (examResult.year == year) setMajorName.add(examResult.major);
+      if (examResult.year == year) {
+        const summaryData = {
+          universityName: examResult.university,
+          facultyName: examResult.faculty,
+          majorName: examResult.major,
+        };
+
+        let isDup: boolean = false;
+        listEducationName.forEach((educationName) => {
+          if (
+            educationName.universityName == summaryData.universityName &&
+            educationName.facultyName == summaryData.facultyName &&
+            educationName.majorName == summaryData.majorName
+          ) {
+            isDup = true;
+          }
+        });
+
+        if (!isDup) {
+          listEducationName.push(summaryData);
+        }
+      }
     });
 
     let listSummary: SummaryData[] = [];
-    setMajorName.forEach((majorName) => {
+    listEducationName.forEach((summary) => {
       let setCountEntrance = new Set();
       let setCountExam = new Set();
       this.listEntranceMajor.forEach((entranceMajor) => {
-        if (entranceMajor.majorName == majorName)
+        if (
+          entranceMajor.universityName == summary.universityName &&
+          entranceMajor.facultyName == summary.facultyName &&
+          entranceMajor.majorName == summary.majorName
+        ) {
           setCountEntrance.add(entranceMajor.ref.parent.parent.id);
+        }
       });
 
       this.listExamResult.forEach((examResult) => {
-        if (examResult.major == majorName) {
+        if (
+          examResult.university == summary.universityName &&
+          examResult.faculty == summary.facultyName &&
+          examResult.major == summary.majorName
+        ) {
           setCountExam.add(examResult.ref.parent.parent.id);
         }
       });
+
       const summaryData: SummaryData = {
-        majorName: majorName,
+        universityName: summary.universityName,
+        facultyName: summary.facultyName,
+        majorName: summary.majorName,
         countExam: setCountExam.size,
         countEntrance: setCountEntrance.size,
       };
@@ -348,9 +431,8 @@ export class ListEntranceExamResultComponent implements OnInit {
       listSummary.push(summaryData);
     });
 
-    console.log({ listSummary });
-
-    this.summaryList.data = listSummary;
+    this.summaryList = new MatTableDataSource(listSummary);
+    this.summaryList.sort = this.sort;
   }
 
   getCountAlumniData() {
@@ -376,9 +458,20 @@ export class ListEntranceExamResultComponent implements OnInit {
   generateChart(
     chartData: Map<string, Map<string, number>>,
     chartId: string,
-    chartTitle: string
+    chartTitle: string,
+    limit?: number
   ) {
-    let dataCount = new Array();
+    if (limit) {
+      const listKeyMap = Array.from(
+        chartData.get(this.yearControl.value).keys()
+      ).slice(limit);
+
+      listKeyMap.forEach((keyMap) => {
+        chartData.get(this.yearControl.value).delete(keyMap);
+      });
+    }
+
+    let dataCount: number[] = new Array();
     chartData.get(this.yearControl.value).forEach((count) => {
       dataCount.push(count);
     });
@@ -400,6 +493,7 @@ export class ListEntranceExamResultComponent implements OnInit {
           },
         ],
       },
+      plugins: [ChartDataLabels],
       options: {
         title: {
           text: chartTitle,
@@ -407,7 +501,28 @@ export class ListEntranceExamResultComponent implements OnInit {
           fontSize: "15",
           display: true,
         },
+        legend: {
+          display: true,
+          position: "bottom",
+          labels: {
+            boxWidth: 20,
+            fontColor: "#111",
+            padding: 15,
+          },
+        },
         tooltips: this.tooltip,
+        plugins: {
+          datalabels: {
+            color: "#111",
+            textAlign: "center",
+            font: {
+              lineHeight: 1.6,
+            },
+            formatter: function (value, ctx) {
+              return value + " คน";
+            },
+          },
+        },
       },
       scales: {
         yAxes: [
