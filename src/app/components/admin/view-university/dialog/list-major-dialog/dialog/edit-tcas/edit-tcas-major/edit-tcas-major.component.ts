@@ -48,34 +48,45 @@ export class EditTcasMajorComponent implements OnInit, AfterContentChecked {
       this.data.universityRef
     );
 
-    let tcasDocs = await this.tcasService
+    let tcasMajorDocs = await this.tcasService
       .getTcasByMajorReference(this.data.major.ref)
       .toPromise();
 
-    this.listTcas = tcasDocs.map((docs) => {
+    this.listTcas = tcasMajorDocs.map((docs) => {
       return { id: docs.id, ref: docs.ref, ...(docs.data() as Tcas) };
     });
+
+    this.tcasTabLabel = this.listTcas.map((tcas) => +tcas.round);
+
+    //
+    this.listTcasUniversity.forEach((tcas) => {
+      let isfound = false;
+      this.tcasTabLabel.forEach((round) => {
+        if (tcas.round == round.toString()) {
+          isfound = true;
+        }
+      });
+
+      this.listTcasUniversity.forEach((tcasUni) => {
+        if (!this.tcasTabLabel.find((round) => round == +tcasUni.round)) {
+          let tcasData: Tcas = this.listTcasUniversity.find(
+            (tcas) => tcas.round == tcasUni.round
+          );
+          tcasData.entranceAmount = null;
+          tcasData.url = null;
+          tcasData.year = null;
+          this.listTcas.push(tcasData);
+          this.tcasTabLabel.push(+tcasData.round);
+        }
+      });
+    });
+    this.listTcas = this.listTcas.sort((a, b) => +a.round - +b.round);
+    //sort tcas by round
+    this.tcasTabLabel = this.tcasTabLabel.sort((a, b) => a - b);
   }
 
   ngAfterContentChecked(): void {
     this.loadData = this.tcasTabLabel.length === 0 ? false : true;
-
-    if (!this.loadData) {
-      this.tcasTabLabel = this.listTcasUniversity
-        .map((tcas) => +tcas.round)
-        .sort((a, b) => a - b);
-
-      this.tcasTabLabel.forEach((round) => {
-        if (this.listTcas.find((tcas) => tcas.round === "" + round)) return;
-        let tcasData: Tcas = this.listTcasUniversity.find(
-          (tcas) => tcas.round === "" + round
-        );
-        tcasData.entranceAmount = null;
-        tcasData.url = null;
-        tcasData.year = null;
-        this.listTcas.push(tcasData);
-      });
-    }
   }
 
   isErrorState(

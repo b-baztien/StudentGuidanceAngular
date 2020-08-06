@@ -23,7 +23,7 @@ export class MajorService {
   ) {}
 
   getAllMajor() {
-    return this.firestore.collection("Major").snapshotChanges();
+    return this.firestore.collectionGroup("Major").snapshotChanges();
   }
 
   getMajorByReference(majorRef: DocumentReference) {

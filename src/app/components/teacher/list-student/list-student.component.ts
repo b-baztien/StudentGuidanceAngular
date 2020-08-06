@@ -28,16 +28,12 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
     "fullname",
     "email",
     "phone_no",
-    "gender",
-    "entry_year",
     "manage",
   ];
   displayedAlumniColumns: string[] = [
     "fullname",
     "email",
     "phone_no",
-    "gender",
-    "entry_year",
     "manage",
   ];
 

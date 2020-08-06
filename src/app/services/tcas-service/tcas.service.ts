@@ -3,6 +3,7 @@ import { Tcas } from "src/app/model/Tcas";
 import { map } from "rxjs/operators";
 import { AngularFirestore, DocumentReference } from "@angular/fire/firestore";
 import { Injectable } from "@angular/core";
+import { pipe } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -19,48 +20,27 @@ export class TcasService {
 
   async getAllTcasUniversity(universityRef: DocumentReference) {
     let listTcas = new Array<Tcas>();
-    const facultySnapshot = await this.firestore
-      .doc(universityRef.path)
-      .collection("Faculty")
+
+    const tcasSnapshot = await this.firestore
+      .collectionGroup("Tcas")
       .get()
       .toPromise();
-    facultySnapshot.docs.forEach(async (facDoc) => {
-      const majorSnapshot = await this.firestore
-        .doc(facDoc.ref.path)
-        .collection("Major")
-        .get()
-        .toPromise();
-      majorSnapshot.forEach(async (majorDoc) => {
-        const tcasSnapshot = await this.firestore
-          .doc(majorDoc.ref.path)
-          .collection("Tcas")
-          .get()
-          .toPromise();
 
-        if (tcasSnapshot.empty) {
-          return;
-        }
-
-        let listTcasData: Array<Tcas> = tcasSnapshot.docs.map((doc) => {
-          return { id: doc.id, ref: doc.ref, ...(doc.data() as Tcas) };
-        });
-
-        if (listTcas.length == 0) {
-          listTcas.push(...listTcasData);
-        } else {
-          let listTcasTemp = listTcasData.filter((tcasData) => {
-            let findTcas = listTcas.find(
-              (tcas) => tcas && tcas.round === tcasData.round
-            );
-
-            let round = findTcas ? findTcas.round : tcasData.round;
-
-            return tcasData.round !== round;
-          });
-
-          listTcas.push(...listTcasTemp);
-        }
+    const listTcasTemp = tcasSnapshot.docs
+      .filter(
+        (doc) =>
+          doc.ref.parent.parent.parent.parent.parent.parent.id ==
+          universityRef.id
+      )
+      .map((doc) => {
+        return { id: doc.id, ref: doc.ref, ...(doc.data() as Tcas) };
       });
+
+    //reduce duplicate tcas
+    listTcasTemp.forEach((tcasTemp) => {
+      if (!listTcas.find((tcas) => tcas.round == tcasTemp.round)) {
+        listTcas.push(tcasTemp);
+      }
     });
     return listTcas;
   }

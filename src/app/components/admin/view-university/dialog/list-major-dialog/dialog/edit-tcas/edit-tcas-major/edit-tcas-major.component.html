@@ -2,39 +2,36 @@
   <h1 mat-dialog-title><mat-icon>edit</mat-icon> จัดการข้อมูล TCAS สาขา</h1>
 </div>
 <mat-divider></mat-divider><br />
-<ng-container *ngIf="loadData">
+<div class="row col-sm-12">
+  <h4>เพิ่มรอบ TCAS</h4>
+</div>
+<form [formGroup]="tcasRoundForm">
   <div class="row col-sm-12">
-    <h4>เพิ่มรอบ TCAS</h4>
-  </div>
-  <form [formGroup]="tcasRoundForm">
-    <div class="row col-sm-12">
-      <div class="col-sm-10">
-        <mat-form-field>
-          <input
-            matInput
-            type="number"
-            placeholder="รอบ TCAS"
-            formControlName="round"
-          />
-          <mat-error
-            *ngIf="tcasRoundForm.controls.round.hasError('alreadyRound')"
-          >
-            มีรอบ TCAS นี้แล้ว
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <div class="col-sm-2">
-        <button
-          mat-raised-button
-          class="btn-success"
-          (click)="onAddRoundClick()"
+    <div class="col-sm-10">
+      <mat-form-field>
+        <input
+          matInput
+          type="number"
+          placeholder="รอบ TCAS"
+          formControlName="round"
+        />
+        <mat-error
+          *ngIf="tcasRoundForm.controls.round.hasError('alreadyRound')"
         >
-          <mat-icon>add</mat-icon>
-          เพิ่มรอบ TCAS
-        </button>
-      </div>
+          มีรอบ TCAS นี้แล้ว
+        </mat-error>
+      </mat-form-field>
     </div>
-  </form>
+    <div class="col-sm-2">
+      <button mat-raised-button class="btn-success" (click)="onAddRoundClick()">
+        <mat-icon>add</mat-icon>
+        เพิ่มรอบ TCAS
+      </button>
+    </div>
+  </div>
+</form>
+
+<ng-container *ngIf="loadData">
   <mat-divider></mat-divider><br />
   <div class="row col-sm-12"><h4>จัดการรอบ TCAS</h4></div>
   <mat-tab-group mat-stretch-tabs [selectedIndex]="selected.value">
