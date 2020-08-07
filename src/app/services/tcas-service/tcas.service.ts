@@ -85,13 +85,10 @@ export class TcasService {
   }
 
   async updateTcas(tcasRef: DocumentReference, tcas: Tcas) {
-    delete tcas.id;
-    delete tcas.ref;
+    const batch = this.firestore.firestore.batch();
     try {
-      return await this.firestore
-        .collection(tcasRef.parent)
-        .doc(tcasRef.id)
-        .update(Object.assign({}, tcas));
+      batch.set(tcasRef, Object.assign({}, tcas));
+      await batch.commit();
     } catch (error) {
       console.error(error);
       throw new Error("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งภายหลัง");

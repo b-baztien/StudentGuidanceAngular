@@ -1,4 +1,3 @@
-import { isNullOrUndefined } from "util";
 import { AfterContentChecked, Component, Inject, OnInit } from "@angular/core";
 import { DocumentReference } from "@angular/fire/firestore";
 import {
@@ -59,30 +58,22 @@ export class EditTcasMajorComponent implements OnInit, AfterContentChecked {
     this.tcasTabLabel = this.listTcas.map((tcas) => +tcas.round);
 
     //
-    this.listTcasUniversity.forEach((tcas) => {
-      let isfound = false;
-      this.tcasTabLabel.forEach((round) => {
-        if (tcas.round == round.toString()) {
-          isfound = true;
-        }
-      });
-
-      this.listTcasUniversity.forEach((tcasUni) => {
-        if (!this.tcasTabLabel.find((round) => round == +tcasUni.round)) {
-          let tcasData: Tcas = this.listTcasUniversity.find(
-            (tcas) => tcas.round == tcasUni.round
-          );
-          tcasData.entranceAmount = null;
-          tcasData.url = null;
-          tcasData.year = null;
-          this.listTcas.push(tcasData);
-          this.tcasTabLabel.push(+tcasData.round);
-        }
-      });
+    this.listTcasUniversity.forEach((tcasUni) => {
+      if (!this.tcasTabLabel.find((round) => round == +tcasUni.round)) {
+        let tcasData: Tcas = this.listTcasUniversity.find(
+          (tcas) => tcas.round == tcasUni.round
+        );
+        tcasData.entranceAmount = null;
+        tcasData.url = null;
+        tcasData.year = null;
+        this.listTcas.push(tcasData);
+        this.tcasTabLabel.push(+tcasData.round);
+      }
     });
-    this.listTcas = this.listTcas.sort((a, b) => +a.round - +b.round);
+
     //sort tcas by round
-    this.tcasTabLabel = this.tcasTabLabel.sort((a, b) => a - b);
+    this.listTcas.sort((a, b) => +a.round - +b.round);
+    this.tcasTabLabel.sort((a, b) => a - b);
   }
 
   ngAfterContentChecked(): void {
@@ -114,9 +105,16 @@ export class EditTcasMajorComponent implements OnInit, AfterContentChecked {
   onAddRoundClick(): void {
     this.matchTcasRound(this.tcasRoundForm);
     if (this.tcasRoundForm.valid) {
+      //add round
       let round = this.tcasRoundForm.get("round").value;
+
+      //add round to label tab
       this.tcasTabLabel.push(round);
+
+      //set form to null
       this.tcasRoundForm.get("round").setValue(null);
+
+      //select a new tab
       this.selected.setValue(this.tcasTabLabel.length - 1);
     }
   }

@@ -96,7 +96,10 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(EditTcasMajorComponent, {
       width: "90%",
       height: "auto",
-      data: { major: major, universityRef: major.ref.parent.parent.parent.parent },
+      data: {
+        major: major,
+        universityRef: major.ref.parent.parent.parent.parent,
+      },
     });
     dialogRef
       .afterClosed()
@@ -104,9 +107,9 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
         try {
           if (!result) {
             return;
-          } else if (result.mode === "add") {
+          } else if (result.mode == "add") {
             await this.tcasService.addTcas(major.ref, result.tcas);
-          } else if (result.mode === "update") {
+          } else if (result.mode == "edit") {
             this.tcasService.updateTcas(result.tcas.ref, result.tcas);
           }
           new Notifications().showNotification(

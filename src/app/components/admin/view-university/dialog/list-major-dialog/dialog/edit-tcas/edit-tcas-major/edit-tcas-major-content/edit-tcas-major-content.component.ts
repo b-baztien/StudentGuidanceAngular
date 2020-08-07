@@ -41,7 +41,8 @@ export class EditTcasMajorContentComponent implements OnInit {
         [Validators.required, Validators.pattern(RegularExpressionUtil.urlReg)]
       ),
     });
-    if (this.tcas.entranceAmount) {
+
+    if (!this.tcas || !this.tcas.entranceAmount) {
       this.mode = "add";
       this.tcas = new Tcas();
     }
