@@ -1,21 +1,15 @@
+import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
+import { DocumentReference } from "@angular/fire/firestore";
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
+import { Subscription } from "rxjs";
+import { ConfirmDialogComponent } from "src/app/components/util/confirm-dialog/confirm-dialog.component";
+import { Notifications } from "src/app/components/util/notification";
+import { Major } from "src/app/model/Major";
+import { MajorService } from "src/app/services/major-service/major.service";
 import { Tcas } from "./../../../../../model/Tcas";
 import { TcasService } from "./../../../../../services/tcas-service/tcas.service";
-import { EditTcasMajorComponent } from "./dialog/edit-tcas/edit-tcas-major/edit-tcas-major.component";
-import {
-  Component,
-  OnInit,
-  Inject,
-  OnDestroy,
-  AfterViewChecked,
-} from "@angular/core";
-import { MajorService } from "src/app/services/major-service/major.service";
-import { Major } from "src/app/model/Major";
 import { EditMajorComponent } from "./dialog/edit-major/edit-major.component";
-import { Notifications } from "src/app/components/util/notification";
-import { ConfirmDialogComponent } from "src/app/components/util/confirm-dialog/confirm-dialog.component";
-import { Subscription } from "rxjs";
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
-import { DocumentReference } from "@angular/fire/firestore";
+import { EditTcasMajorComponent } from "./dialog/edit-tcas/edit-tcas-major/edit-tcas-major.component";
 
 @Component({
   selector: "app-list-major-dialog",
