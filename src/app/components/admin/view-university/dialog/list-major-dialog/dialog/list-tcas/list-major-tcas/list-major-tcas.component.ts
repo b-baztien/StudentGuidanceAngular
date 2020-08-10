@@ -29,8 +29,11 @@ export class ListMajorTcasComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.tcasSub = this.tcasService
-      .getTcasByMajorReference(this.majorRef)
+      .getTcasByMajorReferenceRealtime(this.majorRef)
       .subscribe((tcasDocs) => {
+        this.listButtonTcas = [];
+        console.log({ tcasDocs });
+
         tcasDocs.forEach((docs) => {
           let tcasData: Tcas = {
             id: docs.id,

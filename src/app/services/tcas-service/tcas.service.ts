@@ -54,6 +54,15 @@ export class TcasService {
       .pipe(map((docs) => docs.docs.map((item) => item)));
   }
 
+  getTcasByMajorReferenceRealtime(majorRef: DocumentReference) {
+    return this.firestore
+      .collection(majorRef.parent.path)
+      .doc(majorRef.id)
+      .collection("Tcas", (query) => query.orderBy("round"))
+      .snapshotChanges()
+      .pipe(map((docs) => docs.map((item) => item.payload.doc)));
+  }
+
   async addTcas(majorRef: DocumentReference, tcas: Tcas) {
     delete tcas.id;
     delete tcas.ref;

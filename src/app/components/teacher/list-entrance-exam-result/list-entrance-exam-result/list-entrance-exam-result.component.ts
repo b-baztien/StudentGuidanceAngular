@@ -440,7 +440,6 @@ export class ListEntranceExamResultComponent implements OnInit {
       .getAlumniByGraduateYear(this.school, this.yearControl.value)
       .subscribe((result) => {
         let listAlumni: Alumni[] = [...result];
-        console.log({ listAlumni });
         this.totalAlumni = result.length;
         this.totalEntrance = listAlumni.filter(
           (alumni) => alumni.status === "ศึกษาต่อ"

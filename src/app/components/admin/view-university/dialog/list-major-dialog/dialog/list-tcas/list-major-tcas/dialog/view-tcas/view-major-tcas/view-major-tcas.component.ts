@@ -13,9 +13,7 @@ export class ViewMajorTcasComponent implements OnInit {
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<ViewMajorTcasComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Tcas
-  ) {
-    if (!isNullOrUndefined(data)) console.log({ data });
-  }
+  ) {}
 
   ngOnInit() {}
 }
