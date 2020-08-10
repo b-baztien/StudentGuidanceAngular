@@ -1,9 +1,10 @@
+import { NgxSpinnerService } from "ngx-spinner";
 import { Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
 import {
   MatTableDataSource,
   MatPaginator,
   MatDialog,
-  MatPaginatorIntl
+  MatPaginatorIntl,
 } from "@angular/material";
 import { Router } from "@angular/router";
 import { UniversityService } from "src/app/services/university-service/university.service";
@@ -14,7 +15,7 @@ import { Subscription } from "rxjs";
 @Component({
   selector: "app-list-university",
   templateUrl: "./list-university.component.html",
-  styleUrls: ["./list-university.component.css"]
+  styleUrls: ["./list-university.component.css"],
 })
 export class ListUniversityComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [
@@ -23,7 +24,7 @@ export class ListUniversityComponent implements OnInit, OnDestroy {
     "url",
     "view",
     "province",
-    "zone"
+    "zone",
   ];
   universityList: MatTableDataSource<University>;
 
@@ -40,20 +41,27 @@ export class ListUniversityComponent implements OnInit, OnDestroy {
   constructor(
     public dialog: MatDialog,
     private router: Router,
-    private universityService: UniversityService
+    private universityService: UniversityService,
+    private spinner: NgxSpinnerService
   ) {}
 
   ngOnInit() {
+    this.spinner.show();
+    setTimeout(() => {
+      this.spinner.hide();
+    }, 3000);
+
     this.universityList = new MatTableDataSource<University>();
     this.customFilter();
     //add data to table datasource
     this.uniSub = this.universityService
       .getAllUniversity()
-      .subscribe(universitys => {
+      .subscribe((universitys) => {
         this.universityList.data = universitys;
         if (this.universityList.data.length === 0) {
           this.showTable = false;
         } else {
+          this.spinner.hide();
           this.showTable = true;
         }
 
@@ -108,14 +116,14 @@ export class ListUniversityComponent implements OnInit, OnDestroy {
   openAddUniversityDialog(): void {
     const dialogRef = this.dialog.open(AddUniversityDialogComponent, {
       width: "90%",
-      height: "90%"
+      height: "90%",
     });
 
-    dialogRef.afterClosed().subscribe(async universityId => {
+    dialogRef.afterClosed().subscribe(async (universityId) => {
       if (universityId != null) {
         this.router.navigate([
           "/admin/list-university/view-university",
-          { university: universityId }
+          { university: universityId },
         ]);
       }
     });
@@ -124,7 +132,7 @@ export class ListUniversityComponent implements OnInit, OnDestroy {
   onUniversityClick(university: string) {
     this.router.navigate([
       "/admin/list-university/view-university",
-      { university: university }
+      { university: university },
     ]);
   }
 }

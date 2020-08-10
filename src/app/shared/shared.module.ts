@@ -6,6 +6,7 @@ import { CommonModule } from "@angular/common";
 import { PhonePipe } from "../pipe/phone.pipe";
 import { UserTypePipe } from "../pipe/user-type.pipe";
 import { ChartModule } from "angular2-chartjs";
+import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 import {
   MatButtonModule,
   MatInputModule,
@@ -70,6 +71,8 @@ import { SatNativeDateModule, SatDatepickerModule } from "saturn-datepicker";
     MatCarouselModule,
     ChartModule,
     ThaiYearPipe,
+    NgxSpinnerModule,
   ],
+  providers: [NgxSpinnerService],
 })
 export class SharedModule {}

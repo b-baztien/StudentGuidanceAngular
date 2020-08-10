@@ -1,3 +1,4 @@
+import { NgxSpinnerService } from "ngx-spinner";
 import { Component, OnInit, ViewChild, AfterViewInit } from "@angular/core";
 import {
   MatTableDataSource,
@@ -33,9 +34,18 @@ export class ListUserComponent implements OnInit, AfterViewInit {
   paginatorInit = new MatPaginatorIntl();
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
-  constructor(public dialog: MatDialog, private loginService: LoginService) {}
+  constructor(
+    public dialog: MatDialog,
+    private loginService: LoginService,
+    private spinner: NgxSpinnerService,
+  ) {}
 
   ngOnInit() {
+    this.spinner.show();
+    setTimeout(() => {
+      this.spinner.hide();
+    }, 3000);
+
     this.userList = new MatTableDataSource<Login>();
     this.customFilter();
     const storageLogin: Login = JSON.parse(localStorage.getItem("userData"));
@@ -48,6 +58,7 @@ export class ListUserComponent implements OnInit, AfterViewInit {
       if (this.userList.data.length === 0) {
         this.showTable = false;
       } else {
+        this.spinner.hide();
         this.showTable = true;
       }
     });

@@ -30,6 +30,7 @@ import { AngularFireStorage } from "@angular/fire/storage";
 import { ListMajorAdminDialogComponent } from "./dialog/list-major-dialog/list-major-dialog.component";
 import { ConfirmDialogComponent } from "../../util/confirm-dialog/confirm-dialog.component";
 import { Notifications } from "../../util/notification";
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: "app-view-university",
@@ -66,10 +67,16 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
     public dialog: MatDialog,
     private activeRoute: ActivatedRoute,
     private router: Router,
-    private afStorage: AngularFireStorage
+    private afStorage: AngularFireStorage,
+    private spinner: NgxSpinnerService
   ) {}
 
   ngOnInit() {
+    this.spinner.show();
+    setTimeout(() => {
+      this.spinner.hide();
+    }, 3000);
+
     this.university_id = this.activeRoute.snapshot.paramMap.get("university");
     if (this.university_id === null) {
       window.location.replace("/admin");
@@ -136,6 +143,7 @@ export class ViewUniversityComponent implements OnInit, AfterViewInit {
           this.showContent = false;
         } else {
           this.showContent = true;
+          this.spinner.hide();
         }
       });
   }

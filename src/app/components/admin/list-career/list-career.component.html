@@ -1,79 +1,126 @@
+<ngx-spinner
+  bdColor="rgba(0, 0, 0, 0.8)"
+  size="medium"
+  color="#fff"
+  type="square-jelly-box"
+  [fullScreen]="true"
+>
+  <p style="color: white;">กำลังโหลด...</p>
+</ngx-spinner>
+
 <div class="main-content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header card-header-info">
-                        <div class="row">
-                            <div class="col-sm-8">
-                                <h4 class="card-title">อาชีพ</h4>
-                                <p class="card-category">อาชีพ ต่างๆ ภายในระบบ
-                                </p>
-                            </div>
-                            <div class="col-sm-4 card-button-right"><button mat-raised-button class="btn-success"
-                                    (click)="openAddEditCareerDialog()">
-                                    <mat-icon>add</mat-icon> เพิ่มข้อมูลอาชีพ
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-profile no-margin" *ngIf="!showTable">
-                            <div class="card-body">
-                                <mat-icon class="card-title">highlight_off</mat-icon>
-                                <h4 class="card-description">ไม่พบข้อมูลอาชีพ</h4>
-                                <p class="card-description">
-                                    ไม่พบข้อมูลอาชีพภายในระบบ
-                                </p>
-                            </div>
-                        </div>
-                        <div class="card-body table-responsive">
-                            <div *ngIf="showTable">
-                                <mat-form-field>
-                                    <input matInput placeholder="ค้นหาอาชีพในระบบ..."
-                                        (keyup)="applyFilter($event.target.value)">
-                                </mat-form-field>
-                                <table aria-describedby="careerTable" mat-table [dataSource]="careerList"
-                                    class="table table-hover">
-                                    <ng-container matColumnDef="career_name">
-                                        <th id="career_name" mat-header-cell *matHeaderCellDef>ชื่ออาชีพ</th>
-                                        <td mat-cell *matCellDef="let career"> {{career.career_name}}
-                                        </td>
-                                    </ng-container>
-                                    <ng-container matColumnDef="manage">
-                                        <th id="manage" mat-header-cell colspan="2" *matHeaderCellDef>จัดการข้อมูล</th>
-                                        <td mat-cell *matCellDef="let career">
-                                            <div class="button-row">
-                                                <button mat-raised-button class="btn-warning"
-                                                    (click)="openAddEditCareerDialog(career)">
-                                                    <mat-icon>edit</mat-icon> แก้ไขข้อมูล
-                                                </button>
-                                                <button mat-raised-button class="btn-danger"
-                                                    (click)="openDeleteCareerDialog(career)">
-                                                    <mat-icon>delete</mat-icon> ลบข้อมูล
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </ng-container>
-                                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                                </table>
-                                <div class="card-profile" *ngIf="careerList.filteredData.length == 0">
-                                    <div class="card-body">
-                                        <mat-icon class="card-title">search</mat-icon>
-                                        <h4 class="card-description">ไม่พบข้อมูลอาชีพที่ค้นหา</h4>
-                                        <p class="card-description">
-                                            ไม่พบข้อมูลอาชีพตามเงื่อนไขที่ค้นหา กรุณาค้นหาด้วยเงื่อนไขอื่น
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <mat-paginator [hidePageSize]="true" [showFirstLastButtons]="true" [pageSize]="5">
-                            </mat-paginator>
-                        </div>
-                    </div>
-                </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-info">
+            <div class="row">
+              <div class="col-sm-8">
+                <h4 class="card-title">อาชีพ</h4>
+                <p class="card-category">อาชีพ ต่างๆ ภายในระบบ</p>
+              </div>
+              <div class="col-sm-4 card-button-right">
+                <button
+                  mat-raised-button
+                  class="btn-success"
+                  (click)="openAddEditCareerDialog()"
+                >
+                  <mat-icon>add</mat-icon> เพิ่มข้อมูลอาชีพ
+                </button>
+              </div>
             </div>
+          </div>
+          <div class="card-body">
+            <div class="card-profile no-margin" *ngIf="!showTable">
+              <div class="card-body">
+                <mat-icon class="card-title">highlight_off</mat-icon>
+                <h4 class="card-description">ไม่พบข้อมูลอาชีพ</h4>
+                <p class="card-description">
+                  ไม่พบข้อมูลอาชีพภายในระบบ
+                </p>
+              </div>
+            </div>
+            <div class="card-body table-responsive">
+              <div *ngIf="showTable">
+                <mat-form-field>
+                  <input
+                    matInput
+                    placeholder="ค้นหาอาชีพในระบบ..."
+                    (keyup)="applyFilter($event.target.value)"
+                  />
+                </mat-form-field>
+                <table
+                  aria-describedby="careerTable"
+                  mat-table
+                  [dataSource]="careerList"
+                  class="table table-hover"
+                >
+                  <ng-container matColumnDef="career_name">
+                    <th id="career_name" mat-header-cell *matHeaderCellDef>
+                      ชื่ออาชีพ
+                    </th>
+                    <td mat-cell *matCellDef="let career">
+                      {{ career.career_name }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="manage">
+                    <th
+                      id="manage"
+                      mat-header-cell
+                      colspan="2"
+                      *matHeaderCellDef
+                    >
+                      จัดการข้อมูล
+                    </th>
+                    <td mat-cell *matCellDef="let career">
+                      <div class="button-row">
+                        <button
+                          mat-raised-button
+                          class="btn-warning"
+                          (click)="openAddEditCareerDialog(career)"
+                        >
+                          <mat-icon>edit</mat-icon> แก้ไขข้อมูล
+                        </button>
+                        <button
+                          mat-raised-button
+                          class="btn-danger"
+                          (click)="openDeleteCareerDialog(career)"
+                        >
+                          <mat-icon>delete</mat-icon> ลบข้อมูล
+                        </button>
+                      </div>
+                    </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr
+                    mat-row
+                    *matRowDef="let row; columns: displayedColumns"
+                  ></tr>
+                </table>
+                <div
+                  class="card-profile"
+                  *ngIf="careerList.filteredData.length == 0"
+                >
+                  <div class="card-body">
+                    <mat-icon class="card-title">search</mat-icon>
+                    <h4 class="card-description">ไม่พบข้อมูลอาชีพที่ค้นหา</h4>
+                    <p class="card-description">
+                      ไม่พบข้อมูลอาชีพตามเงื่อนไขที่ค้นหา
+                      กรุณาค้นหาด้วยเงื่อนไขอื่น
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <mat-paginator
+                [hidePageSize]="true"
+                [showFirstLastButtons]="true"
+                [pageSize]="5"
+              >
+              </mat-paginator>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>

@@ -24,6 +24,9 @@ import { EditUniversityDialogComponent } from "./components/admin/view-universit
 import { EditMajorComponent } from "./components/admin/view-university/dialog/list-major-dialog/dialog/edit-major/edit-major.component";
 import { EditTcasMajorContentComponent } from "./components/admin/view-university/dialog/list-major-dialog/dialog/edit-tcas/edit-tcas-major/edit-tcas-major-content/edit-tcas-major-content.component";
 import { EditTcasMajorComponent } from "./components/admin/view-university/dialog/list-major-dialog/dialog/edit-tcas/edit-tcas-major/edit-tcas-major.component";
+import { EditTcasUniversityDialogComponent } from "./components/admin/view-university/dialog/list-major-dialog/dialog/edit-tcas/edit-tcas-university/edit-tcas-university-dialog/edit-tcas-university-dialog.component";
+import { ListMajorImageComponent } from "./components/admin/view-university/dialog/list-major-dialog/dialog/list-image/list-major-image/list-major-image.component";
+import { ViewMajorTcasComponent } from "./components/admin/view-university/dialog/list-major-dialog/dialog/list-tcas/list-major-tcas/dialog/view-tcas/view-major-tcas/view-major-tcas.component";
 import { ListMajorTcasComponent } from "./components/admin/view-university/dialog/list-major-dialog/dialog/list-tcas/list-major-tcas/list-major-tcas.component";
 import { ListMajorAdminDialogComponent } from "./components/admin/view-university/dialog/list-major-dialog/list-major-dialog.component";
 import { LogoutComponent } from "./components/logout/logout.component";
@@ -37,9 +40,6 @@ import { TeacherLayoutComponent } from "./layouts/teacher-layout/teacher-layout.
 import { UserLayoutComponent } from "./layouts/user-layout/user-layout.component";
 import { LoginService } from "./services/login-service/login.service";
 import { SharedModule } from "./shared/shared.module";
-import { ViewMajorTcasComponent } from "./components/admin/view-university/dialog/list-major-dialog/dialog/list-tcas/list-major-tcas/dialog/view-tcas/view-major-tcas/view-major-tcas.component";
-import { ListMajorImageComponent } from "./components/admin/view-university/dialog/list-major-dialog/dialog/list-image/list-major-image/list-major-image.component";
-import { EditTcasUniversityDialogComponent } from "./components/admin/view-university/dialog/list-major-dialog/dialog/edit-tcas/edit-tcas-university/edit-tcas-university-dialog/edit-tcas-university-dialog.component";
 
 registerLocaleData(localeTh, "th-TH", localeThExtra);
 @NgModule({

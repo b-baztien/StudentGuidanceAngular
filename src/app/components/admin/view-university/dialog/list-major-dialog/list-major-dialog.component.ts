@@ -10,6 +10,7 @@ import { Tcas } from "./../../../../../model/Tcas";
 import { TcasService } from "./../../../../../services/tcas-service/tcas.service";
 import { EditMajorComponent } from "./dialog/edit-major/edit-major.component";
 import { EditTcasMajorComponent } from "./dialog/edit-tcas/edit-tcas-major/edit-tcas-major.component";
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: "app-list-major-dialog",
@@ -28,10 +29,16 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
     private tcasService: TcasService,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<ListMajorAdminDialogComponent>,
+    private spinner: NgxSpinnerService,
     @Inject(MAT_DIALOG_DATA) public data: DocumentReference
   ) {}
 
   async ngOnInit() {
+    this.spinner.show();
+    setTimeout(() => {
+      this.spinner.hide();
+    }, 3000);
+
     this.majorSub = this.majorService
       .getMajorByFacultyReference(this.data)
       .subscribe((majorDocs) => {
@@ -43,6 +50,7 @@ export class ListMajorAdminDialogComponent implements OnInit, OnDestroy {
           this.showData = false;
           this.dialogRef.updateSize("90%", "auto");
         } else {
+          this.spinner.hide();
           this.showData = true;
           this.dialogRef.updateSize("90%", "90%");
         }
