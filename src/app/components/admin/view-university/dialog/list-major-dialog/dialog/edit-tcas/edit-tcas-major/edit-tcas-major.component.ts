@@ -1,3 +1,4 @@
+import { NgxSpinnerService } from "ngx-spinner";
 import { AfterContentChecked, Component, Inject, OnInit } from "@angular/core";
 import { DocumentReference } from "@angular/fire/firestore";
 import {
@@ -35,7 +36,8 @@ export class EditTcasMajorComponent implements OnInit, AfterContentChecked {
     private tcasService: TcasService,
     private formBuilder: FormBuilder,
     @Inject(MAT_DIALOG_DATA)
-    public data: { major: Major; universityRef: DocumentReference }
+    public data: { major: Major; universityRef: DocumentReference },
+    private spinner: NgxSpinnerService
   ) {
     this.tcasRoundForm = this.formBuilder.group({
       round: new FormControl(null),
@@ -43,6 +45,11 @@ export class EditTcasMajorComponent implements OnInit, AfterContentChecked {
   }
 
   async ngOnInit() {
+    this.spinner.show();
+    setTimeout(() => {
+      this.spinner.hide();
+    }, 3000);
+
     this.listTcasUniversity = await this.tcasService.getAllTcasUniversity(
       this.data.universityRef
     );
@@ -78,6 +85,9 @@ export class EditTcasMajorComponent implements OnInit, AfterContentChecked {
 
   ngAfterContentChecked(): void {
     this.loadData = this.tcasTabLabel.length === 0 ? false : true;
+    if (this.loadData) {
+      this.spinner.hide();
+    }
   }
 
   isErrorState(

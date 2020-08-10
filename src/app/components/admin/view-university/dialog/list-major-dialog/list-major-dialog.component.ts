@@ -1,6 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { DocumentReference } from "@angular/fire/firestore";
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
+import { NgxSpinnerService } from "ngx-spinner";
 import { Subscription } from "rxjs";
 import { ConfirmDialogComponent } from "src/app/components/util/confirm-dialog/confirm-dialog.component";
 import { Notifications } from "src/app/components/util/notification";
@@ -10,7 +11,6 @@ import { Tcas } from "./../../../../../model/Tcas";
 import { TcasService } from "./../../../../../services/tcas-service/tcas.service";
 import { EditMajorComponent } from "./dialog/edit-major/edit-major.component";
 import { EditTcasMajorComponent } from "./dialog/edit-tcas/edit-tcas-major/edit-tcas-major.component";
-import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: "app-list-major-dialog",
