@@ -32,7 +32,6 @@ export class ListMajorTcasComponent implements OnInit, OnDestroy {
       .getTcasByMajorReferenceRealtime(this.majorRef)
       .subscribe((tcasDocs) => {
         this.listButtonTcas = [];
-        console.log({ tcasDocs });
 
         tcasDocs.forEach((docs) => {
           let tcasData: Tcas = {
