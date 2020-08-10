@@ -24,7 +24,7 @@ export class EditTcasMajorContentComponent implements OnInit {
   ngOnInit() {
     this.tcasForm = new FormGroup({
       date: new FormControl(
-        isNullOrUndefined(this.tcas)
+        isNullOrUndefined(this.tcas) || isNullOrUndefined(this.tcas.startDate)
           ? null
           : {
               begin: this.tcas.startDate.toDate(),
@@ -33,11 +33,16 @@ export class EditTcasMajorContentComponent implements OnInit {
         [Validators.required]
       ),
       entranceAmount: new FormControl(
-        isNullOrUndefined(this.tcas) ? null : this.tcas.entranceAmount,
+        isNullOrUndefined(this.tcas) ||
+        isNullOrUndefined(this.tcas.entranceAmount)
+          ? null
+          : this.tcas.entranceAmount,
         [Validators.required]
       ),
       url: new FormControl(
-        isNullOrUndefined(this.tcas) ? null : this.tcas.url,
+        isNullOrUndefined(this.tcas) || isNullOrUndefined(this.tcas.url)
+          ? null
+          : this.tcas.url,
         [Validators.required, Validators.pattern(RegularExpressionUtil.urlReg)]
       ),
     });
