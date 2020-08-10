@@ -42,7 +42,7 @@ export class ListUniversityComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private router: Router,
     private universityService: UniversityService,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
   ) {}
 
   ngOnInit() {

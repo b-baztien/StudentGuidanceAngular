@@ -13,6 +13,7 @@ import { AddStudentDialogComponent } from "./dialog/add-student-dialog/add-stude
 import { DocumentReference } from "@angular/fire/firestore";
 import { ConfirmDialogComponent } from "../../util/confirm-dialog/confirm-dialog.component";
 import { Notifications } from "../../util/notification";
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: "app-list-student",
@@ -55,10 +56,16 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
     private studentService: StudentService,
     private alumniService: AlumniService,
     private schoolService: SchoolService,
-    private teacherService: TeacherService
+    private teacherService: TeacherService,
+    private spinner: NgxSpinnerService
   ) {}
 
   ngOnInit() {
+    this.spinner.show();
+    setTimeout(() => {
+      this.spinner.hide();
+    }, 3000);
+
     let login: Login = JSON.parse(localStorage.getItem("userData")) as Login;
     this.teacherService
       .getTeacherByUsername(login.username)
@@ -87,6 +94,7 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
         if (this.studentList.data.length === 0) {
           this.showStudentTable = false;
         } else {
+          this.spinner.hide();
           this.showStudentTable = true;
         }
       });
@@ -101,6 +109,7 @@ export class ListStudentComponent implements OnInit, AfterViewInit {
         if (this.alumniList.data.length === 0) {
           this.showAlumniTable = false;
         } else {
+          this.spinner.hide();
           this.showAlumniTable = true;
         }
       });
