@@ -24,8 +24,10 @@
           matInput
           type="number"
           placeholder="กรอกรอบ TCAS เป็นตัวเลข"
+          #message
           formControlName="round"
         />
+        <mat-hint align="start"><strong>เช่น 1 เป็นต้น</strong> </mat-hint>
         <mat-error
           *ngIf="tcasRoundForm.controls.round.hasError('alreadyRound')"
         >
