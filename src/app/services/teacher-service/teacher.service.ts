@@ -1,11 +1,10 @@
 import { Injectable } from "@angular/core";
-import { AngularFirestore, DocumentReference } from "@angular/fire/firestore";
-import { Teacher } from "src/app/model/Teacher";
+import { AngularFirestore } from "@angular/fire/firestore";
+import { map } from "rxjs/operators";
 import { Login } from "src/app/model/Login";
-import { map, filter, find } from "rxjs/operators";
-import * as firebase from "firebase/app";
-import { LoginService } from "../login-service/login.service";
 import { School } from "src/app/model/School";
+import { Teacher } from "src/app/model/Teacher";
+import { LoginService } from "../login-service/login.service";
 import { SchoolService } from "../school-service/school.service";
 
 @Injectable({
@@ -71,7 +70,14 @@ export class TeacherService {
   }
 
   updateTeacher(teacherId: string, teacher: Teacher) {
+    let schoolName: string = localStorage.getItem("school");
+
+    delete teacher.id;
+    delete teacher.ref;
+
     this.angularFirestore
+      .collection("School")
+      .doc(schoolName)
       .collection("Teacher")
       .doc(teacherId)
       .update(Object.assign({}, teacher));

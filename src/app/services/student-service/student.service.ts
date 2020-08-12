@@ -3,6 +3,8 @@ import {
   AngularFirestore,
   DocumentReference,
   QueryGroupFn,
+  QuerySnapshot,
+  DocumentData,
 } from "@angular/fire/firestore";
 import { map } from "rxjs/operators";
 import { Login } from "src/app/model/Login";
@@ -153,7 +155,46 @@ export class StudentService {
 
   async removeStudent(student: Student) {
     const batch = this.firestore.firestore.batch();
+
+    const alumniSnap = await this.firestore
+      .doc(student.ref)
+      .collection("Alumni")
+      .get()
+      .toPromise();
+    const loginSnap = await this.firestore
+      .doc(student.ref)
+      .collection("Login")
+      .get()
+      .toPromise();
+    const entranceExamResultSnap = await this.firestore
+      .doc(student.ref)
+      .collection("EntranceExamResult")
+      .get()
+      .toPromise();
+    const studentFavoriteSnap = await this.firestore
+      .doc(student.ref)
+      .collection("StudentFavorite")
+      .get()
+      .toPromise();
+    const studentRecommendSnap = await this.firestore
+      .doc(student.ref)
+      .collection("StudentRecommend")
+      .get()
+      .toPromise();
+
+    await this.deleteData(alumniSnap);
+    await this.deleteData(loginSnap);
+    await this.deleteData(entranceExamResultSnap);
+    await this.deleteData(studentFavoriteSnap);
+    await this.deleteData(studentRecommendSnap);
+
     batch.delete(student.ref);
+    await batch.commit();
+  }
+
+  async deleteData(snapshot: QuerySnapshot<DocumentData>) {
+    const batch = this.firestore.firestore.batch();
+    snapshot.docs.forEach((doc) => batch.delete(doc.ref));
     await batch.commit();
   }
 }

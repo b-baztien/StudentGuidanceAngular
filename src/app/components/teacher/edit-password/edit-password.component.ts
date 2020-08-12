@@ -1,3 +1,4 @@
+import { NgxSpinnerService } from "ngx-spinner";
 import { Component, OnInit, AfterViewInit } from "@angular/core";
 import {
   FormGroup,
@@ -5,7 +6,7 @@ import {
   Validators,
   FormGroupDirective,
   NgForm,
-  FormBuilder
+  FormBuilder,
 } from "@angular/forms";
 import { Login } from "src/app/model/Login";
 import { LoginService } from "src/app/services/login-service/login.service";
@@ -15,7 +16,7 @@ import { Router } from "@angular/router";
 @Component({
   selector: "app-edit-password",
   templateUrl: "./edit-password.component.html",
-  styleUrls: ["./edit-password.component.css"]
+  styleUrls: ["./edit-password.component.css"],
 })
 export class EditPasswordComponent implements OnInit {
   userForm: FormGroup;
@@ -28,20 +29,21 @@ export class EditPasswordComponent implements OnInit {
   constructor(
     private loginService: LoginService,
     private router: Router,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private spinner: NgxSpinnerService
   ) {
     this.userForm = this.formBuilder.group(
       {
         requestData: new FormControl(false),
         username: new FormControl({ value: null, disabled: true }, [
-          Validators.required
+          Validators.required,
         ]),
         oldPassword: new FormControl(null, [Validators.required]),
         newPassword: new FormControl(null, [Validators.required]),
-        confirmPassword: new FormControl(null, [Validators.required])
+        confirmPassword: new FormControl(null, [Validators.required]),
       },
       {
-        validators: [this.matchPasswords, this.matchOldPasswords]
+        validators: [this.matchPasswords, this.matchOldPasswords],
       }
     );
   }
@@ -90,6 +92,8 @@ export class EditPasswordComponent implements OnInit {
   async onSubmit() {
     try {
       if (this.userForm.valid) {
+        this.spinner.show();
+
         this.login.password = this.userForm.get("newPassword").value;
 
         await this.loginService.updateLogin(this.login);
@@ -114,6 +118,8 @@ export class EditPasswordComponent implements OnInit {
         "danger",
         "แก้ไขข้อมูลล้มเหลว !"
       );
+    } finally {
+      this.spinner.hide();
     }
   }
 }

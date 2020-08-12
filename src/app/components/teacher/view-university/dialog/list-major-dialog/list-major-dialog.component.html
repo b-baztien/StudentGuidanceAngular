@@ -7,7 +7,6 @@
 >
   <p style="color: white;">กำลังโหลด...</p>
 </ngx-spinner>
-
 <div class="row">
   <div class="col-12">
     <h1 mat-dialog-title><mat-icon>info</mat-icon> ข้อมูลสาขาในคณะ</h1>
@@ -37,6 +36,14 @@
           ไม่พบรูปภาพเกี่ยวกับสาขา
         </ng-template>
       </mat-panel-title>
+      <hr />
+      <mat-panel-description>
+        <h4><mat-icon>subtitles</mat-icon> รายละเอียดสาขา</h4>
+      </mat-panel-description>
+      <mat-panel-title>
+        {{ major.detail }}
+      </mat-panel-title>
+      <hr />
       <mat-panel-description>
         <h4><mat-icon>language</mat-icon> ที่อยู่เว็บไซต์</h4>
       </mat-panel-description>
@@ -61,15 +68,10 @@
       </mat-panel-title>
       <hr />
       <mat-panel-description>
-        <h4><mat-icon>post_add</mat-icon> ข้อมูลการศึกษาต่อ (TCAS)</h4>
+        <h4><mat-icon>how_to_reg</mat-icon> รอบ TCAS สาขาที่เปิดรับ</h4>
       </mat-panel-description>
-      <mat-panel-title>
-        <mat-chip-list *ngFor="let tcas of major.tcasEntranceRound">
-          <mat-chip color="accent" selected>
-            รอบ {{ tcas.description }}
-          </mat-chip>
-        </mat-chip-list>
-      </mat-panel-title>
+
+      <app-list-major-tcas [majorRef]="major.ref"></app-list-major-tcas>
       <hr />
       <mat-panel-description>
         <h4><mat-icon>build</mat-icon> อาชีพเมื่อสำเร็จการศึกษา</h4>

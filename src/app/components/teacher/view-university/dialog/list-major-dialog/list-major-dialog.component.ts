@@ -1,10 +1,14 @@
-import { NgxSpinnerService } from 'ngx-spinner';
-import { Component, OnInit, Inject, OnDestroy } from "@angular/core";
-import { MajorService } from "src/app/services/major-service/major.service";
-import { Major } from "src/app/model/Major";
-import { Subscription } from "rxjs";
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
+import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { DocumentReference } from "@angular/fire/firestore";
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
+import { NgxSpinnerService } from "ngx-spinner";
+import { Subscription } from "rxjs";
+import { ConfirmDialogComponent } from "src/app/components/util/confirm-dialog/confirm-dialog.component";
+import { Notifications } from "src/app/components/util/notification";
+import { Major } from "src/app/model/Major";
+import { MajorService } from "src/app/services/major-service/major.service";
+import { Tcas } from "./../../../../../model/Tcas";
+import { TcasService } from "./../../../../../services/tcas-service/tcas.service";
 
 @Component({
   selector: "app-list-major-dialog",
@@ -20,13 +24,14 @@ export class ListMajorTeacherDialogComponent implements OnInit, OnDestroy {
 
   constructor(
     private majorService: MajorService,
+    private tcasService: TcasService,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<ListMajorTeacherDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DocumentReference,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    @Inject(MAT_DIALOG_DATA) public data: DocumentReference
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.spinner.show();
     setTimeout(() => {
       this.spinner.hide();
@@ -38,6 +43,7 @@ export class ListMajorTeacherDialogComponent implements OnInit, OnDestroy {
         this.listMajor = majorDocs.map((docs) => {
           return { id: docs.id, ref: docs.ref, ...(docs.data() as Major) };
         });
+
         if (this.listMajor === undefined || this.listMajor.length === 0) {
           this.showData = false;
           this.dialogRef.updateSize("90%", "auto");
