@@ -1,14 +1,11 @@
 <!-- Toolbar -->
 <mat-toolbar color="primary" class="app-header">
   <div class="row">
-    <div class="col-12">
-      ระบบจัดการแนะแนวสำหรับนักเรียนมัธยมปลาย
-    </div>
+    <div class="col-12">ระบบจัดการแนะแนวสำหรับนักเรียนมัธยมปลาย</div>
   </div>
 </mat-toolbar>
 
 <div class="login-wrapper" fxLayout="row" fxLayoutAlign="center center">
-
   <mat-card class="box">
     <mat-card-header>
       <mat-card-title>ลงชื่อเข้าใช้งาน</mat-card-title>
@@ -17,24 +14,42 @@
     <form [formGroup]="loginForm" class="example-form">
       <mat-card-content>
         <mat-form-field class="example-full-width">
-          <input type="text" matInput placeholder="ชื่อผู้ใช้งาน" formControlName="username" />
+          <input
+            type="text"
+            matInput
+            placeholder="ชื่อผู้ใช้งาน"
+            formControlName="username"
+          />
           <mat-error *ngIf="loginForm.controls.username.hasError('required')">
             กรุณากรอกชื่อผู้ใช้งาน
           </mat-error>
         </mat-form-field>
 
         <mat-form-field class="example-full-width">
-          <input [type]="hide ? 'password' : 'text'" matInput placeholder="รหัสผ่าน" formControlName="password" />
-          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'ซ่อนรหัสผ่าน'"
-            [attr.aria-pressed]="hide">
-            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-          </button>
+          <input
+            [type]="hide ? 'password' : 'text'"
+            matInput
+            placeholder="รหัสผ่าน"
+            formControlName="password"
+          />
+          <a
+            mat-icon-button
+            matSuffix
+            (click)="hide = !hide"
+            [attr.aria-label]="'ซ่อนรหัสผ่าน'"
+            [attr.aria-pressed]="hide"
+          >
+            <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+          </a>
           <mat-error *ngIf="loginForm.controls.password.hasError('required')">
             กรุณากรอกรหัสผ่าน
           </mat-error>
         </mat-form-field>
       </mat-card-content>
-      <mat-spinner-button [options]="spinnerButtonOptions" (click)="onLogin()"></mat-spinner-button>
+      <mat-spinner-button
+        [options]="spinnerButtonOptions"
+        (click)="onLogin()"
+      ></mat-spinner-button>
     </form>
   </mat-card>
 </div>
