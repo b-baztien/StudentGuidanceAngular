@@ -38,7 +38,7 @@
     "directionality": "^0.1.0",
     "firebase": "^7.6.2",
     "hammerjs": "^2.0.8",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "libphonenumber-js": "^1.7.30",
     "mat-progress-buttons": "^8.0.7",
     "moment": "^2.24.0",
